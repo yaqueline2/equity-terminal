@@ -1,8 +1,0 @@
-.DS_Store
-.env
-.env.local
-.dev.vars
-node_modules/
-.netlify/
-.wrangler/
-*.log
