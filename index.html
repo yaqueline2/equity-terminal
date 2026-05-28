@@ -4586,7 +4586,7 @@ function ls_setV(key, data, ver) {
   function sum(arr){ return arr.reduce(function(s,r){return s+(+r.amount||0);},0); }
 
   function editableAmt(cat, id){
-    return '<input type="number" value="'+ (getRow(cat,id).amount||0) +'" onchange="mtEdit(\''+cat+'\','+id+',this.value)" style="width:72px;text-align:right;font:600 11px var(--num);background:transparent;border:none;border-bottom:1px dashed rgba(42,61,44,0.2);padding:2px 4px;color:var(--ink);" />';
+    return '<input type="number" value="'+ (getRow(cat,id).amount||0) +'" onblur="mtEdit(\''+cat+'\','+id+',this.value)" style="width:72px;text-align:right;font:600 11px var(--num);background:transparent;border:none;border-bottom:1px dashed rgba(42,61,44,0.2);padding:2px 4px;color:var(--ink);" />';
   }
   function getRow(cat,id){ return (data[cat]||[]).find(function(r){return r.id===id;}) || {}; }
   window.mtEdit = function(cat,id,val){ var r=getRow(cat,id); if(r) r.amount=+val||0; save(); renderMonthly(); };
@@ -5159,7 +5159,7 @@ function ls_setV(key, data, ver) {
         : '<span style="font:400 11px var(--num);color:var(--ink4);">—</span>';
       return '<tr>'+
         '<td style="font:500 11px var(--ui);color:var(--ink);">'+r.pot+'</td>'+
-        '<td class="r"><input type="number" value="'+a+'" step="0.01" onchange="mtEdit(\'savings\','+r.id+',this.value)" style="width:80px;text-align:right;font:600 11px var(--num);background:transparent;border:none;border-bottom:1px dashed rgba(42,61,44,0.3);padding:2px 4px;color:var(--ink);"/></td>'+
+        '<td class="r"><input type="number" value="'+a+'" step="0.01" onblur="mtEdit(\'savings\','+r.id+',this.value)" style="width:80px;text-align:right;font:600 11px var(--num);background:transparent;border:none;border-bottom:1px dashed rgba(42,61,44,0.3);padding:2px 4px;color:var(--ink);"/></td>'+
         '<td class="r">'+cumCell+'</td>'+
         '<td><button aria-label="Delete" onclick="mtDel(\'savings\','+r.id+')" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:10px;">✕</button></td>'+
       '</tr>';
@@ -5545,15 +5545,15 @@ function ls_setV(key, data, ver) {
 /* ═══════════════════ SAVINGS POTS CRUD ═══════════════════ */
 (function() {
   var KEY = 'cel-pots-v4';
-  // End-of-March balances (Jan ACTUAL + Feb actual + Mar actual) per screenshots
+  // Post-May 2026 balances (updated May 2026)
   var DEFAULTS = [
-    {id:1,name:'Versa Cash Bonds',     bank:'Versa',       amount:15062,  goal:30000, budget:0,    color:'rgba(107,160,152,0.75)'},
-    {id:2,name:'Versa Gold',           bank:'Versa',       amount:8531,   goal:35000, budget:100,  color:'rgba(196,168,112,0.75)'},
-    {id:3,name:'MooMoo Investments',   bank:'MooMoo',      amount:8500,   goal:100000,budget:1200, color:'rgba(61,88,64,0.75)'},
-    {id:4,name:'Emergency Fund (RYT)', bank:'RYT Savings', amount:4101,   goal:30000, budget:100,  color:'rgba(74,122,114,0.75)'},
-    {id:5,name:'Versa Global-I',       bank:'Versa',       amount:3544.06,goal:25000, budget:500,  color:'rgba(160,139,92,0.75)'},
-    {id:6,name:'Expenses (RYT)',       bank:'RYT Savings', amount:1645,   goal:10000, budget:100,  color:'rgba(86,117,88,0.75)'},
-    {id:7,name:'Home Deposit (RYT)',   bank:'RYT Savings', amount:1050,   goal:300000,budget:200,  color:'rgba(155,112,104,0.75)'}
+    {id:1,name:'Versa Cash Bonds',     bank:'Versa',       amount:5062,   goal:30000, budget:0,    color:'rgba(107,160,152,0.75)'},
+    {id:2,name:'Versa Gold',           bank:'Versa',       amount:4931,   goal:35000, budget:100,  color:'rgba(196,168,112,0.75)'},
+    {id:3,name:'MooMoo Investments',   bank:'MooMoo',      amount:24700,  goal:100000,budget:1200, color:'rgba(61,88,64,0.75)'},
+    {id:4,name:'Emergency Fund (RYT)', bank:'RYT Savings', amount:4301,   goal:30000, budget:100,  color:'rgba(74,122,114,0.75)'},
+    {id:5,name:'Versa Global-I',       bank:'Versa',       amount:4544.06,goal:25000, budget:500,  color:'rgba(160,139,92,0.75)'},
+    {id:6,name:'Expenses (RYT)',       bank:'RYT Savings', amount:1845,   goal:10000, budget:100,  color:'rgba(86,117,88,0.75)'},
+    {id:7,name:'Home Deposit (RYT)',   bank:'RYT Savings', amount:1450,   goal:300000,budget:200,  color:'rgba(155,112,104,0.75)'}
   ];
   var POT_BANKS = ['RYT Savings','Versa','MooMoo','Maybank','Other'];
   var pots = ls_get(KEY, DEFAULTS);
@@ -5563,6 +5563,13 @@ function ls_setV(key, data, ver) {
   }
   // Force-refresh if old pots don't have budget field
   if(pots.length && pots[0].budget===undefined){ pots = DEFAULTS.slice(); }
+  // One-time migration: update to post-May 2026 correct balances
+  if(!localStorage.getItem('cel-pots-seedV2')){
+    var _amtMap = {1:5062, 2:4931, 3:24700, 4:4301, 5:4544.06, 6:1845, 7:1450};
+    pots.forEach(function(p){ if(_amtMap[p.id]!==undefined) p.amount = _amtMap[p.id]; });
+    ls_set(KEY, pots);
+    localStorage.setItem('cel-pots-seedV2','1');
+  }
   // Backfill bank for any saved pots missing it
   pots.forEach(function(p){
     if(!p.bank){
