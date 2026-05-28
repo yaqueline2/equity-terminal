@@ -1790,13 +1790,6 @@ body.v-brainfog #view-travel-life .fp-t,
     <h3 class="ey" style="margin-bottom:10px;">Upcoming workouts</h3>
     <div id="upcoming-wo" style="font:400 11px var(--ui);color:var(--ink2);line-height:1.8;flex:1;overflow-y:auto;"></div>
   </div>
-  <div class="gc" style="padding:14px 16px;display:flex;flex-direction:column;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <h3 class="ey" style="margin:0;">Currently reading</h3>
-      <span id="cr-count" style="font:400 10px var(--ui);color:var(--ink4);"></span>
-    </div>
-    <div id="cr-list" style="display:flex;flex-direction:column;gap:8px;flex:1;overflow-y:auto;"></div>
-  </div>
 </div>
 
 </main></div>
@@ -5140,16 +5133,27 @@ function ls_setV(key, data, ver) {
     var rows = window._getMonthlySavings();
     var totalA = 0;
 
-    // Build pot balance lookup from cel-pots-v4 (actual current balance per pot id)
+    // Build pot balance lookup from cel-pots-v4 (actual current balance per pot id or name)
     var pots = ls_get('cel-pots-v4', []);
-    var potBalById = {};
-    pots.forEach(function(p){ potBalById[p.id] = +p.amount||0; });
+    var potBalById = {}, potBalByName = {};
+    pots.forEach(function(p){
+      potBalById[p.id] = +p.amount||0;
+      potBalByName[(p.name||'').toLowerCase()] = +p.amount||0;
+    });
 
     tbody.innerHTML = rows.map(function(r){
       var a = +r.amount||0;
       totalA += a;
-      // Show actual pot balance (current balance in the pot)
-      var potBal = r.potId != null ? (potBalById[r.potId] != null ? potBalById[r.potId] : null) : null;
+      // Match by potId first, then fall back to name match
+      var potBal = null;
+      if(r.potId != null && potBalById[r.potId] != null){
+        potBal = potBalById[r.potId];
+      } else if(r.pot){
+        var nameKey = (r.pot||'').toLowerCase();
+        // strip "wishlist:" / "goal bucket:" prefixes before matching
+        nameKey = nameKey.replace(/^(wishlist:|goal bucket:)\s*/i,'').trim();
+        if(potBalByName[nameKey] != null) potBal = potBalByName[nameKey];
+      }
       var cumCell = potBal != null
         ? '<span style="font:600 11px var(--num);color:var(--teal);">'+fmtRM(potBal)+'</span>'
         : '<span style="font:400 11px var(--num);color:var(--ink4);">—</span>';
