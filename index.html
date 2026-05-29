@@ -6917,24 +6917,26 @@ function ls_setV(key, data, ver) {
 (function() {
   var KEY = 'cel-insurance-v4';
   var DEFAULTS = [
-    {id:1,name:'Zurich Car Insurance (Takaful)',type:'Car',monthly:0,annual:2141.94,policyNo:'TN25-00088591',coverage:'Comprehensive',coverageDetails:'Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief (RM 1000 cover),Personal Accident PA1 (RM 10000 cover)',renewal:'27/11/2026',startDate:'27/11/2025',notes:'Perodua Myvi 1500 H (CVT) BD5HZ · Year 2025 · Sum Covered RM 55000 · HP: Maybank Islamic Berhad · Basic Net RM 1624.02 + Extra Coverage RM 350 + Service Tax RM 157.92 + Stamp Duty RM 10 + Act Contribution RM 324.80',roadTaxPaid:'No',roadTaxDate:'',roadTaxAmount:0,roadTaxExpiry:''}
+    {id:1,name:'Zurich Car Insurance (Takaful)',type:'Car',monthly:0,annual:2141.95,policyNo:'TN25-00089141',coverage:'Comprehensive',coverageDetails:'Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief/Assistance (RM 1000),Participant Personal Accident (RM 10000)',renewal:'27/11/2026',startDate:'28/11/2025',notes:'Perodua Myvi 1500H (CVT) BD5HZ · Plate: VQB9386 · Year 2025 · Sum Covered RM 55,000 · NCD: 0% · HP: Maybank Islamic Berhad · Cert No: 012550061766-00 · Basic RM 1,624.02 + Extra RM 350 + SST RM 157.92 + Stamp Duty RM 10 + ACT RM 324.80',roadTaxPaid:'No',roadTaxDate:'',roadTaxAmount:0,roadTaxExpiry:''}
   ];
   var policies = ls_get(KEY, DEFAULTS);
 
-  // One-shot: patch placeholder Car Insurance with real Zurich Takaful data
+  // One-shot v2: update to correct policy number & details from PDF
   (function(){
+    if(localStorage.getItem('cel-ins-seedV2')) return;
     var p = policies.find(function(x){ return x.id===1 && x.type==='Car'; });
-    if(p && (!p.policyNo || p.policyNo==='')){
+    if(p){
       p.name='Zurich Car Insurance (Takaful)';
-      p.annual=2141.94;
-      p.policyNo='TN25-00088591';
+      p.annual=2141.95;
+      p.policyNo='TN25-00089141';
       p.coverage='Comprehensive';
-      p.coverageDetails='Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief (RM 1000 cover),Personal Accident PA1 (RM 10000 cover)';
+      p.coverageDetails='Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief/Assistance (RM 1000),Participant Personal Accident (RM 10000)';
       p.renewal='27/11/2026';
-      p.startDate='27/11/2025';
-      p.notes='Perodua Myvi 1500 H (CVT) BD5HZ · Year 2025 · Sum Covered RM 55000 · HP: Maybank Islamic Berhad · Basic Net RM 1624.02 + Extra Coverage RM 350 + Service Tax RM 157.92 + Stamp Duty RM 10 + Act Contribution RM 324.80';
+      p.startDate='28/11/2025';
+      p.notes='Perodua Myvi 1500H (CVT) BD5HZ · Plate: VQB9386 · Year 2025 · Sum Covered RM 55,000 · NCD: 0% · HP: Maybank Islamic Berhad · Cert No: 012550061766-00 · Basic RM 1,624.02 + Extra RM 350 + SST RM 157.92 + Stamp Duty RM 10 + ACT RM 324.80';
       ls_set(KEY, policies);
     }
+    localStorage.setItem('cel-ins-seedV2','1');
   })();
 
   function save() { ls_set(KEY, policies); }
