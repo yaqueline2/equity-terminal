@@ -1621,6 +1621,32 @@ body.v-brainfog #view-travel-life .fp-t,
 })();
 </script>
 <script>
+// Seed May 2026 additional work expenses (missed in v1)
+(function(){
+  var FLAG = 'cel-may26-exp-seeded-v2';
+  if(localStorage.getItem(FLAG)) return;
+  var raw = localStorage.getItem('cel-monthly-v7');
+  if(!raw) return;
+  var store = JSON.parse(raw);
+  if(!store.months || !store.months['May 2026']) return;
+  var may = store.months['May 2026'];
+  if(!may.expenses) may.expenses = [];
+  var next = (may.expenses.reduce(function(m,r){return Math.max(m,+r.id||0);},0))+1;
+  var add = [
+    {id:next++, date:'09/05/2026', cat:'work', desc:'CDP talk',    amount:20.00},
+    {id:next++, date:'13/05/2026', cat:'work', desc:'cpd',         amount:15.00},
+    {id:next++, date:'13/05/2026', cat:'work', desc:'claude pro',  amount:99.90},
+    {id:next++, date:'20/05/2026', cat:'work', desc:'mc',          amount:30.00},
+    {id:next++, date:'29/05/2026', cat:'work', desc:'micr office', amount:17.61}
+  ];
+  may.expenses = may.expenses.concat(add);
+  store.months['May 2026'] = may;
+  try {
+    localStorage.setItem('cel-monthly-v7', JSON.stringify(store));
+    localStorage.setItem(FLAG, '1');
+  } catch(e) {}
+})();
+
 // Seed May 2026 expenses from screenshots
 (function(){
   var FLAG = 'cel-may26-exp-seeded-v1';
