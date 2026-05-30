@@ -4820,11 +4820,13 @@ function ls_setV(key, data, ver) {
   };
 
   function nid(arr){ return arr.length?Math.max.apply(null,arr.map(function(r){return r.id;}))+1:1; }
+  function _isoToDisp(iso){ if(!iso) return ''; var p=iso.split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : iso; }
   window.openAddIncome = function(){
+    var today = new Date().toISOString().slice(0,10);
     openModal({title:'Add income source',fields:[
       {key:'source',label:'Source',placeholder:'e.g. Freelance'},
-      {row:2,fields:[{key:'date',label:'Pay date',placeholder:'01/04/2026'},{key:'amount',label:'Amount (RM)',type:'number',placeholder:'500'}]}
-    ],onSave:function(d){ data.income.push({id:nid(data.income),source:d.source,date:d.date,amount:+d.amount||0}); save(); renderMonthly(); }});
+      {row:2,fields:[{key:'date',label:'Pay date',type:'date',default:today},{key:'amount',label:'Amount (RM)',type:'number',placeholder:'500'}]}
+    ],onSave:function(d){ data.income.push({id:nid(data.income),source:d.source,date:_isoToDisp(d.date),amount:+d.amount||0}); save(); renderMonthly(); }});
   };
   window.openAddBill = function(){
     openModal({title:'Add a bill',fields:[
@@ -4836,16 +4838,17 @@ function ls_setV(key, data, ver) {
     ],onSave:function(d){ data.bills.push({id:nid(data.bills),bill:d.bill,amount:+d.amount||0,paidBy:d.paidBy||'Self'}); save(); renderMonthly(); }});
   };
   window.openAddExpense = function(){
+    var today = new Date().toISOString().slice(0,10);
     openModal({title:'Add an expense',fields:[
       {key:'cat',label:'Category',type:'select',options:EXP_CATS},
       {key:'desc',label:'Description',placeholder:'e.g. Haidilao'},
       {row:2,fields:[
-        {key:'date',label:'Date',placeholder:'e.g. 5 Apr'},
+        {key:'date',label:'Date',type:'date',default:today},
         {key:'nw',label:'Need / Want',type:'select',options:['N','W']},
         {key:'amount',label:'Amount (RM)',type:'number',placeholder:'50'}
       ]}
     ],onSave:function(d){
-      data.expenses.push({id:nid(data.expenses),date:d.date,cat:d.cat,desc:d.desc,nw:d.nw,amount:+d.amount||0});
+      data.expenses.push({id:nid(data.expenses),date:_isoToDisp(d.date),cat:d.cat,desc:d.desc,nw:d.nw,amount:+d.amount||0});
       save(); renderMonthly();
     }});
   };
