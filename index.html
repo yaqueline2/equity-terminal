@@ -6967,7 +6967,7 @@ function ls_setV(key, data, ver) {
 (function() {
   var KEY = 'cel-insurance-v4';
   var DEFAULTS = [
-    {id:1,name:'Zurich Car Insurance (Takaful)',type:'Car',monthly:0,annual:2141.95,policyNo:'TN25-00089141',coverage:'Comprehensive',coverageDetails:'Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief/Assistance (RM 1000),Participant Personal Accident (RM 10000)',renewal:'27/11/2026',startDate:'28/11/2025',notes:'Perodua Myvi 1500H (CVT) BD5HZ · Plate: VQB9386 · Year 2025 · Sum Covered RM 55,000 · NCD: 0% · HP: Maybank Islamic Berhad · Cert No: 012550061766-00 · Basic RM 1,624.02 + Extra RM 350 + SST RM 157.92 + Stamp Duty RM 10 + ACT RM 324.80',roadTaxPaid:'No',roadTaxDate:'',roadTaxAmount:0,roadTaxExpiry:''}
+    {id:1,name:'Zurich Car Insurance (Takaful)',type:'Car',monthly:0,annual:2141.95,policyNo:'TN25-00089141',coverage:'Comprehensive',coverageDetails:'Z-Driver Perodua Total Protect Plus,Special Perils (RM 110),Windscreen & Glass (RM 1600 cover),Flood Relief/Assistance (RM 1000),Participant Personal Accident (RM 10000)',renewal:'27/11/2026',startDate:'28/11/2025',notes:'Perodua Myvi 1500H (CVT) BD5HZ · Plate: VQB9386 · Year 2025 · Sum Covered RM 55,000 · NCD: 0% · HP: Maybank Islamic Berhad · Cert No: 012550061766-00 · Basic RM 1,624.02 + Extra RM 350 + SST RM 157.92 + Stamp Duty RM 10 + ACT RM 324.80',roadTaxPaid:'Yes',roadTaxDate:'',roadTaxAmount:0,roadTaxExpiry:'27/11/2026'}
   ];
   var policies = ls_get(KEY, DEFAULTS);
 
@@ -6987,6 +6987,14 @@ function ls_setV(key, data, ver) {
       ls_set(KEY, policies);
     }
     localStorage.setItem('cel-ins-seedV2','1');
+  })();
+
+  // One-shot v3: update road tax status
+  (function(){
+    if(localStorage.getItem('cel-ins-seedV3')) return;
+    var p = policies.find(function(x){ return x.id===1 && x.type==='Car'; });
+    if(p){ p.roadTaxPaid='Yes'; p.roadTaxExpiry='27/11/2026'; ls_set(KEY, policies); }
+    localStorage.setItem('cel-ins-seedV3','1');
   })();
 
   function save() { ls_set(KEY, policies); }
