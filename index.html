@@ -4411,24 +4411,12 @@ function ls_setV(key, data, ver) {
   // Copied from the "Bills" column of her monthly dashboard screenshots.
   function stdBills(custom){
     custom = custom || {};
-    // Each bill has paidBy: 'Self' (default) or someone else (e.g. 'Dad').
-    // Bills paid by others stay in records but don't drain Maybank.
-    var list = [
-      {id:1, bill:'Netflix',          amount: custom.netflix||0, paidBy:'Self'},
-      {id:2, bill:'Spotify',          amount: custom.spotify||0, paidBy:'Self'},
-      {id:3, bill:'iCloud Storage',   amount: custom.icloud||0,  paidBy:'Self'},
-      {id:4, bill:'Google Storage',   amount: custom.google||0,  paidBy:'Self'},
-      {id:5, bill:'Maxis',            amount: custom.maxis||0,   paidBy:'Self'},
-      {id:6, bill:'Facial',           amount: custom.facial||0,  paidBy:'Self'},
-      {id:7, bill:'Life Insurance',   amount: custom.lifeIns||0, paidBy:'Self'},
-      {id:8, bill:'Medical Insurance',amount: custom.medIns||0,  paidBy:'Self'},
-      {id:9, bill:'Gas',              amount: custom.gas||0,     paidBy:'Self'},
-      {id:10,bill:"Mom's allowance",  amount: custom.mom||0,     paidBy:'Self'},
-      {id:11,bill:"Ako's allowance",  amount: custom.ako||0,     paidBy:'Self'},
-      {id:12,bill:'Myvi 1.5H car loan',    amount: custom.myvi||0,    paidBy:'Dad'},
-      {id:13,bill:'Zurich Car Insurance', amount: custom.zurich||0, paidBy:'Self'}
+    return [
+      {id:1, bill:'Facial',             amount: custom.facial||468, paidBy:'Self'},
+      {id:2, bill:'Gas',                amount: custom.gas||150,    paidBy:'Self'},
+      {id:3, bill:'Chiropractor',       amount: custom.chiro||108,  paidBy:'Self'},
+      {id:4, bill:'Myvi 1.5H car loan', amount: custom.myvi||553,   paidBy:'Self'}
     ];
-    return list;
   }
   var PAID_BY_OPTIONS = ['Self','Dad','Mom','Family','Other'];
 
