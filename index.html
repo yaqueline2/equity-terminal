@@ -1620,6 +1620,39 @@ body.v-brainfog #view-travel-life .fp-t,
   } catch(e) {}
 })();
 </script>
+<script>
+// Seed May 2026 expenses from screenshots
+(function(){
+  var FLAG = 'cel-may26-exp-seeded-v1';
+  if(localStorage.getItem(FLAG)) return;
+  var raw = localStorage.getItem('cel-monthly-v7');
+  if(!raw) return;
+  var store = JSON.parse(raw);
+  if(!store.months || !store.months['May 2026']) return;
+  var may = store.months['May 2026'];
+  if(!may.expenses) may.expenses = [];
+  var next = (may.expenses.reduce(function(m,r){return Math.max(m,+r.id||0);},0))+1;
+  var add = [
+    {id:next++,  date:'09/05/2026', cat:'healthcare',     desc:'正骨',              amount:108.00},
+    {id:next++,  date:'09/05/2026', cat:'gifts/donations',desc:'阿姨 母亲节',       amount:133.57},
+    {id:next++,  date:'09/05/2026', cat:'restaurants',    desc:'subway',            amount:13.05},
+    {id:next++,  date:'09/05/2026', cat:'car maintenance',desc:'parking',           amount:10.00},
+    {id:next++,  date:'13/05/2026', cat:'car maintenance',desc:'gas',               amount:34.81},
+    {id:next++,  date:'13/05/2026', cat:'car maintenance',desc:'ethics kl parking', amount:8.00},
+    {id:next++,  date:'13/05/2026', cat:'clothing',       desc:'xhs clothes',       amount:98.17},
+    {id:next++,  date:'15/05/2026', cat:'restaurants',    desc:'pizza',             amount:13.78},
+    {id:next++,  date:'22/05/2026', cat:'restaurants',    desc:'nasi lemak',        amount:14.00},
+    {id:next++,  date:'30/05/2026', cat:'restaurants',    desc:'nasi lemak',        amount:5.50},
+    {id:next++,  date:'30/05/2026', cat:'car maintenance',desc:'gas',               amount:39.06}
+  ];
+  may.expenses = may.expenses.concat(add);
+  store.months['May 2026'] = may;
+  try {
+    localStorage.setItem('cel-monthly-v7', JSON.stringify(store));
+    localStorage.setItem(FLAG, '1');
+  } catch(e) {}
+})();
+</script>
 <nav class="nav">
 <h1 class="nav-brand" onclick="setView('hero')">cel's headspace</h1>
 <div class="nav-pills">
