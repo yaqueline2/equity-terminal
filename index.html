@@ -6680,8 +6680,7 @@ function ls_setV(key, data, ver) {
   var AKEY = 'cel-assets', DKEY = 'cel-debts-v2';
   var DEBT_VERSION = 4;  // bump + add migration when debt schema changes
   var ADEF = [
-    {id:1,name:'Perodua Myvi 1.5 H (2025)',value:57074},
-    {id:3,name:'Portfolio',kind:'portfolio',value:0}
+    {id:1,name:'Perodua Myvi 1.5 H (2025)',value:57074}
   ];
   var DEBT_TYPES = ['Car Loan','House / Mortgage','PTPTN / Study Loan','Personal Loan','Credit Card','Other'];
   var DDEF = [
@@ -6792,7 +6791,8 @@ function ls_setV(key, data, ver) {
   }
 
   function render() {
-    var totalA = assets.reduce(function(s,a){return s+a.value;},0);
+    var savingsTotal = (window._getPotsTotal && window._getPotsTotal()) || ls_get('cel-pots-v4',[]).reduce(function(s,p){return s+(+p.amount||0);},0);
+    var totalA = assets.reduce(function(s,a){return s+a.value;},0) + savingsTotal;
     var assetsHtml = '<h3 class="ey" style="margin-bottom:8px;">Assets</h3>' +
       '<table class="tbl"><thead><tr><th>Item</th><th class="r">Value</th><th></th></tr></thead><tbody>' +
       assets.map(function(a){
@@ -6800,6 +6800,7 @@ function ls_setV(key, data, ver) {
           '<td><button aria-label="Edit" onclick="editAsset(' + a.id + ')" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:11px;margin-right:2px;">✎</button>' +
           '<button aria-label="Delete" onclick="deleteAsset(' + a.id + ')" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:11px;">✕</button></td></tr>';
       }).join('') +
+      '<tr><td style="color:var(--ink3);">Total Savings (all pots)</td><td class="r" style="color:var(--teal);">RM ' + savingsTotal.toLocaleString() + '</td><td></td></tr>' +
       '</tbody><tfoot><tr><td style="font-weight:600;">Total</td><td class="r" style="font-weight:600;color:var(--g600);">RM ' + totalA.toLocaleString() + '</td><td></td></tr></tfoot></table>';
     writeTo(['assets-table','assets-table-fp'], assetsHtml);
 
@@ -6961,26 +6962,18 @@ function ls_setV(key, data, ver) {
   };
   window.deleteDebt = function(id){if(!confirm('Remove this debt?'))return;debts=debts.filter(function(d){return d.id!==id;});save();render();};
 
-  // Remove any stale 'Savings (all pots)' entry that may exist in localStorage
+  // Remove stale savings + portfolio entries — savings now shown as live computed row
   (function migrateAssets(){
     var before = assets.length;
-    assets = assets.filter(function(a){ return a.kind !== 'savings'; });
-    // Upgrade portfolio name if needed
-    assets.forEach(function(a){
-      if(!a.kind && /stock|portfolio|moomoo/i.test(a.name||'')){ a.kind='portfolio'; a.name='Moomoo Portfolio'; }
-    });
+    assets = assets.filter(function(a){ return a.kind !== 'savings' && a.kind !== 'portfolio'; });
+    // Also strip any manually-named portfolio entries
+    assets = assets.filter(function(a){ return !/portfolio|moomoo/i.test(a.name||''); });
     if(assets.length !== before) ls_set(AKEY, assets);
   })();
 
-  // Sync "Savings" asset row to live pots total, and "Portfolio" row to live portfolio MYR
-  window._syncAssetsSavingsRow = function(){ /* savings row removed */ };
-  window._syncAssetsPortfolioRow = function(portfolioMYR){
-    var changed=false;
-    assets.forEach(function(a){
-      if(a.kind==='portfolio' && a.value!==Math.round(portfolioMYR)){ a.value=Math.round(portfolioMYR); changed=true; }
-    });
-    if(changed){ ls_set(AKEY, assets); render(); }
-  };
+  // Savings row is now computed live in render(); portfolio row removed (MooMoo is in savings)
+  window._syncAssetsSavingsRow = function(){ render(); };
+  window._syncAssetsPortfolioRow = function(){ /* portfolio removed — MooMoo counted in savings */ };
 
   window._renderInsurance = render;
   setTimeout(function(){ render(); if(window._syncAssetsSavingsRow) window._syncAssetsSavingsRow(); }, 80);
@@ -19373,8 +19366,9 @@ window.showWrapped = function(){
 
     // Timeline - build events for rest of month
     var events = [];
-    // Subs with dueDay / renewalDay in next 30 days
+    // Subs with dueDay / renewalDay in next 30 days — exclude parent-paid
     subs.forEach(function(s){
+      if(s.paidBy === 'Parents') return;
       var day = +(s.dueDay || s.renewalDay || 0);
       if(!day) return;
       var target = new Date(now.getFullYear(), now.getMonth(), day);
