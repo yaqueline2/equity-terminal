@@ -4545,20 +4545,7 @@ function ls_setV(key, data, ver) {
   }
   syncCurrent();
 
-  // One-shot: add Zurich Car Insurance to any month that doesn't have it
-  (function(){
-    var patched = false;
-    Object.keys(store.months).forEach(function(m){
-      var bills = store.months[m].bills;
-      if(bills && !bills.some(function(b){ return b.bill==='Zurich Car Insurance'; })){
-        // Annual premium RM 2,141.94 — tracked as annual lump sum in November
-        var isNov = m.toLowerCase().indexOf('nov') === 0;
-        bills.push({id:13, bill:'Zurich Car Insurance', amount: isNov ? 2141.94 : 0, paidBy:'Self'});
-        patched = true;
-      }
-    });
-    if(patched){ ls_set(KEY, store); }
-  })();
+  // (Zurich Car Insurance patch removed — tracked in Insurance panel instead)
 
   function save(){ ls_set(KEY, store); }
 
@@ -4609,19 +4596,26 @@ function ls_setV(key, data, ver) {
     if(!name || !name.trim()) return;
     name = name.trim();
     if(store.months[name]){ alert(name+' already exists.'); switchMonth(name); return; }
+    // Build savings rows dynamically from current pot budgets — never stale
+    var _pots = (window._getPots && window._getPots()) || [];
+    var _savingsRows = _pots.length
+      ? _pots.map(function(p, i){
+          return {id: i+1, pot: p.name, potId: p.id, fromBank: p.bank||'', amount: +p.budget||0};
+        })
+      : [
+          {id:1, pot:'Expenses (RYT)',       potId:6, fromBank:'RYT Savings', amount:100},
+          {id:2, pot:'Emergency Fund (RYT)', potId:4, fromBank:'RYT Savings', amount:100},
+          {id:3, pot:'MooMoo Investments',   potId:3, fromBank:'MooMoo',      amount:1200},
+          {id:4, pot:'Versa Global-I',       potId:5, fromBank:'Versa',       amount:500},
+          {id:5, pot:'Versa Gold',           potId:2, fromBank:'Versa',       amount:100},
+          {id:6, pot:'Versa Cash Bonds',     potId:1, fromBank:'Versa',       amount:0},
+          {id:7, pot:'Home Deposit (RYT)',   potId:7, fromBank:'RYT Savings', amount:200}
+        ];
     store.months[name] = {
       income:[],
       bills: stdBills({}),
       expenses:[],
-      savings:[
-        {id:1, pot:'Expenses (RYT)',       potId:6, fromBank:'RYT Savings', amount:100},
-        {id:2, pot:'Emergency Fund (RYT)', potId:4, fromBank:'RYT Savings', amount:100},
-        {id:3, pot:'MooMoo Investments',   potId:3, fromBank:'MooMoo',      amount:1200},
-        {id:4, pot:'Versa Global-I',       potId:5, fromBank:'Versa',       amount:500},
-        {id:5, pot:'Versa Gold',           potId:2, fromBank:'Versa',       amount:100},
-        {id:6, pot:'Versa Cash Bonds',     potId:1, fromBank:'Versa',       amount:0},
-        {id:7, pot:'Home Deposit (RYT)',   potId:7, fromBank:'RYT Savings', amount:200}
-      ]
+      savings: _savingsRows
     };
     store.current = name;
     syncCurrent();
