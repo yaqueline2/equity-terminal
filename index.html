@@ -4547,6 +4547,36 @@ function ls_setV(key, data, ver) {
 
   // (Zurich Car Insurance patch removed — tracked in Insurance panel instead)
 
+  // One-shot: replace old bloated bills with clean 4-bill template for Jun 2026+
+  (function(){
+    if(localStorage.getItem('cel-bills-clean-v1')) return;
+    var OLD_BILLS = ['Netflix','Spotify','iCloud Storage','Google Storage','Maxis',
+                     'Life Insurance','Medical Insurance',"Mom's allowance","Ako's allowance",
+                     'TNG Toll Reload','Zurich Car Insurance'];
+    var MONTH_ORDER = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+    var CLEAN_BILLS = [
+      {id:1, bill:'Facial',             amount:468, paidBy:'Self'},
+      {id:2, bill:'Gas',                amount:150, paidBy:'Self'},
+      {id:3, bill:'Chiropractor',       amount:108, paidBy:'Self'},
+      {id:4, bill:'Myvi 1.5H car loan', amount:553, paidBy:'Self'}
+    ];
+    var patched = false;
+    Object.keys(store.months).forEach(function(mk){
+      var parts = mk.toLowerCase().split(' ');
+      var y = +parts[1]||0, m = MONTH_ORDER[parts[0]]||0;
+      // Apply to Jun 2026 and any later month
+      if(y < 2026 || (y===2026 && m < 6)) return;
+      var bills = store.months[mk].bills || [];
+      var hasOld = bills.some(function(b){ return OLD_BILLS.indexOf(b.bill) > -1; });
+      if(hasOld){
+        store.months[mk].bills = CLEAN_BILLS.map(function(b){ return Object.assign({},b); });
+        patched = true;
+      }
+    });
+    if(patched) ls_set(KEY, store);
+    localStorage.setItem('cel-bills-clean-v1','1');
+  })();
+
   function save(){ ls_set(KEY, store); }
 
   // Bank balances are now derived from pots + monthly tracker; no manual storage.
