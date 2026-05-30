@@ -4577,6 +4577,48 @@ function ls_setV(key, data, ver) {
     localStorage.setItem('cel-bills-clean-v1','1');
   })();
 
+  // One-shot: seed Pupillage + Dad income for Jun–Nov 2026
+  (function(){
+    if(localStorage.getItem('cel-jun-nov26-income-v1')) return;
+    var INCOME_MONTHS = ['jun 2026','jul 2026','aug 2026','sep 2026','oct 2026','nov 2026'];
+    var INCOME_ROWS = [
+      {id:1, source:'Pupillage allowance', amount:2500},
+      {id:2, source:"Dad's Allowance",     amount:2000}
+    ];
+    var MONTH_ORDER = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+    var changed = false;
+    INCOME_MONTHS.forEach(function(mk){
+      if(!store.months[mk]){
+        // Create the month if it doesn't exist yet
+        var _pots = (window._getPots && window._getPots()) || [];
+        var _savingsRows = _pots.length
+          ? _pots.map(function(p,i){ return {id:i+1, pot:p.name, potId:p.id, fromBank:p.bank||'', amount:+p.budget||0}; })
+          : [];
+        store.months[mk] = {
+          income: INCOME_ROWS.map(function(r){ return Object.assign({},r); }),
+          bills: [
+            {id:1, bill:'Facial',             amount:468, paidBy:'Self'},
+            {id:2, bill:'Gas',                amount:150, paidBy:'Self'},
+            {id:3, bill:'Chiropractor',       amount:108, paidBy:'Self'},
+            {id:4, bill:'Myvi 1.5H car loan', amount:553, paidBy:'Self'}
+          ],
+          expenses: [],
+          savings: _savingsRows
+        };
+        changed = true;
+      } else {
+        // Month exists — only set income if currently empty
+        var m = store.months[mk];
+        if(!m.income || m.income.length === 0){
+          m.income = INCOME_ROWS.map(function(r){ return Object.assign({},r); });
+          changed = true;
+        }
+      }
+    });
+    if(changed) ls_set(KEY, store);
+    localStorage.setItem('cel-jun-nov26-income-v1','1');
+  })();
+
   function save(){ ls_set(KEY, store); }
 
   // Bank balances are now derived from pots + monthly tracker; no manual storage.
@@ -4817,6 +4859,8 @@ function ls_setV(key, data, ver) {
         '</div>';
       }).join('');
     }
+    // Re-render assets panel whenever monthly tracker renders (e.g. new month added)
+    if(window._renderInsurance) window._renderInsurance();
   }
 
   window.setMaybankStart = function(v){
