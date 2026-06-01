@@ -4577,24 +4577,20 @@ function ls_setV(key, data, ver) {
     localStorage.setItem('cel-bills-clean-v1','1');
   })();
 
-  // One-shot: delete any auto-seeded Jun–Nov 2026 months (clean up duplicate cased keys)
+  // One-shot v2: delete auto-seeded Jun–Nov 2026 months + fix stale data pointer
   (function(){
-    if(localStorage.getItem('cel-jun-nov26-clean-v1')) return;
+    if(localStorage.getItem('cel-jun-nov26-clean-v2')) return;
     var TO_DELETE = ['jun 2026','Jul 2026','jul 2026','Aug 2026','aug 2026',
                      'Sep 2026','sep 2026','Oct 2026','oct 2026','Nov 2026','nov 2026','Jun 2026'];
-    var changed = false;
-    TO_DELETE.forEach(function(mk){
-      if(store.months[mk]){ delete store.months[mk]; changed = true; }
-    });
-    if(changed){
-      // Reset current to last remaining month
+    TO_DELETE.forEach(function(mk){ delete store.months[mk]; });
+    // If current was pointing at a deleted month, reset to last remaining
+    if(TO_DELETE.indexOf(store.current) > -1){
       var remaining = Object.keys(store.months);
-      if(remaining.length && TO_DELETE.indexOf(store.current) > -1){
-        store.current = remaining[remaining.length - 1];
-      }
-      ls_set(KEY, store);
+      store.current = remaining.length ? remaining[remaining.length - 1] : '';
     }
-    localStorage.setItem('cel-jun-nov26-clean-v1','1');
+    ls_set(KEY, store);
+    syncCurrent(); // refresh data pointer so May data shows immediately
+    localStorage.setItem('cel-jun-nov26-clean-v2','1');
   })();
 
   function save(){ ls_set(KEY, store); }
