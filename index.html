@@ -4144,7 +4144,8 @@ function ls_setV(key, data, ver) {
       return items.map(function(item,i){
         var ent = findEntry(item.t);
         var g = type==='show' ? genreOf(item.a) : 'book';
-        var bgStyle = ent&&ent.img ? 'background-image:url('+ent.img+');background-size:cover;background-position:center top;' : type==='show' ? 'background:'+showGradients[g]+';' : 'background:linear-gradient(135deg,#4A7A72,#6BA098);';
+        var coverImg = (ent&&ent.img) || item.img || '';
+        var bgStyle = coverImg ? 'background-image:url('+coverImg+');background-size:cover;background-position:center top;' : type==='show' ? 'background:'+showGradients[g]+';' : 'background:linear-gradient(135deg,#4A7A72,#6BA098);';
         var inList = ent ? (ent.status==='Done'?'✓ done':'♡ in list') : '';
         var click = ent ? 'onclick="window._markFromTrending('+ent.id+')"' : "onclick=\"window._addFromTrending('"+item.t.replace(/'/g,"\\'")+"','"+item.a.replace(/'/g,"\\'")+"','show'==='"+(type)+"'?'Show':'Book')\"";
         return '<div class="dt-carousel-item" '+click+'>' +
@@ -4415,7 +4416,8 @@ function ls_setV(key, data, ver) {
       {id:1, bill:'Facial',             amount: custom.facial||468, paidBy:'Self'},
       {id:2, bill:'Gas',                amount: custom.gas||150,    paidBy:'Self'},
       {id:3, bill:'Chiropractor',       amount: custom.chiro||108,  paidBy:'Self'},
-      {id:4, bill:'Myvi 1.5H car loan', amount: custom.myvi||553,   paidBy:'Self'}
+      {id:4, bill:'Myvi 1.5H car loan', amount: custom.myvi||553,   paidBy:'Self'},
+      {id:5, bill:'TNG Toll',           amount: custom.tng||50,     paidBy:'Self'}
     ];
   }
   var PAID_BY_OPTIONS = ['Self','Dad','Mom','Family','Other'];
@@ -4575,6 +4577,28 @@ function ls_setV(key, data, ver) {
     });
     if(patched) ls_set(KEY, store);
     localStorage.setItem('cel-bills-clean-v1','1');
+  })();
+
+  // One-shot: add TNG Toll RM50 to fixed bills for Jun 2026+ months
+  (function(){
+    if(localStorage.getItem('cel-bills-tng-v1')) return;
+    var MONTH_ORDER = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+    var patched = false;
+    Object.keys(store.months).forEach(function(mk){
+      var parts = mk.toLowerCase().split(' ');
+      var y = +parts[1]||0, m = MONTH_ORDER[parts[0]]||0;
+      if(y < 2026 || (y===2026 && m < 6)) return; // only Jun 2026+
+      var bills = store.months[mk].bills || [];
+      var hasTNG = bills.some(function(b){ return b.bill==='TNG Toll'; });
+      if(!hasTNG){
+        bills.push({id: bills.length ? Math.max.apply(null,bills.map(function(b){return b.id;}))+1 : 5,
+                    bill:'TNG Toll', amount:50, paidBy:'Self'});
+        store.months[mk].bills = bills;
+        patched = true;
+      }
+    });
+    if(patched) ls_set(KEY, store);
+    localStorage.setItem('cel-bills-tng-v1','1');
   })();
 
   // One-shot v2: delete auto-seeded Jun–Nov 2026 months + fix stale data pointer
