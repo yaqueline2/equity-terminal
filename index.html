@@ -5338,7 +5338,7 @@ function ls_setV(key, data, ver) {
     if(debtsRaw){try{var p=JSON.parse(debtsRaw); debts=(p&&p.d)?p.d:(Array.isArray(p)?p:[]);}catch(e){}}
     var assetsTotal = assets.reduce(function(s,a){return s+(+a.value||0);},0);
     var debtsTotal = debts.reduce(function(s,d){return s+(+d.balance||0);},0);
-    var netWorth = assetsTotal - debtsTotal;
+    var netWorth = assetsTotal + potsTotal - debtsTotal;
     var formatted = 'RM '+netWorth.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
     var savingsFormatted = 'RM '+potsTotal.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
     // Update net worth displays
@@ -5373,6 +5373,37 @@ function ls_setV(key, data, ver) {
     window._renderSavingsTable && window._renderSavingsTable();
     // Keep the Assets "Savings (X pots)" row in step
     window._syncAssetsSavingsRow && window._syncAssetsSavingsRow();
+    // Goal progress bars on Overview
+    (function(){
+      var el = document.getElementById('ov-goals-bars');
+      var sub = document.getElementById('ov-goals-subtitle');
+      if(!el) return;
+      var potsArr = (window._getPots && window._getPots()) || [];
+      var withGoal = potsArr.filter(function(p){ return +p.goal > 0; });
+      if(!withGoal.length){ el.innerHTML=''; return; }
+      var totalSaved = withGoal.reduce(function(s,p){return s+(+p.amount||0);},0);
+      var totalGoalG = withGoal.reduce(function(s,p){return s+(+p.goal||0);},0);
+      if(sub) sub.textContent = 'RM '+totalSaved.toLocaleString()+' of RM '+totalGoalG.toLocaleString();
+      var COLORS = ['#4A7A72','#C4A870','#3D5840','#7BA0A0','#9B7068','#8AAE5C','#B08560'];
+      el.innerHTML = withGoal.map(function(p,i){
+        var pct = Math.min(100, (+p.amount||0) / (+p.goal||1) * 100);
+        var clr = p.color ? p.color.replace(/,[\s\d.]+\)$/,',0.85)') : COLORS[i % COLORS.length];
+        var shortfall = Math.max(0, (+p.goal||0) - (+p.amount||0));
+        return '<div style="margin-bottom:10px;">'+
+          '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">'+
+            '<span style="font:500 10px var(--ui);color:var(--ink2);">'+p.name+'</span>'+
+            '<span style="font:600 10px var(--num);color:var(--ink);">RM '+Math.round(+p.amount||0).toLocaleString()+'<span style="font-weight:400;color:var(--ink4);"> / '+Math.round(+p.goal).toLocaleString()+'</span></span>'+
+          '</div>'+
+          '<div style="height:7px;border-radius:99px;background:rgba(42,61,44,0.07);overflow:hidden;">'+
+            '<div style="height:100%;width:'+pct.toFixed(1)+'%;background:'+clr+';border-radius:99px;transition:width 0.6s var(--spring);"></div>'+
+          '</div>'+
+          '<div style="display:flex;justify-content:space-between;margin-top:3px;">'+
+            '<span style="font:400 9px var(--ui);color:var(--ink4);">'+pct.toFixed(1)+'% complete</span>'+
+            (shortfall > 0 ? '<span style="font:400 9px var(--ui);color:var(--ink4);">RM '+Math.round(shortfall).toLocaleString()+' to go</span>' : '<span style="font:600 9px var(--ui);color:var(--teal);">✓ reached</span>')+
+          '</div>'+
+        '</div>';
+      }).join('');
+    })();
 
     /* ─── Dynamic overview metric chips ─── */
     // Cash / Equity ratio — use pots vs portfolio from stock IIFE
@@ -13047,6 +13078,101 @@ window._initGlobe = function() {
 })();
 
 
+// ── Car Maintenance Log ──────────────────────────────────────────────────
+(function(){
+  var KEY = 'cel-car-log-v1';
+  var CAT_OPTS = ['Service / Oil Change','Tyre','Battery','Brake','Car Wash','Fuel','Toll / Parking','Insurance','Road Tax','Repair','Other'];
+  function ls_get(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){return d;} }
+  function ls_set(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+  var log = ls_get(KEY, []);
+  function save(){ ls_set(KEY, log); }
+  function nid(){ return log.length ? Math.max.apply(null, log.map(function(r){return r.id;})) + 1 : 1; }
+
+  function renderReminder(){
+    var el = document.getElementById('car-reminder-strip');
+    if(!el) return;
+    var services = log.filter(function(r){ return r.cat==='Service / Oil Change' && r.nextDue; });
+    if(!services.length){
+      el.innerHTML = '<div class="gc ai" style="padding:12px 16px;display:flex;align-items:center;gap:10px;"><span style="font:400 10px var(--ui);color:var(--ink4);">No service reminder set. Log a service entry with a next-due date to see your reminder here.</span></div>';
+      return;
+    }
+    var last = services.sort(function(a,b){ return new Date(b.date)-new Date(a.date); })[0];
+    var dueMs = new Date(last.nextDue) - new Date();
+    var dueDays = Math.ceil(dueMs / 86400000);
+    var urgency = dueDays < 0 ? 'dn' : dueDays < 30 ? 'warn' : 'up';
+    var urgencyLabel = dueDays < 0 ? 'OVERDUE' : dueDays < 30 ? 'DUE SOON' : 'OK';
+    var urgencyColor = dueDays < 0 ? 'var(--dn)' : dueDays < 30 ? '#C4A870' : 'var(--teal)';
+    el.innerHTML = '<div class="gc ai" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">'+
+      '<div>'+
+        '<div style="font:600 11px var(--ui);color:var(--ink);margin-bottom:2px;">Next Service Due</div>'+
+        '<div style="font:400 9px var(--ui);color:var(--ink4);">Based on last oil change: '+last.desc+'</div>'+
+      '</div>'+
+      '<div style="text-align:right;">'+
+        '<div style="font:700 14px var(--num);color:'+urgencyColor+';">'+last.nextDue+'</div>'+
+        '<div style="font:600 8px var(--ui);letter-spacing:0.1em;color:'+urgencyColor+';margin-top:2px;">'+urgencyLabel+(dueDays>=0?' · '+dueDays+'d away':'')+'</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  function renderLog(){
+    var el = document.getElementById('car-log-list');
+    var ct = document.getElementById('car-log-count');
+    if(!el) return;
+    if(ct) ct.textContent = log.length + ' entries · RM ' + log.reduce(function(s,r){return s+(+r.amount||0);},0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + ' total';
+    if(!log.length){ el.innerHTML='<div style="font:400 10px var(--ui);color:var(--ink4);padding:12px 0;">No entries yet. Tap + Log Entry to start.</div>'; return; }
+    var sorted = log.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+    el.innerHTML = '<table class="tbl" style="width:100%;"><thead><tr>'+
+      '<th>Date</th><th>Category</th><th>Description</th><th class="r">Cost (RM)</th><th>Next Due</th><th></th>'+
+      '</tr></thead><tbody>'+
+      sorted.map(function(r){
+        return '<tr>'+
+          '<td style="white-space:nowrap;">'+r.date+'</td>'+
+          '<td><span style="font:500 9px var(--ui);padding:2px 8px;border-radius:99px;background:rgba(74,122,114,0.12);color:var(--teal);">'+r.cat+'</span></td>'+
+          '<td style="color:var(--ink2);">'+r.desc+'</td>'+
+          '<td class="r" style="font:600 11px var(--num);">'+(+r.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>'+
+          '<td style="font:400 9px var(--ui);color:var(--ink4);">'+(r.nextDue||'—')+'</td>'+
+          '<td><button onclick="window._carDel('+r.id+')" style="background:none;border:none;cursor:pointer;color:var(--ink4);font-size:11px;padding:2px 4px;">✕</button></td>'+
+        '</tr>';
+      }).join('')+
+      '</tbody></table>';
+    renderReminder();
+  }
+
+  window._carRender = function(){ renderLog(); renderReminder(); };
+
+  window._carAddEntry = function(){
+    var today = new Date().toISOString().slice(0,10);
+    openModal({
+      title: 'Log Car Entry',
+      fields:[
+        {key:'date',  label:'Date',        type:'date', default:today},
+        {key:'cat',   label:'Category',    type:'select', options: CAT_OPTS, default: CAT_OPTS[0]},
+        {key:'desc',  label:'Description', placeholder:'e.g. Oil change 5000km · Proton SC'},
+        {key:'amount',label:'Cost (RM)',   type:'number', placeholder:'0.00'},
+        {key:'km',    label:'Mileage (km)',type:'number', placeholder:'optional'},
+        {key:'nextDue',label:'Next Due Date (YYYY-MM-DD)', placeholder:'optional, for service reminders'}
+      ],
+      onSave: function(d){
+        log.push({id:nid(), date:_isoToDisp ? _isoToDisp(d.date) : d.date, cat:d.cat||CAT_OPTS[0], desc:d.desc||'', amount:+d.amount||0, km:d.km||'', nextDue:d.nextDue||''});
+        save(); renderLog();
+      }
+    });
+  };
+
+  window._carDel = function(id){
+    if(!confirm('Delete this entry?')) return;
+    log = log.filter(function(r){return r.id!==id;});
+    save(); renderLog();
+  };
+
+  // Render when panel opens
+  var _origFp4 = window.fp;
+  window.fp = function(id, btn){
+    try{_origFp4(id, btn);}catch(e){}
+    if(id === 'car-maint') setTimeout(window._carRender, 60);
+  };
+})();
+
 // Trajectory toggle
 window._trjSet=function(mode,btn){try{
   var btns=document.querySelectorAll('.tf-btn');
@@ -13077,6 +13203,7 @@ window._trjSet=function(mode,btn){try{
 <button class="sb-i" onclick="fp('bill-calendar',this)"><span class="sb-ic">◈</span><span class="sb-l">Bill Calendar</span></button>
 <button class="sb-i" onclick="fp('abundance',this)"><span class="sb-ic">◈</span><span class="sb-l">Abundance</span></button>
 <button class="sb-i" onclick="fp('property',this)"><span class="sb-ic">◎</span><span class="sb-l">Property</span></button>
+<button class="sb-i" onclick="fp('car-maint',this)"><span class="sb-ic">◈</span><span class="sb-l">Car Maintenance</span></button>
 </nav></aside>
 <main class="mn"><div class="fpanel" id="fp-overview">
 
@@ -13127,6 +13254,15 @@ window._trjSet=function(mode,btn){try{
         <span style="font:400 9px var(--ui);color:var(--ink4);" id="pots-subtitle"></span>
       </div>
       <div id="pots-list"></div>
+    </div>
+
+    <!-- SAVINGS GOAL PROGRESS BARS -->
+    <div class="gc ai" style="padding:16px 18px;margin-bottom:10px;" id="ov-goals-section">
+      <div class="fx-csb mb-10">
+        <div class="ed-ey" style="margin:0;">Savings Goals</div>
+        <span style="font:400 9px var(--ui);color:var(--ink4);" id="ov-goals-subtitle"></span>
+      </div>
+      <div id="ov-goals-bars"></div>
     </div>
 
     <!-- METRIC STRIP -->
@@ -14511,6 +14647,31 @@ window._trjSet=function(mode,btn){
 </div>
 </div>
 <div class="fpanel" id="fp-property"></div>
+
+<!-- ══════════════════════════════════════════════
+     CAR MAINTENANCE LOG
+══════════════════════════════════════════════ -->
+<div class="fpanel" id="fp-car-maint">
+<div class="fp-h">
+  <div>
+    <h2 class="fp-t">Car Maintenance</h2>
+    <div class="fp-st">Perodua Myvi 1.5H (VQB9386) · 2025 · service history &amp; reminders</div>
+  </div>
+  <button class="btn btn-p" onclick="window._carAddEntry()">+ Log Entry</button>
+</div>
+
+<!-- NEXT SERVICE REMINDER STRIP -->
+<div id="car-reminder-strip" style="margin-bottom:14px;"></div>
+
+<!-- LOG TABLE -->
+<div class="gc ai mt-fixed-card">
+  <div class="fx-csb mb-10">
+    <div class="ed-ey" style="margin:0;">Service History</div>
+    <span style="font:400 9px var(--ui);color:var(--ink4);" id="car-log-count"></span>
+  </div>
+  <div id="car-log-list"></div>
+</div>
+</div>
 
 <!-- ══════════════════════════════════════════════
      GOAL-BASED MONEY BUCKETS
