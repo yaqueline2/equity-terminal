@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>cel's headspace</title>
+<meta name="theme-color" content="#F4F0EB"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="headspace"/>
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
@@ -2771,9 +2778,71 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .qm-link{display:inline-block;margin-top:16px;font-size:12px;color:var(--qa,var(--blush));text-decoration:none;}
 .qm-link:hover{text-decoration:underline;}
 
-/* monthly — receipt export bar */
-.mt-receipt-bar{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px;}
+/* monthly — selector row + receipt export bar */
+.month-row{display:flex;align-items:center;gap:14px;}
+.month-row .month-selector{flex:1 1 0;min-width:0;padding-bottom:2px;}
+.month-row .mt-receipt-bar{margin:0;flex:0 0 auto;}
+.mt-receipt-bar{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px;flex-shrink:0;}
 .mt-receipt-bar .mini-btn{font-family:var(--font);}
+
+/* ══ FLASHCARDS (korean blush · japanese sage) ══ */
+.fc-decks{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.fc-deck{display:flex;align-items:center;gap:11px;padding:11px 12px;background:rgba(255,255,255,0.5);border:1px solid rgba(60,52,44,0.09);border-radius:11px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;text-align:left;}
+.fc-deck:hover{transform:translateY(-2px);box-shadow:0 8px 18px -8px rgba(60,52,44,0.2);border-color:var(--fc-accent,var(--blush));}
+.fc-deck-body{flex:1;min-width:0;}
+.fc-deck-name{font-family:var(--font);font-size:13.5px;font-weight:500;color:var(--t1);line-height:1.25;}
+.fc-deck-name .cn{font-weight:400;color:var(--t4);font-size:11.5px;margin-left:5px;}
+.fc-deck-sub{font-family:var(--font);font-size:11px;color:var(--t4);margin-top:3px;}
+.fc-deck-counts{display:flex;gap:5px;flex-shrink:0;align-items:center;}
+.fc-pill{font-family:var(--font);font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;line-height:1.5;font-variant-numeric:tabular-nums;}
+.fc-pill.due{color:#9a5560;background:var(--blush-bg);}
+.fc-pill.new{color:#5f7d6a;background:var(--sage-bg);}
+.fc-pill.zero{color:var(--t5);background:rgba(60,52,44,0.05);}
+.fc-deck-arrow{color:var(--t5);font-size:15px;flex-shrink:0;}
+[data-sub="japanese"] .fc-deck:hover{border-color:var(--sage);}
+.fc-foot{font-family:var(--font);font-size:10.5px;color:var(--t5);margin-top:10px;display:flex;justify-content:space-between;align-items:center;}
+.fc-resetlink{color:var(--t5);text-decoration:none;cursor:pointer;}
+.fc-resetlink:hover{color:var(--blush);text-decoration:underline;}
+
+/* review overlay */
+.fc-ov{position:fixed;inset:0;z-index:400;background:rgba(244,240,235,0.97);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;padding:18px;box-sizing:border-box;}
+.fc-ov[hidden]{display:none;}
+.fc-ov{--fc-accent:var(--blush);}
+.fc-ov[data-lang="jp"]{--fc-accent:var(--sage);}
+.fc-top{width:100%;max-width:620px;display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.fc-x{background:none;border:none;font-size:24px;line-height:1;color:var(--t4);cursor:pointer;padding:4px 8px;border-radius:8px;}
+.fc-x:hover{color:var(--t1);background:rgba(60,52,44,0.06);}
+.fc-progress{flex:1;height:5px;background:rgba(60,52,44,0.08);border-radius:3px;overflow:hidden;}
+.fc-progress-fill{height:100%;background:var(--fc-accent);border-radius:3px;transition:width .25s;}
+.fc-counter{font-family:var(--font);font-size:11.5px;color:var(--t4);font-variant-numeric:tabular-nums;min-width:78px;text-align:right;}
+.fc-stage{flex:1;width:100%;max-width:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+.fc-card{width:100%;background:rgba(255,255,255,0.7);border:1px solid rgba(60,52,44,0.1);border-radius:20px;box-shadow:0 14px 40px -18px rgba(60,52,44,0.28);padding:40px 30px;min-height:46vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;position:relative;}
+.fc-eyebrow{font-family:var(--font);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--t5);position:absolute;top:18px;left:0;right:0;}
+.fc-term{font-size:46px;line-height:1.2;color:var(--t1);font-weight:400;word-break:break-word;}
+[data-sub] .fc-term,.fc-term{font-family:'DM Sans','Hiragino Sans','Noto Sans CJK','Apple SD Gothic Neo',sans-serif;}
+.fc-reading{font-family:var(--font);font-size:20px;color:var(--t3);margin-top:12px;}
+.fc-tap-hint{font-family:var(--font);font-size:12px;color:var(--t5);position:absolute;bottom:18px;left:0;right:0;}
+.fc-divider{width:46px;height:2px;background:var(--fc-accent);opacity:.5;margin:22px 0 20px;border-radius:2px;}
+.fc-back{font-family:var(--font);font-size:26px;color:var(--t1);line-height:1.4;font-weight:400;}
+.fc-pos{display:inline-block;font-family:var(--font);font-size:11px;color:var(--t4);background:rgba(60,52,44,0.05);padding:2px 9px;border-radius:20px;margin-top:14px;}
+.fc-ex{font-family:var(--font);font-size:15px;color:var(--t2);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid rgba(60,52,44,0.09);max-width:480px;}
+.fc-ex-tr{font-family:var(--font);font-size:13px;color:var(--t4);line-height:1.5;margin-top:6px;}
+.fc-note{font-family:var(--font);font-size:12.5px;color:var(--t4);line-height:1.5;margin-top:12px;font-style:normal;}
+.fc-actions{width:100%;max-width:620px;display:flex;gap:8px;margin-top:16px;}
+.fc-reveal-btn{flex:1;font-family:var(--font);font-size:15px;font-weight:500;padding:15px;border:none;border-radius:13px;background:var(--fc-accent);color:#fff;cursor:pointer;box-shadow:0 6px 16px -6px var(--fc-accent);}
+.fc-rate{flex:1;font-family:var(--font);font-size:13px;font-weight:500;padding:13px 6px;border:1px solid rgba(60,52,44,0.12);border-radius:13px;background:rgba(255,255,255,0.66);color:var(--t1);cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center;transition:transform .1s,background .12s;}
+.fc-rate:hover{transform:translateY(-2px);}
+.fc-rate small{font-size:10px;color:var(--t4);font-weight:400;font-variant-numeric:tabular-nums;}
+.fc-rate[data-q="0"]{color:#b06a6a;}.fc-rate[data-q="0"]:hover{background:rgba(176,106,106,0.09);}
+.fc-rate[data-q="3"]{color:#a98b4a;}.fc-rate[data-q="3"]:hover{background:rgba(189,163,106,0.1);}
+.fc-rate[data-q="4"]{color:#5f7d6a;}.fc-rate[data-q="4"]:hover{background:rgba(126,168,142,0.1);}
+.fc-rate[data-q="5"]{color:#6b7fa3;}.fc-rate[data-q="5"]:hover{background:rgba(107,127,163,0.1);}
+.fc-done{flex:1;width:100%;max-width:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;}
+.fc-done-glyph{font-size:50px;}
+.fc-done-t{font-family:var(--font-hand);font-size:30px;color:var(--t1);}
+.fc-done-s{font-family:var(--font);font-size:13px;color:var(--t4);}
+.fc-done-btn{font-family:var(--font);font-size:13px;font-weight:500;padding:11px 24px;border:1px solid rgba(60,52,44,0.14);border-radius:11px;background:rgba(255,255,255,0.7);color:var(--t1);cursor:pointer;margin-top:10px;}
+@media(max-width:560px){.fc-term{font-size:38px;}.fc-back{font-size:22px;}.fc-card{padding:32px 20px;min-height:44vh;}.fc-rate{font-size:12px;padding:12px 4px;}}
 </style>
 
 <!-- ═══ TOP NAV ═══ -->
@@ -3212,6 +3281,10 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
     <!-- 2-COLUMN MASONRY -->
     <div class="dash-flow">
+      <div class="flow-card">
+        <div class="re-eyebrow">flashcards <span class="cn">单词卡</span></div>
+        <div class="fc-decks" id="ko-flash"></div>
+      </div>
       <div class="flow-card tint-blush">
         <div class="re-eyebrow"><span id="ko-cal-title">打卡</span></div>
         <div class="mv-cal-wrap"><div class="mv-cal" id="ko-cal"></div></div>
@@ -3255,6 +3328,10 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
     <!-- 2-COLUMN MASONRY -->
     <div class="dash-flow">
+      <div class="flow-card">
+        <div class="re-eyebrow">flashcards <span class="cn">単語カード</span></div>
+        <div class="fc-decks" id="jp-flash"></div>
+      </div>
       <div class="flow-card tint-sage">
         <div class="re-eyebrow"><span id="jp-cal-title">打卡</span></div>
         <div class="mv-cal-wrap"><div class="mv-cal" id="jp-cal"></div></div>
@@ -3331,11 +3408,13 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   <!-- ░░ MONTHLY subview ░░ -->
   <div class="subview" data-sub="monthly" hidden>
 
-    <!-- SECTION 0 — month selector -->
-    <div class="month-selector" id="month-sel"></div>
-    <div class="mt-receipt-bar">
-      <button class="mini-btn" id="mt-receipt-month">🧾 save this month as PDF</button>
-      <button class="mini-btn" id="mt-receipt-year">🧾 save year total as PDF</button>
+    <!-- SECTION 0 — month selector + export -->
+    <div class="month-row">
+      <div class="month-selector" id="month-sel"></div>
+      <div class="mt-receipt-bar">
+        <button class="mini-btn" id="mt-receipt-month">🧾 month PDF</button>
+        <button class="mini-btn" id="mt-receipt-year">🧾 year PDF</button>
+      </div>
     </div>
 
     <!-- SECTION 1 — month at a glance, a real hero stat band -->
@@ -3613,6 +3692,19 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 </div>
 </div>
 
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+
+<!-- ░░ FLASHCARD REVIEW OVERLAY ░░ -->
+<div class="fc-ov" id="fc-ov" hidden data-lang="ko">
+  <div class="fc-top">
+    <button class="fc-x" id="fc-close" aria-label="close">×</button>
+    <div class="fc-progress"><div class="fc-progress-fill" id="fc-progress"></div></div>
+    <div class="fc-counter" id="fc-counter"></div>
+  </div>
+  <div class="fc-stage" id="fc-stage"></div>
+  <div class="fc-actions" id="fc-actions"></div>
+</div>
+
 <script>
 // ═══ THRESHOLD ═══
 (function(){
@@ -3743,6 +3835,8 @@ var DOOD={'water':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZ
 function store(key,val){try{localStorage.setItem('cel-'+key,JSON.stringify(val));}catch(e){}}
 function load(key,def){try{var v=localStorage.getItem('cel-'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+var MO_ABBR=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function curMonthStr(){var d=new Date();return MO_ABBR[d.getMonth()]+' '+d.getFullYear();}
 
 // ─── TODAY TASKS ───
 var DEF_TODAY=[
@@ -3894,7 +3988,7 @@ function wireAdd(){
         if(kind==='mt-bill'&&fields.bill){mtAdd('bills',{id:muid(),bill:fields.bill,amount:parseFloat(fields.amount)||0,paidBy:fields.paidBy||'Self'});}
         if(kind==='mt-expense'&&(fields.desc||fields.amount)){mtAdd('expenses',{id:muid(),date:fields.date||'',desc:fields.desc||'',cat:fields.cat||'',amount:parseFloat(fields.amount)||0,nw:''});}
         if(kind==='mt-saving'&&fields.pot){mtAdd('savings',{id:muid(),pot:fields.pot,amount:parseFloat(fields.amount)||0});}
-        if(kind==='mt-sub'&&fields.service){var d=getSubsV2();d.push({id:muid(),service:fields.service,category:'',cost:parseFloat(fields.cost)||0,paidBy:fields.paidBy||'Self',renewalDay:parseInt(fields.renewalDay)||1});store('subs-v2',d);renderMonthSubs();}
+        if(kind==='mt-sub'&&fields.service){var d=getSubsV2();d.push({id:muid(),service:fields.service,category:'',cost:parseFloat(fields.cost)||0,paidBy:fields.paidBy||'Self',renewalDay:parseInt(fields.renewalDay)||1});store('subs-v3',d);renderMonthSubs();}
         if(kind==='mt-insurance'&&fields.name){var d=getInsurance();d.push({id:muid(),name:fields.name,type:fields.type||'Car',annual:parseFloat(fields.annual)||0,monthly:0,renewal:fields.renewal||'',coverage:'',policyNo:'',notes:''});store('insurance-v4',d);renderMonthInsurance();}
         if(kind==='mt-card'&&fields.name){var d=getCards();d.push({id:muid(),name:fields.name,bank:fields.bank||'',cardType:fields.cardType||'Visa',limit:parseFloat(fields.limit)||0,statementDay:'',paymentDay:''});store('credit-cards',d);renderMonthCards();}
         if(kind==='mt-goal'&&fields.name){var d=getGoalBuckets();d.push({id:muid(),name:fields.name,icon:fields.icon||'•',target:parseFloat(fields.target)||0,saved:0,monthly:parseFloat(fields.monthly)||0,targetDate:fields.targetDate||'',color:'rgba(201,148,156,0.75)'});store('goal-buckets-v3',d);renderMonthGoals();}
@@ -5511,11 +5605,10 @@ function debtRow(d){
     '<div class="debt-bar"><div class="debt-fill" style="width:'+(100-pct).toFixed(1)+'%"></div></div></div>';
 }
 function getNWHistory(){
-  var h=load('networth-history-v2',null);
-  if(!h){h=[{month:'Jan 2026',value:46500},{month:'Feb 2026',value:47200},{month:'Mar 2026',value:48100},{month:'Apr 2026',value:48900},{month:'May 2026',value:49400}];store('networth-history-v2',h);}
-  var cur='Jun 2026',v=Math.round(finNetWorth());
-  if(!h.length||h[h.length-1].month!==cur)h.push({month:cur,value:v});else h[h.length-1].value=v;
-  store('networth-history-v2',h);return h;
+  // Savings-pots trajectory across the year, derived from real monthly data:
+  // earliest month = opening balance (pre-existing pots), each later month adds its transfers.
+  var s=getMonthlyStore(),keys=mtMonthsSorted(),run=0;
+  return keys.map(function(k){var m=s.months[k]||{};run+=mtSumAmt(m.savings);return {month:k,value:run};});
 }
 function renderMiniSpark(){
   var el=document.getElementById('fin-mini-spark');if(!el)return;var h=getNWHistory();
@@ -5528,7 +5621,7 @@ function renderMiniSpark(){
 function renderYearGlance(){
   setT('fin-yag-yr',new Date().getFullYear());
   var el=document.getElementById('fin-yag');if(!el)return;var h=getNWHistory();
-  var curMonth='Jun 2026';
+  var curMonth=curMonthStr();
   el.innerHTML=h.map(function(x,i){
     var mo=x.month.split(' ')[0],delta=i>0?x.value-h[i-1].value:null;
     var dcls=delta===null?'':delta>=0?'pos':'neg',dtxt=delta===null?'':(delta>=0?'+':'−')+Math.abs(Math.round(delta/100)/10)+'k';
@@ -6292,6 +6385,18 @@ window.makeEditable=makeEditable;
 function muid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 var MO_NAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function monthOrder(m){var p=(m||'').split(' ');return (+p[1]||0)*12+MO_NAMES.indexOf(p[0]);}
+// ── finance flow helpers (earliest month's savings = pre-existing pot balances, not flows) ──
+function mtMonthsSorted(){var s=getMonthlyStore();return Object.keys(s.months).sort(function(a,b){return monthOrder(a)-monthOrder(b);});}
+function mtSumAmt(arr){return (arr||[]).reduce(function(a,x){return a+(+x.amount||0);},0);}
+function mtSelfBills(bills){return (bills||[]).reduce(function(a,b){return a+((b.paidBy==='Self'||!b.paidBy)?(+b.amount||0):0);},0);}
+function computeMaybank(){
+  var s=getMonthlyStore(),keys=mtMonthsSorted(),mb=(+load('maybank-start',0)||0),earliest=keys[0];
+  keys.forEach(function(k){var m=s.months[k];if(!m)return;
+    mb+=mtSumAmt(m.income)-mtSelfBills(m.bills)-mtSumAmt(m.expenses);
+    if(k!==earliest)mb-=mtSumAmt(m.savings);
+  });
+  return mb;
+}
 function nextMonthStr(m){var p=(m||'Dec 2025').split(' ');var mi=MO_NAMES.indexOf(p[0]),y=+p[1];mi++;if(mi>11){mi=0;y++;}return MO_NAMES[mi]+' '+y;}
 
 var BILL_TEMPLATE=[
@@ -6367,9 +6472,10 @@ function seedMonthly(){
       savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:100},{id:3,pot:'MooMoo Investments',amount:1200},{id:4,pot:'Versa Global-I',amount:500},{id:5,pot:'Versa Gold',amount:100},{id:6,pot:'Versa Cash Bonds',amount:0},{id:7,pot:'Home Deposit (RYT)',amount:200}]
     }
   };
-  return {months:months,current:'Jun 2026'};
+  var cur=curMonthStr(),mk=Object.keys(months);
+  return {months:months,current:months[cur]?cur:mk[mk.length-1]};
 }
-function getMonthlyStore(){var s=load('monthly-v9',null);if(!s||!s.months){s=seedMonthly();store('monthly-v8',s);}return s;}
+function getMonthlyStore(){var s=load('monthly-v9',null);if(!s||!s.months){s=seedMonthly();store('monthly-v9',s);}return s;}
 function saveMonthlyStore(s){store('monthly-v9',s);}
 function curMonthData(){var s=getMonthlyStore();if(!s.current||!s.months[s.current])return {income:[],bills:[],expenses:[],savings:[]};return s.months[s.current];}
 function mtAdd(arrKey,obj){var s=getMonthlyStore();if(!s.current)return;if(!s.months[s.current])s.months[s.current]={income:[],bills:[],expenses:[],savings:[]};if(!s.months[s.current][arrKey])s.months[s.current][arrKey]=[];s.months[s.current][arrKey].push(obj);saveMonthlyStore(s);renderMonthlyFull();}
@@ -6396,7 +6502,7 @@ function renderMonthSelector(){
 function createNewMonth(){
   var s=getMonthlyStore();
   var keys=Object.keys(s.months).sort(function(a,b){return monthOrder(a)-monthOrder(b);});
-  var nm=nextMonthStr(keys[keys.length-1]||'Dec 2025');
+  var nm=nextMonthStr(keys[keys.length-1]||curMonthStr());
   if(!s.months[nm])s.months[nm]={income:[],bills:BILL_TEMPLATE.map(function(b){return {id:muid(),bill:b.bill,amount:b.amount,paidBy:b.paidBy};}),expenses:[],savings:[]};
   s.current=nm;saveMonthlyStore(s);renderMonthlyFull();
 }
@@ -6408,14 +6514,18 @@ function renderMonthGlance(){
   var exp=(d.expenses||[]).reduce(function(a,x){return a+(+x.amount||0);},0);
   var saved=(d.savings||[]).reduce(function(a,x){return a+(+x.amount||0);},0);
   var net=inc-billsSelf-exp;
+  var isEarliest=(s.current===mtMonthsSorted()[0]);
   setT('mag-month',(s.current||'').toLowerCase());
   setT('mag-net',(net>=0?'+ RM ':'− RM ')+Math.abs(Math.round(net)).toLocaleString());
   var g=document.getElementById('mag-grid');if(!g)return;
+  var savedCard=isEarliest
+    ? ['opening balance','RM '+Math.round(saved).toLocaleString(),'',(d.savings||[]).length+' pots · starting position']
+    : ['saved','RM '+Math.round(saved).toLocaleString(),'green',(d.savings||[]).length+' transfers'];
   g.innerHTML=[
     ['income','RM '+Math.round(inc).toLocaleString(),'green',(d.income||[]).length+' sources'],
     ['bills you pay','RM '+Math.round(billsSelf).toLocaleString(),'',(billsOther>0?'RM '+Math.round(billsOther).toLocaleString()+' paid by family':'all self-paid')],
     ['expenses','RM '+Math.round(exp).toLocaleString(),'rose',(d.expenses||[]).length+' logged'],
-    ['saved','RM '+Math.round(saved).toLocaleString(),'green',(d.savings||[]).length+' transfers']
+    savedCard
   ].map(function(r){return '<div class="mag-stat"><div class="mag-stat-label">'+r[0]+'</div><div class="mag-stat-val '+r[2]+'">'+r[1]+'</div><div class="mag-stat-sub">'+r[3]+'</div></div>';}).join('');
 }
 function renderMonthIncome(){
@@ -6448,9 +6558,9 @@ function renderMonthSubs(){
   }).join('');
   el.innerHTML='<table class="mt-table"><thead><tr><th>service</th><th class="r">cost/mo</th><th class="r">day</th><th>paid by</th><th></th></tr></thead><tbody>'+(rows||'<tr><td colspan="5" class="soft-empty" style="padding:12px 6px;">no subscriptions yet.</td></tr>')+'</tbody><tfoot><tr class="mt-foot"><td>total</td><td class="r">RM '+total.toFixed(2)+'</td><td colspan="3"></td></tr></tfoot></table>';
   setT('mt-subs-total','RM '+total.toFixed(2)+'/mo · RM '+you.toFixed(2)+' you · RM '+par.toFixed(2)+' parents');
-  el.querySelectorAll('[data-subdel]').forEach(function(b){b.onclick=function(){var id=this.dataset.subdel;store('subs-v2',getSubsV2().filter(function(x){return String(x.id)!==id;}));renderMonthSubs();};});
-  el.querySelectorAll('[data-sed]').forEach(function(c){var p=c.dataset.sed.split('|');var it=getSubsV2().filter(function(x){return String(x.id)===p[0];})[0];if(!it)return;makeEditable(c,it[p[1]],function(v){var arr=getSubsV2();arr.forEach(function(x){if(String(x.id)===p[0])x[p[1]]=p[2]==='num'?(parseFloat(String(v).replace(/,/g,''))||0):v;});store('subs-v2',arr);renderMonthSubs();});});
-  el.querySelectorAll('[data-ssel]').forEach(function(s){s.onchange=function(){var p=this.dataset.ssel.split('|'),arr=getSubsV2();arr.forEach(function(x){if(String(x.id)===p[0])x[p[1]]=this.value;}.bind(this));store('subs-v2',arr);renderMonthSubs();};});
+  el.querySelectorAll('[data-subdel]').forEach(function(b){b.onclick=function(){var id=this.dataset.subdel;store('subs-v3',getSubsV2().filter(function(x){return String(x.id)!==id;}));renderMonthSubs();};});
+  el.querySelectorAll('[data-sed]').forEach(function(c){var p=c.dataset.sed.split('|');var it=getSubsV2().filter(function(x){return String(x.id)===p[0];})[0];if(!it)return;makeEditable(c,it[p[1]],function(v){var arr=getSubsV2();arr.forEach(function(x){if(String(x.id)===p[0])x[p[1]]=p[2]==='num'?(parseFloat(String(v).replace(/,/g,''))||0):v;});store('subs-v3',arr);renderMonthSubs();});});
+  el.querySelectorAll('[data-ssel]').forEach(function(s){s.onchange=function(){var p=this.dataset.ssel.split('|'),arr=getSubsV2();arr.forEach(function(x){if(String(x.id)===p[0])x[p[1]]=this.value;}.bind(this));store('subs-v3',arr);renderMonthSubs();};});
 }
 var CAT_COLORS={groceries:'#C9949C',restaurants:'#C9949C',hangouts:'var(--sage)',"online shopping":'#B0A0C8',subscriptions:'#C9949C',travel:'#9FB4C2',fuel:'#9E9A92',entertainment:'#C9949C',clothing:'#B0A0C8',"personal care":'#C9949C',healthcare:'#C9949C',work:'#9E9A92',miscellaneous:'#C5C0B8'};
 function renderMonthExpenses(){
@@ -6493,11 +6603,11 @@ function renderMonthSavings(){
 function renderMonthBanks(){
   var el=document.getElementById('mt-banks');if(!el)return;
   var byBank={};POTS.forEach(function(p){byBank[p.bank]=(byBank[p.bank]||0)+p.amount;});
-  var maybank=load('maybank-balance',0);
+  var maybank=computeMaybank();  // auto: start bal + Σ(income − self-bills − expenses) − Σ(transfers, excl. earliest month)
   var rows=[['Maybank',maybank,true],['Versa',byBank['Versa']||0,false],['MooMoo',byBank['MooMoo']||0,false],['RYT Bank',byBank['RYT Savings']||0,false]];
-  el.innerHTML=rows.map(function(r){return '<div class="bank-row'+(r[2]?' bank-editable':'')+'"'+(r[2]?' data-maybank="1" title="click to edit"':'')+'><span class="bank-n">'+r[0]+(r[2]?' ✎':'')+'</span><span class="bank-v">RM '+Math.round(r[1]).toLocaleString()+'</span></div>';}).join('');
+  el.innerHTML=rows.map(function(r){return '<div class="bank-row'+(r[2]?' bank-editable':'')+'"'+(r[2]?' data-maybank="1" title="auto-computed · click to set starting balance"':'')+'><span class="bank-n">'+r[0]+(r[2]?' ✎':'')+'</span><span class="bank-v">RM '+Math.round(r[1]).toLocaleString()+'</span></div>';}).join('');
   var mb=el.querySelector('[data-maybank]');
-  if(mb)mb.onclick=function(){var v=prompt('Maybank balance (RM):',maybank);if(v!==null&&v!==''&&!isNaN(+v)){store('maybank-balance',+v);renderMonthBanks();}};
+  if(mb)mb.onclick=function(){var cur=+load('maybank-start',0)||0;var v=prompt('Maybank STARTING balance (RM)\n\nYour checking balance before the first tracked month. The displayed balance auto-computes from income − self-paid bills − expenses − savings transfers.',cur);if(v!==null&&v!==''&&!isNaN(+v)){store('maybank-start',+v);renderMonthBanks();}};
 }
 function renderMonthInsurance(){
   var el=document.getElementById('mt-insurance');if(!el)return;var ins=getInsurance();
@@ -6732,6 +6842,200 @@ function renderTextbooks(key,containerId){
   el.querySelectorAll('[data-tbdel]').forEach(function(b){b.onclick=function(){var id=this.dataset.tbdel;store(key,load(key,[]).filter(function(x){return String(x.id)!==id;}));renderTextbooks(key,containerId);};});
 }
 function bindCollapsibles(){document.querySelectorAll('.collapsible').forEach(function(h){if(h.dataset.b)return;h.dataset.b='1';var tgt=document.getElementById(h.dataset.coll);if(tgt&&!h.dataset.init){h.dataset.init='1';}h.onclick=function(){var t=document.getElementById(this.dataset.coll);if(t)t.style.display=t.style.display==='none'?'':'none';this.classList.toggle('closed');};});}
+// ═══ FLASHCARDS — SM-2 spaced repetition, decks loaded on demand ═══
+var FC_DECKS={
+  ko:[
+    {id:'ko-grammar',name:'Grammar Sentences',cn:'语法句子',file:'decks/korean-grammar.json',count:2412,sub:'Evita · sentences'},
+    {id:'ko-cheat',name:'Grammar Cheat Sheet',cn:'语法速记',file:'decks/korean-cheatsheet.json',count:240,sub:'quick grammar'}
+  ],
+  jp:[
+    {id:'jp-core',name:'Core 2000',cn:'核心2000',file:'decks/japanese-core2000.json',count:2007,sub:'frequent words · EN'},
+    {id:'jp-egg',name:'JLPT N1–N5',cn:'能力考',file:'decks/japanese-eggrolls-jlpt.json',count:10622,sub:'egg_rolls · 中文释义'}
+  ]
+};
+var FC_NEW_PER_DAY=20;
+var fcSession=null;
+function fcToday(){return Math.floor(Date.now()/86400000);}
+function fcState(id){return load('srs-'+id,{});}
+function fcSaveState(id,st){store('srs-'+id,st);}
+function fcShuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fcDeckById(lang,id){return FC_DECKS[lang].filter(function(d){return d.id===id;})[0];}
+function fcCounts(deck){
+  var st=fcState(deck.id),today=fcToday(),due=0,seen=0;
+  for(var k in st){seen++;if(st[k].d<=today)due++;}
+  var fresh=Math.max(0,deck.count-seen);
+  return {due:due,newCards:Math.min(FC_NEW_PER_DAY,fresh),seen:seen};
+}
+function renderFlash(lang){
+  var el=document.getElementById(lang==='ko'?'ko-flash':'jp-flash');if(!el)return;
+  var html=FC_DECKS[lang].map(function(d){
+    var c=fcCounts(d);
+    var pills=(c.due>0?'<span class="fc-pill due">'+c.due+' due</span>':'')+
+              (c.newCards>0?'<span class="fc-pill new">'+c.newCards+' new</span>':'')+
+              ((c.due===0&&c.newCards===0)?'<span class="fc-pill zero">done</span>':'');
+    return '<button class="fc-deck" data-lang="'+lang+'" data-deck="'+d.id+'">'+
+      '<div class="fc-deck-body"><div class="fc-deck-name">'+esc(d.name)+'<span class="cn">'+esc(d.cn)+'</span></div>'+
+      '<div class="fc-deck-sub">'+esc(d.sub)+' · '+c.seen+'/'+d.count+' learned</div></div>'+
+      '<div class="fc-deck-counts">'+pills+'</div><span class="fc-deck-arrow">›</span></button>';
+  }).join('');
+  var synced=!!fcSyncToken();
+  html+='<div class="fc-foot"><span class="fc-resetlink" data-sync="'+lang+'">'+(synced?'☁ synced · '+FC_NEW_PER_DAY+'/day':'☁ set up sync')+'</span><span class="fc-resetlink" data-reset="'+lang+'">reset progress</span></div>';
+  el.innerHTML=html;
+  el.querySelectorAll('.fc-deck').forEach(function(b){b.onclick=function(){fcStart(this.dataset.lang,this.dataset.deck);};});
+  var sy=el.querySelector('[data-sync]');if(sy)sy.onclick=function(){fcSetupSync(this.dataset.sync);};
+  var rl=el.querySelector('[data-reset]');if(rl)rl.onclick=function(){
+    if(confirm('Reset all '+(lang==='ko'?'Korean':'Japanese')+' flashcard progress? This clears your review history (the cards stay).')){
+      FC_DECKS[lang].forEach(function(d){store('srs-'+d.id,{});});renderFlash(lang);
+    }
+  };
+}
+function fcStart(lang,deckId){
+  var deck=fcDeckById(lang,deckId);if(!deck)return;
+  var ov=document.getElementById('fc-ov');ov.dataset.lang=lang;ov.hidden=false;
+  document.body.style.overflow='hidden';
+  document.getElementById('fc-counter').textContent='';
+  document.getElementById('fc-progress').style.width='0%';
+  document.getElementById('fc-stage').innerHTML='<div class="fc-done"><div class="fc-done-glyph">···</div><div class="fc-done-s">loading '+esc(deck.name)+'…</div></div>';
+  document.getElementById('fc-actions').innerHTML='';
+  fetch(deck.file).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(cards){
+    fcBuildSession(lang,deck,cards);
+  }).catch(function(){
+    document.getElementById('fc-stage').innerHTML='<div class="fc-done"><div class="fc-done-glyph">⚠</div><div class="fc-done-s">could not load this deck</div><button class="fc-done-btn" id="fc-err-close">close</button></div>';
+    var b=document.getElementById('fc-err-close');if(b)b.onclick=fcClose;
+  });
+}
+function fcBuildSession(lang,deck,cards){
+  var st=fcState(deck.id),today=fcToday(),dueC=[],newC=[];
+  cards.forEach(function(c){var s=st[c.id];if(s){if(s.d<=today)dueC.push(c);}else newC.push(c);});
+  newC=fcShuffle(newC).slice(0,FC_NEW_PER_DAY);
+  var queue=fcShuffle(fcShuffle(dueC).concat(newC));
+  fcSession={lang:lang,deck:deck,queue:queue,idx:0,done:0,again:0,st:st};
+  if(!queue.length){fcShowDone();return;}
+  fcShowCard();
+}
+function fcGrade(card,q){
+  var st=fcSession.st,s=st[card.id]||{iv:0,ef:2.5,reps:0};
+  if(q<3){s.reps=0;s.iv=0;}
+  else{
+    s.reps=(s.reps||0)+1;
+    if(s.reps===1)s.iv=1;else if(s.reps===2)s.iv=6;else s.iv=Math.round(s.iv*s.ef);
+    if(q===5)s.iv=Math.round(s.iv*1.15);
+    s.ef=Math.max(1.3,s.ef+(0.1-(5-q)*(0.08+(5-q)*0.02)));
+  }
+  s.d=fcToday()+(q<3?0:s.iv);s.t=Date.now();st[card.id]=s;
+}
+function fcPreview(card,q){
+  if(q<3)return 'soon';
+  var s=fcSession.st[card.id]||{iv:0,ef:2.5,reps:0},reps=(s.reps||0)+1,iv;
+  if(reps===1)iv=1;else if(reps===2)iv=6;else iv=Math.round(s.iv*s.ef);
+  if(q===5)iv=Math.round(iv*1.15);
+  return (iv<1?1:iv)+'d';
+}
+function fcShowCard(){
+  var sess=fcSession,card=sess.queue[sess.idx],remaining=sess.queue.length-sess.idx;
+  document.getElementById('fc-counter').textContent=remaining+' left';
+  document.getElementById('fc-progress').style.width=Math.round(sess.done/(sess.done+remaining)*100)+'%';
+  var hasReading=card.reading&&card.reading!==card.front;
+  document.getElementById('fc-stage').innerHTML='<div class="fc-card" id="fc-card">'+
+    '<div class="fc-eyebrow">'+esc(sess.deck.name)+'</div>'+
+    '<div class="fc-term">'+esc(card.front)+'</div>'+
+    '<div class="fc-tap-hint">tap to reveal'+(hasReading?' · reading + meaning':'')+'</div></div>';
+  document.getElementById('fc-actions').innerHTML='<button class="fc-reveal-btn" id="fc-reveal">Show answer</button>';
+  var rv=function(){fcReveal();};
+  document.getElementById('fc-card').onclick=rv;
+  document.getElementById('fc-reveal').onclick=rv;
+}
+function fcReveal(){
+  var sess=fcSession,card=sess.queue[sess.idx];
+  var h='<div class="fc-eyebrow">'+esc(sess.deck.name)+'</div><div class="fc-term">'+esc(card.front)+'</div>';
+  if(card.reading&&card.reading!==card.front)h+='<div class="fc-reading">'+esc(card.reading)+'</div>';
+  h+='<div class="fc-divider"></div><div class="fc-back">'+esc(card.back||'—')+'</div>';
+  if(card.pos)h+='<div class="fc-pos">'+esc(card.pos)+'</div>';
+  if(card.note)h+='<div class="fc-note">'+esc(card.note)+'</div>';
+  if(card.ex)h+='<div class="fc-ex">'+esc(card.ex)+(card.exEn?'<div class="fc-ex-tr">'+esc(card.exEn)+'</div>':'')+(card.exDef?'<div class="fc-ex-tr">'+esc(card.exDef)+'</div>':'')+'</div>';
+  var ce=document.getElementById('fc-card');ce.innerHTML=h;ce.onclick=null;ce.style.cursor='default';
+  var R=[[0,'Again'],[3,'Hard'],[4,'Good'],[5,'Easy']];
+  document.getElementById('fc-actions').innerHTML=R.map(function(r){
+    return '<button class="fc-rate" data-q="'+r[0]+'"><span>'+r[1]+'</span><small>'+fcPreview(card,r[0])+'</small></button>';
+  }).join('');
+  document.getElementById('fc-actions').querySelectorAll('.fc-rate').forEach(function(b){b.onclick=function(){fcRate(+this.dataset.q);};});
+}
+function fcRate(q){
+  var sess=fcSession,card=sess.queue[sess.idx];
+  fcGrade(card,q);fcSaveState(sess.deck.id,sess.st);fcSyncPush();
+  if(q<3){sess.queue.push(card);sess.again++;}else{sess.done++;}
+  sess.idx++;
+  if(sess.idx>=sess.queue.length){fcShowDone();renderFlash(sess.lang);return;}
+  fcShowCard();
+}
+function fcShowDone(){
+  var sess=fcSession;
+  document.getElementById('fc-counter').textContent='';
+  document.getElementById('fc-progress').style.width='100%';
+  var n=sess?sess.done:0,glyph=sess&&sess.lang==='jp'?'🍵':'🌸';
+  document.getElementById('fc-stage').innerHTML='<div class="fc-done"><div class="fc-done-glyph">'+glyph+'</div>'+
+    '<div class="fc-done-t">'+(n?'all caught up':'nothing due')+'</div>'+
+    '<div class="fc-done-s">'+(n?n+' cards reviewed'+(sess.again?' · '+sess.again+' revisited':''):'come back tomorrow for more')+'</div>'+
+    '<button class="fc-done-btn" id="fc-done-close">close</button></div>';
+  document.getElementById('fc-actions').innerHTML='';
+  document.getElementById('fc-done-close').onclick=fcClose;
+}
+function fcClose(){
+  document.getElementById('fc-ov').hidden=true;document.body.style.overflow='';
+  if(fcSession){renderFlash(fcSession.lang);}fcSession=null;
+}
+(function(){
+  var c=document.getElementById('fc-close');if(c)c.onclick=fcClose;
+  document.addEventListener('keydown',function(e){
+    var ov=document.getElementById('fc-ov');if(!ov||ov.hidden)return;
+    if(e.key==='Escape')fcClose();
+    else if(fcSession){
+      var card=fcSession.queue[fcSession.idx],revealed=!!document.querySelector('.fc-rate');
+      if((e.key===' '||e.key==='Enter')&&!revealed){e.preventDefault();fcReveal();}
+      else if(revealed&&['1','2','3','4'].indexOf(e.key)>=0){e.preventDefault();fcRate([0,3,4,5][+e.key-1]);}
+    }
+  });
+})();
+
+// ─── cross-device sync (Cloudflare KV, opt-in via passphrase) ───
+var FC_ALL_DECKS=['ko-grammar','ko-cheat','jp-core','jp-egg'];
+function fcSyncToken(){return load('sync-token','');}
+function fcGatherSrs(){var o={};FC_ALL_DECKS.forEach(function(id){var s=load('srs-'+id,null);if(s&&Object.keys(s).length)o[id]=s;});return o;}
+function fcMergeRemote(remote){
+  if(!remote)return false;var changed=false;
+  FC_ALL_DECKS.forEach(function(id){
+    var loc=load('srs-'+id,{}),rem=remote[id]||{},ids={},out={},k;
+    for(k in loc)ids[k]=1;for(k in rem)ids[k]=1;
+    for(k in ids){var a=loc[k],b=rem[k];out[k]=(a&&b)?(((b.t||0)>(a.t||0))?b:a):(a||b);}
+    if(JSON.stringify(out)!==JSON.stringify(loc)){changed=true;store('srs-'+id,out);}
+  });
+  return changed;
+}
+var fcPushTimer=null;
+function fcSyncPush(){
+  var token=fcSyncToken();if(!token)return;
+  clearTimeout(fcPushTimer);
+  fcPushTimer=setTimeout(function(){
+    fetch('/api/cards?token='+encodeURIComponent(token),{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({decks:fcGatherSrs(),updated:Date.now()})}).catch(function(){});
+  },1500);
+}
+function fcSyncPull(cb){
+  var token=fcSyncToken();if(!token){cb&&cb(false);return;}
+  fetch('/api/cards?token='+encodeURIComponent(token)).then(function(r){return r.json();}).then(function(j){
+    cb&&cb(j&&j.ok&&j.data&&j.data.decks?fcMergeRemote(j.data.decks):false);
+  }).catch(function(){cb&&cb(false);});
+}
+function fcSetupSync(lang){
+  var cur=fcSyncToken();
+  var t=prompt('Sync passphrase\n\nUse the SAME phrase on every device (Mac + phone) to share your flashcard progress. Leave blank to turn sync off.',cur||'');
+  if(t===null)return;t=t.trim();store('sync-token',t);
+  if(t){fcSyncPull(function(){renderFlash('ko');renderFlash('jp');fcSyncPush();});}
+  else{renderFlash('ko');renderFlash('jp');}
+}
+// pull once on load so this device picks up progress from others
+(function(){fcSyncPull(function(changed){if(changed){renderFlash('ko');renderFlash('jp');}});})();
+
 function renderKoreanFull(){
   var st=computeStreak('korean-log'),wk=daysActiveThisWeek('korean-log');
   var f=document.getElementById('ko-focal');
@@ -6741,6 +7045,7 @@ function renderKoreanFull(){
   renderTextbooks('korean-textbooks','ko-books');
   renderResources('korean-resources','ko-res',KOREAN_RESOURCES_SEED);
   renderLangGoals('korean-log','ko-goals',KO_GOALS);
+  renderFlash('ko');
   bindCollapsibles();
 }
 function getJpPath(){var p=load('japanese-path',null);if(!p){p={progress:{},currentPhase:1};store('japanese-path',p);}if(!p.progress)p.progress={};return p;}
@@ -6761,6 +7066,7 @@ function renderJapaneseFull(){
   renderStudyCalendar('japanese-log','jp-cal','jp-cal-title','jp-cal-stats');
   renderResources('japanese-resources','jp-res',JAPANESE_RESOURCES_SEED);
   renderLangGoals('japanese-log','jp-goals',[{label:'Learned all hiragana',type:'hiragana',target:46},{label:'Vocabulary sessions',type:'vocab',target:12},{label:'Grammar sessions',type:'grammar',target:4}]);
+  renderFlash('jp');
 }
 function renderJpPhaseBody(id){
   var el=document.getElementById('jp-phase-'+id);if(!el)return;var p=getJpPath();
@@ -7247,7 +7553,7 @@ document.querySelectorAll('.nv').forEach(function(n){n.onclick=function(){switch
  function(){simpleList('japanese',DEF_JAPANESE,'japanese-list','japanese','task');},
  renderKoreanFull,renderJapaneseFull,
  function(){simpleList('substack',DEF_SUBSTACK,'substack-list','substack','title');},
- renderBills,renderQuarters,renderCal,renderTimeline,renderG26,renderPilatesFull,renderMovement,renderInvestments,renderPropertyFull,renderSubstacks,renderPrompts,renderFinance,renderMaintenanceFull,renderLife,renderQuotes,renderBeauty,renderWishlist,renderCafes,renderBucketList,renderTrips,renderMonthlyFull,renderRitualsFull,renderHomeFull,migrateToScribbles,renderScribbles,renderYearEarth,renderWeekStrip,renderHomeSummary,
+ renderBills,renderQuarters,renderCal,renderTimeline,renderG26,renderPilatesFull,renderMovement,renderInvestments,renderPropertyFull,renderSubstacks,renderPrompts,renderFinance,renderMaintenanceFull,renderQuotes,renderBeauty,renderWishlist,renderCafes,renderBucketList,renderTrips,renderMonthlyFull,renderRitualsFull,renderHomeFull,migrateToScribbles,renderScribbles,renderYearEarth,renderWeekStrip,renderHomeSummary,
  function(){renderSidebar('home');}
 ].forEach(function(fn){try{fn();}catch(e){try{console.warn('[init] '+((fn&&fn.name)||'render')+' failed:',e&&e.message);}catch(_){}}});
 
