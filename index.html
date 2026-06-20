@@ -4048,7 +4048,7 @@ function wireAdd(){
         if(kind==='prop-dd'&&fields.text){var d=getDD();d.push({id:muid(),text:fields.text,category:fields.category||'Other',done:false});store('property-due-diligence',d);renderDueDiligence();}
         if(kind==='transaction'&&fields.type){var d=getTx();d.push({id:muid(),date:fields.date||new Date().toISOString().slice(0,10),type:fields.type,ticker:fields.ticker||'',shares:parseFloat(fields.shares)||0,price:parseFloat(fields.price)||0,amount:parseFloat(fields.amount)||0,fees:0,notes:''});store('transactions-v3',d);renderTransactions();}
         if(kind==='port-note'&&fields.note){var d=getNotes();d.push({id:muid(),date:fields.date||new Date().toISOString().slice(0,10),ticker:fields.ticker||'',note:fields.note,sentiment:fields.sentiment||'neutral'});store('portfolio-notes',d);renderPortfolioNotes();}
-        if(kind==='mv-video'&&(fields.url||fields.title)){var d=getWorkoutVideos();d.push({id:muid(),bvid:bvFromUrl(fields.url),title:fields.title||'workout',creator:fields.creator||'',type:fields.type||'',duration:0,favourite:false});store('workout-videos',d);renderVideoLibrary();}
+        if(kind==='mv-video'&&(fields.url||fields.title)){var d=getWorkoutVideos();d.push({id:muid(),url:fields.url||'',bvid:bvFromUrl(fields.url),title:fields.title||'workout',creator:fields.creator||'',type:fields.type||'',duration:0,favourite:false});store('workout-videos',d);renderVideoLibrary();}
         if(kind==='hm-restock'&&fields.text){var hh=getHome();var nid=Math.max.apply(null,[0].concat(hh.restock.map(function(x){return x.id||0;})))+1;hh.restock.push({id:nid,text:fields.text,urgent:false,done:false});saveHome(hh);renderHomeFull();}
         if(kind==='hm-errand'&&fields.text){var hh=getHome();var nid=Math.max.apply(null,[0].concat(hh.errands.map(function(x){return x.id||0;})))+1;hh.errands.push({id:nid,text:fields.text,done:false});saveHome(hh);renderHomeFull();}
         if(kind==='debt'&&fields.name){var d=getDebts();d.push({id:muid(),name:fields.name,notes:fields.notes||'',total:parseFloat(fields.total)||0,remaining:parseFloat(fields.remaining)||parseFloat(fields.total)||0,monthly:parseFloat(fields.monthly)||0,rate:parseFloat(fields.rate)||0,paidBy:fields.paidBy||'Self',endDate:fields.endDate||''});store('debts',d);renderFinance();}
@@ -4525,6 +4525,15 @@ function getWorkoutVideos(){
     }
     store('wv-seed-foam',1);
   }
+  // one-time seed: 12-min deep leg-stretch follow-along (Yoga CC · 小红书)
+  if(!load('wv-seed-legstretch',0)){
+    var lsUrl='https://xhslink.com/o/1B0FRlkF3k0';
+    if(!d.some(function(v){return v.url===lsUrl;})){
+      d.unshift({id:muid(),url:lsUrl,bvid:'',title:'12分钟深度瘦腿拉伸跟练',creator:'Yoga CC',type:'拉伸',duration:12,favourite:false});
+      store('workout-videos',d);
+    }
+    store('wv-seed-legstretch',1);
+  }
   return d;
 }
 function renderWeekPlanner(){
@@ -4605,7 +4614,8 @@ function renderVideoLibrary(){
   var el=document.getElementById('mv-videos');if(!el)return;var vids=getWorkoutVideos();
   setT('mv-vid-count',vids.length?vids.length+' saved':'');
   el.innerHTML=vids.length?vids.slice().sort(function(a,b){return (b.favourite?1:0)-(a.favourite?1:0);}).map(function(v,i){
-    return '<div class="vid-row"><button class="vid-star'+(v.favourite?' on':'')+'" data-vstar="'+v.id+'">'+(v.favourite?'★':'☆')+'</button><a class="vid-title" href="https://www.bilibili.com/video/'+esc(v.bvid)+'" target="_blank" rel="noopener">'+esc(v.title)+'</a><span class="vid-meta">'+esc(v.creator||'')+(v.type?' · '+esc(v.type):'')+(v.duration?' · '+v.duration+'min':'')+'</span><button class="row-x" data-vdel="'+v.id+'">×</button></div>';
+    var vhref=v.url?v.url:('https://www.bilibili.com/video/'+v.bvid);
+    return '<div class="vid-row"><button class="vid-star'+(v.favourite?' on':'')+'" data-vstar="'+v.id+'">'+(v.favourite?'★':'☆')+'</button><a class="vid-title" href="'+esc(vhref)+'" target="_blank" rel="noopener">'+esc(v.title)+'</a><span class="vid-meta">'+esc(v.creator||'')+(v.type?' · '+esc(v.type):'')+(v.duration?' · '+v.duration+'min':'')+'</span><button class="row-x" data-vdel="'+v.id+'">×</button></div>';
   }).join(''):'<div class="soft-empty">no saved videos yet — paste a bilibili URL below.</div>';
   el.querySelectorAll('[data-vstar]').forEach(function(b){b.onclick=function(){var id=this.dataset.vstar,d=getWorkoutVideos();d.forEach(function(v){if(String(v.id)===id)v.favourite=!v.favourite;});store('workout-videos',d);renderVideoLibrary();};});
   el.querySelectorAll('[data-vdel]').forEach(function(b){b.onclick=function(){var id=this.dataset.vdel;store('workout-videos',getWorkoutVideos().filter(function(v){return String(v.id)!==id;}));renderVideoLibrary();};});
