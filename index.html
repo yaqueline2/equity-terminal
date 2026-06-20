@@ -2843,6 +2843,81 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .fc-done-s{font-family:var(--font);font-size:13px;color:var(--t4);}
 .fc-done-btn{font-family:var(--font);font-size:13px;font-weight:500;padding:11px 24px;border:1px solid rgba(60,52,44,0.14);border-radius:11px;background:rgba(255,255,255,0.7);color:var(--t1);cursor:pointer;margin-top:10px;}
 @media(max-width:560px){.fc-term{font-size:38px;}.fc-back{font-size:22px;}.fc-card{padding:32px 20px;min-height:44vh;}.fc-rate{font-size:12px;padding:12px 4px;}}
+
+/* ══ STOCK ANALYSIS — search autocomplete + rich result (portfolio = sage) ══ */
+.sa-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
+.sa-search{position:relative;flex:1 1 260px;min-width:200px;}
+.sa-input{width:100%;box-sizing:border-box;}
+.sa-suggest{position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:30;background:#fff;border:1px solid rgba(60,52,44,0.14);border-radius:12px;box-shadow:0 12px 30px -10px rgba(60,52,44,0.28);overflow:hidden;max-height:280px;overflow-y:auto;}
+.sa-opt{display:flex;align-items:baseline;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:1px solid rgba(60,52,44,0.05);}
+.sa-opt:last-child{border-bottom:none;}
+.sa-opt:hover{background:var(--sage-bg);}
+.sa-opt-sym{font-family:var(--font);font-weight:600;font-size:12.5px;color:var(--t1);flex:0 0 auto;}
+.sa-opt-name{font-family:var(--font);font-size:12px;color:var(--t3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sa-opt-exch{font-family:var(--font);font-size:10px;color:var(--t5);flex:0 0 auto;text-transform:uppercase;letter-spacing:0.04em;}
+.sa-modes{display:flex;gap:4px;background:rgba(60,52,44,0.05);border-radius:10px;padding:3px;}
+.sa-mode{font-family:var(--font);font-size:12px;font-weight:500;color:var(--t4);background:none;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;}
+.sa-mode.on{background:#fff;color:var(--t1);box-shadow:0 1px 3px rgba(60,52,44,0.1);}
+
+.sa-result{font-family:var(--font);color:var(--t2);animation:fadeIn .3s;}
+.sa-head{display:flex;gap:16px;align-items:flex-start;padding-bottom:14px;margin-bottom:4px;border-bottom:1px solid var(--rule);}
+.sa-head-l{flex:1;min-width:0;}
+.sa-name{font-family:var(--font-hand);font-size:24px;color:var(--t1);line-height:1.1;}
+.sa-meta{font-size:11.5px;color:var(--t4);margin-top:4px;}
+.sa-oneliner{font-size:13px;color:var(--t2);line-height:1.5;margin-top:9px;max-width:560px;}
+.sa-head-r{flex:0 0 auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.sa-rating{display:flex;align-items:baseline;gap:1px;}
+.sa-rating-n{font-family:var(--font-hand);font-size:34px;color:var(--sage);line-height:1;}
+.sa-rating-d{font-size:13px;color:var(--t5);}
+.sa-rec{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;padding:3px 10px;border-radius:20px;}
+.sa-rec.sb{color:#3f6b4f;background:rgba(126,168,142,0.22);}
+.sa-rec.b{color:#5f7d6a;background:var(--sage-bg);}
+.sa-rec.h{color:#9a7d3a;background:var(--honey-bg);}
+.sa-rec.s{color:#b06a6a;background:rgba(176,106,106,0.12);}
+.sa-rec.ss{color:#9a4a4a;background:rgba(176,106,106,0.2);}
+.sa-subrate{font-size:10.5px;color:var(--t4);}
+
+.sa-sec{margin-top:16px;}
+.sa-sec-h{font-family:var(--font);font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--t5);margin-bottom:9px;}
+.sa-dim{margin-bottom:11px;}
+.sa-dim-top{display:flex;justify-content:space-between;align-items:baseline;}
+.sa-dim-name{font-size:12.5px;color:var(--t2);font-weight:500;}
+.sa-dim-score{font-size:12.5px;color:var(--t1);font-variant-numeric:tabular-nums;font-weight:500;}
+.sa-bar{height:6px;background:rgba(60,52,44,0.07);border-radius:4px;margin:5px 0 4px;overflow:hidden;}
+.sa-bar-f{height:100%;background:linear-gradient(90deg,var(--sage),#9bc0a8);border-radius:4px;}
+.sa-dim-j{font-size:11.5px;color:var(--t4);line-height:1.45;}
+.sa-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.sa-chip{font-size:11.5px;color:var(--t3);background:rgba(255,255,255,0.6);border:1px solid rgba(60,52,44,0.09);border-radius:8px;padding:4px 9px;}
+.sa-chip b{color:var(--t5);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;margin-right:3px;}
+.sa-note{font-size:12.5px;color:var(--t2);line-height:1.55;margin-top:8px;}
+.sa-note b{color:var(--t1);font-weight:600;}
+.sa-sub,.sa-sub-inline{font-size:11.5px;color:var(--t4);line-height:1.45;}
+.sa-sub{margin-top:5px;}
+.sa-ul{margin:4px 0 0;padding-left:18px;}
+.sa-ul li{font-size:12.5px;color:var(--t2);line-height:1.5;margin-bottom:5px;}
+.sa-bullbear{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+@media(max-width:620px){.sa-bullbear{grid-template-columns:1fr;}}
+.sa-bb{border-radius:12px;padding:13px 15px;}
+.sa-bull{background:var(--sage-bg);border-left:2px solid var(--sage);border-radius:0 12px 12px 0;}
+.sa-bear{background:rgba(201,148,156,0.09);border-left:2px solid var(--blush);border-radius:0 12px 12px 0;}
+.sa-bb-h{font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;}
+.sa-bull .sa-bb-h{color:#5f7d6a;}
+.sa-bear .sa-bb-h{color:#a86a74;}
+.sa-kpi{font-size:12.5px;color:var(--t2);line-height:1.5;padding:5px 0;border-bottom:1px solid rgba(60,52,44,0.05);}
+.sa-kpi b{color:var(--t1);}
+.sa-cat{font-size:12.5px;color:var(--t2);padding:4px 0;}
+.sa-cat-a{font-weight:700;margin-right:5px;color:var(--t4);}
+.sa-cat-a.up{color:#5f7d6a;}.sa-cat-a.dn{color:#b06a6a;}
+.sa-rp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.sa-rp-c{background:rgba(255,255,255,0.6);border:1px solid rgba(60,52,44,0.09);border-radius:10px;padding:10px;text-align:center;}
+.sa-rp-l{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--t5);}
+.sa-rp-v{font-family:var(--font-hand);font-size:19px;color:var(--t1);margin:3px 0;}
+.sa-rp-cond{font-size:10.5px;color:var(--t4);line-height:1.4;}
+.sa-breaker{border-left:2px solid var(--blush);padding-left:11px;}
+.sa-verdict{margin-top:18px;background:rgba(126,168,142,0.08);border-radius:12px;padding:14px 16px;font-size:13.5px;color:var(--t1);line-height:1.6;}
+.sa-verdict-h{font-family:var(--font);font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);margin-bottom:6px;}
+.sa-foot{font-size:10.5px;color:var(--t5);margin-top:16px;padding-top:10px;border-top:1px solid rgba(60,52,44,0.06);}
+
 </style>
 
 <!-- ═══ TOP NAV ═══ -->
@@ -5025,6 +5100,641 @@ function renderPortfolioFull(){
   renderFIRE();renderDivChart();renderSectorExposure();renderPortfolioNotes();renderDividends();bindPortfolioCSV();bindPortfolioTools();bindAITabs();
 }
 window.renderInvestments=renderPortfolioFull;window.renderPortfolioFull=renderPortfolioFull;
+
+
+// ════════════ AI STOCK ANALYSIS ENGINE (ported verbatim from original hub) ════════════
+var ENDPOINT='/api/claude';
+var SYSTEM = "You are a senior equity research analyst and portfolio manager with 20+ years of experience. You analyse stocks and portfolios using rigorous fundamental analysis: business model quality, FCF and earnings quality (7 Rules), competitive moats, the 5-pillar management quality framework (capital allocation track record with ROIC vs WACC, say-do ratio over 8-12 quarters, incentive alignment from proxy filings, transparency quality, and operational execution), sector-specific KPI lenses (banks: NIM/NPL/CET1/ROTCE; SaaS: NRR/ARR growth/Rule of 40; mining: P/NAV/AISC/reserve life; pharma: pipeline NPV/patent cliff; REITs: P/AFFO/occupancy; semis: book-to-bill/design wins/inventory days; insurance: combined ratio/reserve development; energy: EBITDAX/reserve replacement/breakeven), DCF with explicit assumptions (WACC, terminal growth, bull/base/bear scenarios), and the Lynch Pitch (8-question bull case) and Munger Invert (8-point bear case) frameworks. Be direct, specific, evidence-based, and strategic. Tag claims as (disclosed), (inferred), or (unverified). Respond ONLY in valid JSON — no markdown, no text outside the JSON.";
+var LIVE_NEWS=[]; var NEWS_LAST_FETCH=0;
+var FIN_CACHE={}; var FIN_TTL=30*60*1000;
+
+function extractTicker(input) {
+    var s = (input || '').trim();
+    // Parenthetical ticker: "Apple (AAPL)" → "AAPL"
+    var m = s.match(/\(([A-Z0-9.\-]{1,12})\)\s*$/);
+    if (m) return m[1].toUpperCase();
+    // Looks like a raw ticker (no spaces, short)
+    if (/^[A-Z0-9.\-]{1,12}$/i.test(s)) return s.toUpperCase();
+    // Take the last word if it looks like a ticker
+    var words = s.split(/\s+/);
+    var last = words[words.length - 1];
+    if (/^[A-Z0-9.\-]{1,10}$/i.test(last)) return last.toUpperCase();
+    return s.toUpperCase();
+  }
+
+function postClaude(messages, system, maxTokens){
+    return fetch(ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        max_tokens: maxTokens || 4000,
+        system: system || SYSTEM,
+        messages: messages
+      })
+    }).then(async function(res){
+      var raw = await res.text();
+      if(!res.ok){
+        var msg = raw;
+        try{ var parsed = JSON.parse(raw); msg = (parsed.error && parsed.error.message) || parsed.error || raw; }catch(e){}
+        throw new Error('('+res.status+') '+String(msg).slice(0,260));
+      }
+      var data; try{ data = JSON.parse(raw); }catch(e){ throw new Error('Bad JSON from backend'); }
+      return data;
+    });
+  }
+
+async function callClaudeJSON(prompt, maxTokens){
+    var data = await postClaude([{role:'user',content:prompt}], SYSTEM, maxTokens||4000);
+    var text = (data.content||[]).map(function(b){return b.text||'';}).join('');
+    text = text.replace(/```json\s*|\s*```/g,'').trim();
+    // Strip everything before the first { or [ (some models add preamble)
+    var firstBrace = text.search(/[\{\[]/);
+    if(firstBrace > 0) text = text.slice(firstBrace);
+    try {
+      return JSON.parse(text);
+    } catch(e) {
+      // Repair attempt: response was likely truncated or has cruft
+      var repaired = text;
+      // Remove any literal placeholder patterns models sometimes echo from schema
+      repaired = repaired.replace(/,?\s*"?\.\.\.[^"\n}\]]*"?/g, '');
+      repaired = repaired.replace(/,?\s*\/\/[^\n]*/g, '');
+      // Trim trailing partial object after last comma (incomplete final element)
+      repaired = repaired.replace(/,\s*\{[^{}]*$/, '');
+      repaired = repaired.replace(/,\s*"[^"]*"?\s*:\s*[^,}\]]*$/, '');
+      repaired = repaired.replace(/,\s*$/, '');
+      // Auto-close any unclosed brackets/objects
+      var openObjs = (repaired.match(/\{/g)||[]).length - (repaired.match(/\}/g)||[]).length;
+      var openArrs = (repaired.match(/\[/g)||[]).length - (repaired.match(/\]/g)||[]).length;
+      for(var i=0;i<openObjs;i++) repaired += '}';
+      for(var j=0;j<openArrs;j++) repaired += ']';
+      try {
+        return JSON.parse(repaired);
+      } catch(e2) {
+        // Final fallback: surface a helpful error
+        throw new Error('AI returned malformed JSON (likely truncated). Try again or shorten the request.');
+      }
+    }
+  }
+
+function getNewsContext(stockName){
+    if(!LIVE_NEWS.length) return '';
+    // Filter headlines that mention the stock or are general market news
+    var name = (stockName||'').toLowerCase().replace(/[^a-z0-9]/g,' ').trim();
+    var relevant = LIVE_NEWS.filter(function(n){
+      var t = n.title.toLowerCase();
+      return !name || t.indexOf(name.split(' ')[0]) >= 0 || t.indexOf('market') >= 0 || t.indexOf('fed') >= 0 || t.indexOf('inflation') >= 0 || t.indexOf('earnings') >= 0;
+    }).slice(0, 8);
+    if(!relevant.length) relevant = LIVE_NEWS.slice(0, 5);
+    return '\n\nLATEST MARKET NEWS (fetched '+Math.round((Date.now()-NEWS_LAST_FETCH)/60000)+' min ago — factor these into your analysis):\n'+
+      relevant.map(function(n,i){ return (i+1)+'. '+n.title; }).join('\n');
+  }
+
+function fetchAnalysisNews(){
+    // Pull from existing /api/rss Netlify function - broad financial news
+    var feeds = [
+      '/api/rss/rss/2.0/headline?s=SPY,QQQ,AAPL,MSFT,NVDA,GOOGL,AMZN,META,BRK-B,JPM&region=US&lang=en-US',
+      '/api/rss/rss/2.0/headline?s=D05.SI,1155.KL,O39.SI,CBA.AX,HSBA.L&region=US&lang=en-US'
+    ];
+    var allItems = [];
+    var done = 0;
+    feeds.forEach(function(url){
+      fetch(url, {signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(8000) : undefined})
+        .then(function(r){ return r.text(); })
+        .then(function(txt){
+          try{
+            var xml = new DOMParser().parseFromString(txt,'text/xml');
+            xml.querySelectorAll('item').forEach(function(item){
+              var t = item.querySelector('title');
+              var l = item.querySelector('link');
+              var d = item.querySelector('pubDate');
+              if(t && t.textContent.trim()){
+                allItems.push({title:t.textContent.trim(), link:l?l.textContent:'', date:d?new Date(d.textContent):new Date()});
+              }
+            });
+          }catch(e){}
+          done++;
+          if(done >= feeds.length) finishNews(allItems);
+        }).catch(function(){ done++; if(done >= feeds.length) finishNews(allItems); });
+    });
+  }
+
+function finishNews(items){
+    // dedupe by title, sort newest first
+    var seen = {};
+    LIVE_NEWS = items.filter(function(x){
+      var k = x.title.slice(0,60);
+      if(seen[k]) return false;
+      seen[k] = true; return true;
+    }).sort(function(a,b){ return b.date - a.date; }).slice(0,30);
+    NEWS_LAST_FETCH = Date.now();
+    if(typeof renderNewsStrip==='function')renderNewsStrip();
+    // Also update overview news card
+    if(typeof ovRenderNewsFeed === 'function') ovRenderNewsFeed();
+  }
+
+async function prefetchFinancials(tickerInput) {
+    var ticker = extractTicker(tickerInput);
+    if (!ticker || ticker.length < 1) return null;
+    var cached = FIN_CACHE[ticker];
+    if (cached && (Date.now() - cached.ts) < FIN_TTL) return cached.data;
+    try {
+      var res = await fetch('/api/financials?ticker=' + encodeURIComponent(ticker), { signal: AbortSignal.timeout ? AbortSignal.timeout(12000) : undefined });
+      if (!res.ok) return null;
+      var data = await res.json();
+      if (data.error) return null;
+      FIN_CACHE[ticker] = { data, ts: Date.now() };
+      return data;
+    } catch (e) { return null; }
+  }
+
+function financialsToPromptBlock(fd) {
+    if (!fd) return '';
+    var lines = ['\n\n━━ LIVE FINANCIAL DATA (Yahoo Finance, fetched ' + new Date(fd.fetchedAt).toLocaleTimeString() + ') ━━'];
+    var p = fd.profile || {};
+    if (p.name) lines.push('Company: ' + p.name + (p.sector ? ' | Sector: ' + p.sector : '') + (p.industry ? ' | Industry: ' + p.industry : '') + (p.country ? ' | Country: ' + p.country : ''));
+    if (p.employees) lines.push('Employees: ' + Number(p.employees).toLocaleString());
+
+    var pr = fd.price || {};
+    if (pr.current) lines.push('Price: ' + pr.currency + ' ' + pr.current + (pr.marketCap ? ' | Market Cap: ' + pr.marketCap : '') + (pr['52wHigh'] ? ' | 52w Range: ' + pr['52wLow'] + '–' + pr['52wHigh'] : '') + (pr.beta ? ' | Beta: ' + pr.beta : ''));
+
+    var v = fd.valuation || {};
+    var vParts = [];
+    if (v.trailingPE)  vParts.push('P/E: ' + v.trailingPE);
+    if (v.forwardPE)   vParts.push('Fwd P/E: ' + v.forwardPE);
+    if (v.pegRatio)    vParts.push('PEG: ' + v.pegRatio);
+    if (v.priceToSales) vParts.push('P/S: ' + v.priceToSales);
+    if (v.priceToBook) vParts.push('P/B: ' + v.priceToBook);
+    if (v.evToEbitda)  vParts.push('EV/EBITDA: ' + v.evToEbitda);
+    if (v.dividendYield) vParts.push('Div Yield: ' + v.dividendYield);
+    if (vParts.length) lines.push('Valuation: ' + vParts.join(' | '));
+
+    var f = fd.financials || {};
+    var fParts = [];
+    if (f.revenue)          fParts.push('Revenue: ' + f.revenue);
+    if (f.revenueGrowthYoY) fParts.push('Rev Growth YoY: ' + f.revenueGrowthYoY);
+    if (f.grossMargin)      fParts.push('Gross Margin: ' + f.grossMargin);
+    if (f.operatingMargin)  fParts.push('Op Margin: ' + f.operatingMargin);
+    if (f.netProfitMargin)  fParts.push('Net Margin: ' + f.netProfitMargin);
+    if (fParts.length) lines.push('Margins: ' + fParts.join(' | '));
+
+    var fParts2 = [];
+    if (f.freeCashFlow)   fParts2.push('FCF: ' + f.freeCashFlow);
+    if (f.ebitda)         fParts2.push('EBITDA: ' + f.ebitda);
+    if (f.totalDebt)      fParts2.push('Total Debt: ' + f.totalDebt);
+    if (f.totalCash)      fParts2.push('Cash: ' + f.totalCash);
+    if (f.debtToEquity)   fParts2.push('D/E: ' + f.debtToEquity);
+    if (f.currentRatio)   fParts2.push('Current Ratio: ' + f.currentRatio);
+    if (fParts2.length) lines.push('Balance Sheet: ' + fParts2.join(' | '));
+
+    var fParts3 = [];
+    if (f.roe)                 fParts3.push('ROE: ' + f.roe);
+    if (f.roa)                 fParts3.push('ROA: ' + f.roa);
+    if (f.earningsGrowthYoY)   fParts3.push('Earnings Growth: ' + f.earningsGrowthYoY);
+    if (fParts3.length) lines.push('Returns: ' + fParts3.join(' | '));
+
+    if (f.targetMeanPrice) lines.push('Analyst Targets: Mean ' + f.targetMeanPrice + ' | Low ' + (f.targetLowPrice||'—') + ' | High ' + (f.targetHighPrice||'—') + (f.numberOfAnalysts ? ' (' + f.numberOfAnalysts + ' analysts)' : '') + (f.analystRecommendation ? ' | Consensus: ' + f.analystRecommendation : ''));
+
+    // Income history
+    if (fd.incomeHistory && fd.incomeHistory.length) {
+      lines.push('Income History: ' + fd.incomeHistory.map(function(y){ return y.year + ': Rev ' + (y.revenue||'—') + ', Net Income ' + (y.netIncome||'—') + ', EPS ' + (y.eps||'—'); }).join(' | '));
+    }
+
+    // Cash flow history
+    if (fd.cashflowHistory && fd.cashflowHistory.length) {
+      lines.push('Cash Flow History: ' + fd.cashflowHistory.map(function(y){ return y.year + ': OpCF ' + (y.operatingCashFlow||'—') + ', FCF ' + (y.freeCashFlow||'—'); }).join(' | '));
+    }
+
+    // Earnings estimates
+    if (fd.earningsEstimates && fd.earningsEstimates.length) {
+      lines.push('Forward Estimates: ' + fd.earningsEstimates.filter(function(e){ return e.epsEstimate||e.revenueEstimate; }).map(function(e){ return e.period + ': EPS ' + (e.epsEstimate||'—') + ' Rev ' + (e.revenueEstimate||'—'); }).join(' | '));
+    }
+
+    // Recent rating changes
+    if (fd.ratingChanges && fd.ratingChanges.length) {
+      lines.push('Recent Analyst Actions: ' + fd.ratingChanges.slice(0,5).map(function(r){ return r.date + ' ' + r.firm + ' → ' + r.toGrade; }).join(' | '));
+    }
+
+    if (fd.nextEarnings) lines.push('Next Earnings: ' + fd.nextEarnings);
+
+    lines.push('━━ Use these REAL numbers in your analysis. Do not contradict them. ━━');
+    return lines.join('\n');
+  }
+
+function analysisPrompt(stock, mode, priorAnalysis, finBlock){
+    // mode: 'lite', 'deep', 'update'
+    mode = mode || 'deep';
+    var newsCtx = getNewsContext(stock);
+    var realData = finBlock || ''; // injected live Yahoo Finance data
+
+    if(mode === 'update' && priorAnalysis){
+      return 'You previously analysed "'+stock+'" and produced this assessment:\n\n'+
+        JSON.stringify(priorAnalysis, null, 2)+realData+'\n\n'+newsCtx+
+        'Time has passed. Produce a QUARTERLY UPDATE — not a new analysis from scratch. Answer:\n'+
+        '1. Did management deliver on prior guidance?\n'+
+        '2. Which KPIs moved YoY and in what direction?\n'+
+        '3. What materially changed in the business?\n'+
+        '4. Are any thesis breakers closer to triggering?\n\n'+
+        'Return ONLY this JSON:\n'+
+        '{\n'+
+        '  "companyName":"...",\n'+
+        '  "ticker":"...",\n'+
+        '  "mode":"update",\n'+
+        '  "priorRating":'+((priorAnalysis.rating||0).toFixed(1))+',\n'+
+        '  "newRating":7.5,\n'+
+        '  "ratingDelta":"+0.5 or -1.0",\n'+
+        '  "thesisStatus":"Intact",\n'+
+        '  "recommendation":"Buy",\n'+
+        '  "confidence":"High",\n'+
+        '  "riskScore":4.0,\n'+
+        '  "summary":"2-3 sentences on what changed since last coverage",\n'+
+        '  "guidanceVsReality":[{"item":"what was guided","result":"what happened","verdict":"Beat|Met|Missed"}],\n'+
+        '  "kpiChanges":[{"kpi":"metric name","prior":"old value","current":"new value","direction":"up|down|flat","signal":"what this means"}],\n'+
+        '  "materialChanges":["what materially improved or deteriorated"],\n'+
+        '  "thesisBreakersCheck":[{"trigger":"from prior analysis","status":"Clear|Watch|Triggered","note":"explanation"}],\n'+
+        '  "updatedSellCriteria":{"thesisStatement":"updated if changed","kpisToMonitor":["metric"],"thesisBreakTriggers":["specific trigger"],"valuationCeiling":"price","reviewCadence":"timeframe"},\n'+
+        '  "verdict":"2-3 sentences on whether to maintain, increase, or reduce position"\n'+
+        '}\n\n'+
+        'Constraints:\n'+
+        '- thesisStatus: "Intact"|"Strengthening"|"Weakening"|"Broken"\n'+
+        '- recommendation: "Strong Buy"|"Buy"|"Hold"|"Sell"|"Strong Sell"\n'+
+        '- confidence: "High"|"Medium"|"Low"\n'+
+        '- guidanceVsReality.verdict: "Beat"|"Met"|"Missed"\n'+
+        '- kpiChanges.direction: "up"|"down"|"flat"\n'+
+        '- thesisBreakersCheck.status: "Clear"|"Watch"|"Triggered"';
+    }
+
+    if(mode === 'lite'){
+      return 'Analyse "'+stock+'" as a senior equity analyst. LITE mode — concise overview.'+realData+newsCtx+'\n\n'+
+        'Return ONLY this JSON:\n'+
+        '{\n'+
+        '  "companyName":"full official name",\n'+
+        '  "ticker":"ticker symbol",\n'+
+        '  "sector":"GICS sector",\n'+
+        '  "currency":"USD|EUR|GBP|MYR|SGD|...",\n'+
+        '  "rating":7.5,\n'+
+        '  "recommendation":"Buy",\n'+
+        '  "confidence":"High",\n'+
+        '  "riskScore":4.0,\n'+
+        '  "oneLiner":"what it does and how it earns money",\n'+
+        '  "dimensionScores":[\n'+
+        '    {"dimension":"Fundamental","score":7.5,"weight":0.25,"justification":"one sentence"},\n'+
+        '    {"dimension":"Quality","score":8.0,"weight":0.20,"justification":"one sentence"},\n'+
+        '    {"dimension":"Momentum","score":6.5,"weight":0.15,"justification":"one sentence"},\n'+
+        '    {"dimension":"Valuation","score":7.0,"weight":0.25,"justification":"one sentence"},\n'+
+        '    {"dimension":"Risk","score":7.0,"weight":0.15,"justification":"one sentence (inverted: lower risk = higher score)"}\n'+
+        '  ],\n'+
+        '  "moatStrength":"Wide",\n'+
+        '  "bullCase":["point 1","point 2","point 3"],\n'+
+        '  "bearCase":["risk 1","risk 2","risk 3"],\n'+
+        '  "keyMetrics":["metric to track","another","another"],\n'+
+        '  "thesisBreaker":"single event that invalidates the thesis",\n'+
+        '  "verdict":"2 direct sentences"\n'+
+        '}\n\n'+
+        'Constraints: recommendation "Strong Buy"|"Buy"|"Hold"|"Sell"|"Strong Sell"; moatStrength "Wide"|"Narrow"|"None"; confidence "High"|"Medium"|"Low"; rating/riskScore 1.0-10.0; dimensionScores must have all 5 dimensions with weights summing to 1.0.';
+    }
+
+    // DEEP mode (default)
+    return 'Analyse "'+stock+'" as a senior equity analyst. DEEP mode — full framework.'+realData+newsCtx+'\n\n'+
+'Return ONLY this JSON:\n'+
+'{\n'+
+'  "companyName":"full official name",\n'+
+'  "ticker":"ticker symbol or N/A",\n'+
+'  "sector":"GICS sector",\n'+
+'  "industry":"specific industry",\n'+
+'  "currency":"USD|EUR|GBP|MYR|SGD|JPY|HKD|CNY|...",\n'+
+'  "rating":7.5,\n'+
+'  "recommendation":"Buy",\n'+
+'  "confidence":"High",\n'+
+'  "riskScore":4.0,\n'+
+'  "oneLiner":"one sentence: what it does and exactly how it earns money",\n'+
+'  "dimensionScores":[\n'+
+'    {"dimension":"Fundamental","score":7.5,"weight":0.25,"justification":"one sentence on growth and profitability"},\n'+
+'    {"dimension":"Quality","score":8.0,"weight":0.20,"justification":"one sentence on financial strength and moat"},\n'+
+'    {"dimension":"Momentum","score":6.5,"weight":0.15,"justification":"one sentence on trend and earnings revisions"},\n'+
+'    {"dimension":"Valuation","score":7.0,"weight":0.25,"justification":"one sentence on price vs intrinsic worth"},\n'+
+'    {"dimension":"Risk","score":7.0,"weight":0.15,"justification":"one sentence (inverted: lower risk = higher score)"}\n'+
+'  ],\n'+
+'  "moatStrength":"Wide",\n'+
+'  "moatSource":"brand|switching costs|network effects|scale|IP|regulation|distribution|data",\n'+
+'  "moatDurability":"Widening",\n'+
+'  "managementScorecard":[\n'+
+'    {"pillar":"Capital Allocation","rating":"Strong","evidence":"ROIC vs WACC, M&A track record (disclosed)"},\n'+
+'    {"pillar":"Say-Do Ratio","rating":"Strong","evidence":"guidance accuracy over 8-12 quarters (disclosed)"},\n'+
+'    {"pillar":"Incentive Alignment","rating":"Mixed","evidence":"comp structure, insider ownership (disclosed)"},\n'+
+'    {"pillar":"Transparency","rating":"Strong","evidence":"how they handle bad news (inferred)"},\n'+
+'    {"pillar":"Execution","rating":"Strong","evidence":"12-quarter margin trends (disclosed)"}\n'+
+'  ],\n'+
+'  "earningsQuality":"High",\n'+
+'  "sectorKPIs":[\n'+
+'    {"metric":"sector-specific KPI name","value":"current value or range","interpretation":"what it signals"}\n'+
+'  ],\n'+
+'  "growthAnalysis":{\n'+
+'    "decomposition":[\n'+
+'      {"source":"volume|pricing|acquisitions|mix|geographic","contribution":"estimated % of 5yr growth","structural":true,"evidence":"cite filing or metric"}\n'+
+'    ],\n'+
+'    "primaryConstraint":"the ONE bottleneck limiting growth today",\n'+
+'    "constraintType":"Internal|External",\n'+
+'    "nextConstraint":"what becomes the constraint if primary is removed",\n'+
+'    "growthAssumption":"~X% CAGR for Y years driven by A and B",\n'+
+'    "assumptionVerdict":"Supported|Weakly Supported|Not Supported",\n'+
+'    "fragilePoint":"which part of the assumption is most fragile: rate, duration, or drivers"\n'+
+'  },\n'+
+'  "valuation":{\n'+
+'    "fairValueBull":280.00,\n'+
+'    "fairValueBase":245.50,\n'+
+'    "fairValueBear":210.00,\n'+
+'    "currentPrice":230.00,\n'+
+'    "marginOfSafety":6.7,\n'+
+'    "wacc":"10.5%",\n'+
+'    "terminalGrowth":"2.5%",\n'+
+'    "method":"DCF + peer multiples",\n'+
+'    "label":"Fairly valued",\n'+
+'    "mosIsSufficient":true,\n'+
+'    "mosCheckRationale":"one sentence: is the discount sufficient given the confidence level"\n'+
+'  },\n'+
+'  "financialHealth":{\n'+
+'    "cashConversion":"Strong",\n'+
+'    "fcfTrend":"Growing",\n'+
+'    "debtPosition":"Low",\n'+
+'    "workingCapital":"Healthy",\n'+
+'    "summary":"1-2 sentences applying the 7 Rules: cash vs profit, FCF, working capital, debt"\n'+
+'  },\n'+
+'  "riskAudit":{\n'+
+'    "operational":[\n'+
+'      {"risk":"what could break from inside","mechanism":"how it breaks","isHappening":false,"leadingIndicator":"metric to watch"}\n'+
+'    ],\n'+
+'    "financial":{"score":"Low|Medium|High","keyVulnerability":"what breaks first under stress"},\n'+
+'    "structural":[\n'+
+'      {"risk":"external force","category":"Regulation|Technology|Industry|Geopolitical|Demand","isHappening":false,"materialSignal":"what confirms it"}\n'+
+'    ]\n'+
+'  },\n'+
+'  "lynchPitch":{\n'+
+'    "whatItDoes":"one sentence",\n'+
+'    "simpleReason":"one clear idea why this could work",\n'+
+'    "howItMakesMoney":"revenue, costs, why profits exist",\n'+
+'    "balanceSheet":"debt, cash, downside survival",\n'+
+'    "companyType":"slow grower|stalwart|fast grower|cyclical|turnaround|asset play, with why",\n'+
+'    "whatCouldGoWrong":"competition, leverage, regulation, execution",\n'+
+'    "whyMarketMissing":"why the market might be mispricing this",\n'+
+'    "bottomLine":"3-4 sentences: what must go right, what would make you wrong"\n'+
+'  },\n'+
+'  "mungerInvert":{\n'+
+'    "mainFailureMode":"one sentence: most likely way an investor loses money",\n'+
+'    "structuralWeakness":"where the business model is weak",\n'+
+'    "assumptions":"assumptions that need to go right and might not",\n'+
+'    "permanentImpairment":"what could permanently impair earnings",\n'+
+'    "balanceSheetRisk":"hidden balance sheet risk if any",\n'+
+'    "managementRisk":"where management could hurt shareholders",\n'+
+'    "investorDelusion":"why investors might be fooling themselves",\n'+
+'    "bearEvidence":"evidence that would prove the bear case right"\n'+
+'  },\n'+
+'  "catalysts":[\n'+
+'    {"event":"specific event","timeframe":"~3 months","direction":"up","evidenceBasis":"disclosed"}\n'+
+'  ],\n'+
+'  "peers":[\n'+
+'    {"name":"Peer Co","ticker":"TICK","versus":"how this stock compares in one clause"}\n'+
+'  ],\n'+
+'  "outlook":{\n'+
+'    "y1":"1-year outlook in one sentence",\n'+
+'    "y3":"3-year outlook in one sentence",\n'+
+'    "y5":"5+ year outlook in one sentence"\n'+
+'  },\n'+
+'  "returnProfile":{\n'+
+'    "bear":{"cagr":"5-8%","fiveYearValue":"$X","condition":"margin compression, slower growth"},\n'+
+'    "base":{"cagr":"10-15%","fiveYearValue":"$Y","condition":"current trajectory continues"},\n'+
+'    "bull":{"cagr":"15-25%","fiveYearValue":"$Z","condition":"margin expansion, above-trend growth"}\n'+
+'  },\n'+
+'  "positionSize":{\n'+
+'    "recommended":"3-5%",\n'+
+'    "rationale":"one sentence: conviction-weighted sizing accounting for portfolio correlation"\n'+
+'  },\n'+
+'  "sellCriteria":{\n'+
+'    "thesisStatement":"what must be true for this to work",\n'+
+'    "kpisToMonitor":["specific metric 1","specific metric 2"],\n'+
+'    "thesisBreakTriggers":["specific verifiable event 1","specific verifiable event 2","specific verifiable event 3"],\n'+
+'    "valuationCeiling":"price or multiple at which stock is fully valued",\n'+
+'    "reviewCadence":"quarterly|semi-annually"\n'+
+'  },\n'+
+'  "verdict":"2-3 direct sentences on whether this is worth owning long term"\n'+
+'}\n\n'+
+'Constraints (use exactly these enum values):\n'+
+'- recommendation: "Strong Buy"|"Buy"|"Hold"|"Sell"|"Strong Sell"\n'+
+'- moatStrength: "Wide"|"Narrow"|"None"|"Unknown"\n'+
+'- moatDurability: "Widening"|"Stable"|"Narrowing"|"Unknown"\n'+
+'- managementScorecard.rating: "Strong"|"Mixed"|"Weak"|"Unknown"\n'+
+'- earningsQuality: "High"|"Medium"|"Low"|"Unknown"\n'+
+'- confidence: "High"|"Medium"|"Low"\n'+
+'- cashConversion: "Strong"|"Adequate"|"Weak"\n'+
+'- fcfTrend: "Growing"|"Stable"|"Declining"\n'+
+'- debtPosition: "Low"|"Manageable"|"Elevated"|"High"\n'+
+'- workingCapital: "Healthy"|"Watch"|"Concerning"\n'+
+'- valuation.label: "Deeply undervalued"|"Undervalued"|"Fairly valued"|"Overvalued"|"Significantly overvalued"\n'+
+'- catalyst.direction: "up"|"down"|"neutral"\n'+
+'- catalyst.evidenceBasis: "disclosed"|"inferred"|"unverified"\n'+
+'- growthAnalysis.decomposition.source: "volume"|"pricing"|"acquisitions"|"mix"|"geographic"\n'+
+'- growthAnalysis.constraintType: "Internal"|"External"\n'+
+'- growthAnalysis.assumptionVerdict: "Supported"|"Weakly Supported"|"Not Supported"\n'+
+'- growthAnalysis.decomposition: 2-5 sources, structural=true if repeatable\n'+
+'- riskAudit.financial.score: "Low"|"Medium"|"High"\n'+
+'- riskAudit.structural.category: "Regulation"|"Technology"|"Industry"|"Geopolitical"|"Demand"\n'+
+'- riskAudit.operational: 2-4 risks ranked by likelihood × severity\n'+
+'- riskAudit.structural: 2-4 risks ranked by likelihood × severity\n'+
+'- rating, riskScore: 1.0-10.0 decimals\n'+
+'- dimensionScores: exactly 5 items with weights summing to 1.0\n'+
+'- managementScorecard: exactly 5 pillars as shown\n'+
+'- sectorKPIs: 3-5 metrics appropriate to the company sector (banks: NIM,NPL,CET1,ROTCE; SaaS: NRR,ARR growth,Rule of 40; mining: P/NAV,AISC,reserve life; pharma: pipeline NPV,patent cliff; REITs: P/AFFO,occupancy; semis: book-to-bill,design wins; energy: EBITDAX,reserve replacement; insurance: combined ratio; consumer/retail: SSS,inventory turns; default: revenue growth,margins,ROIC)\n'+
+'- 2-4 catalysts, 2-3 peers\n'+
+'- All valuation prices in reporting currency; if unknown use 0\n'+
+'- positionSize.recommended formats: "1-2%", "3-5%", "5-7%", "Avoid"\n'+
+'- Tag evidence in managementScorecard as (disclosed), (inferred), or (unverified)';
+  }
+
+// ════════════ RICH STOCK ANALYSIS (ported engine + new-style renderer) ════════════
+// Engine functions (extractTicker, postClaude, callClaudeJSON, getNewsContext,
+// fetchAnalysisNews, finishNews, prefetchFinancials, financialsToPromptBlock,
+// analysisPrompt) + ENDPOINT/SYSTEM/state are spliced in ABOVE this block.
+
+var _saMode='deep';
+function ensureNews(){ if(!LIVE_NEWS.length || (Date.now()-NEWS_LAST_FETCH)>30*60*1000){ try{fetchAnalysisNews();}catch(e){} } }
+
+// ── autocomplete: company name / ticker → nearest matches via /api/search ──
+var _saSearchTimer=null, _saLastQ='';
+function saAutocomplete(inp,box){
+  var q=(inp.value||'').trim();
+  if(q===_saLastQ)return; _saLastQ=q;
+  clearTimeout(_saSearchTimer);
+  if(q.length<1){box.hidden=true;box.innerHTML='';return;}
+  _saSearchTimer=setTimeout(function(){
+    fetch('/api/search?q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(j){
+      var qs=(j&&j.quotes)||[];
+      if(!qs.length){box.hidden=true;box.innerHTML='';return;}
+      box.innerHTML=qs.map(function(x){
+        return '<div class="sa-opt" data-sym="'+esc(x.symbol)+'" data-name="'+esc(x.name)+'">'+
+          '<span class="sa-opt-sym">'+esc(x.symbol)+'</span>'+
+          '<span class="sa-opt-name">'+esc(x.name)+'</span>'+
+          '<span class="sa-opt-exch">'+esc(x.exch||x.type||'')+'</span></div>';
+      }).join('');
+      box.hidden=false;
+      box.querySelectorAll('.sa-opt').forEach(function(o){o.onmousedown=function(e){
+        e.preventDefault();
+        inp.value=this.dataset.name+' ('+this.dataset.sym+')';
+        _saLastQ=inp.value; box.hidden=true; box.innerHTML='';
+      };});
+    }).catch(function(){box.hidden=true;});
+  },220);
+}
+
+// ── new analyse UI (overrides the weak renderAIInput; last declaration wins) ──
+function renderAIInput(){
+  var el=document.getElementById('ai-input');if(!el)return;
+  if(_aiMode==='review'){
+    el.innerHTML='<button class="ai-go" id="ai-go">✦ review my portfolio</button>';
+    var g0=document.getElementById('ai-go');if(g0)g0.onclick=runAIAnalysis;
+  } else if(_aiMode==='analyse'){
+    ensureNews();
+    el.innerHTML=
+      '<div class="sa-row">'+
+        '<div class="sa-search">'+
+          '<input class="ai-tin sa-input" id="sa-input" placeholder="company name or ticker — e.g. Apple, NVDA, 1155.MY" autocomplete="off" spellcheck="false"/>'+
+          '<div class="sa-suggest" id="sa-suggest" hidden></div>'+
+        '</div>'+
+        '<div class="sa-modes" id="sa-modes">'+
+          '<button class="sa-mode'+(_saMode==='deep'?' on':'')+'" data-samode="deep">deep</button>'+
+          '<button class="sa-mode'+(_saMode==='lite'?' on':'')+'" data-samode="lite">quick</button>'+
+        '</div>'+
+        '<button class="ai-go" id="sa-go">analyse</button>'+
+      '</div>';
+    var inp=document.getElementById('sa-input'),box=document.getElementById('sa-suggest');
+    inp.oninput=function(){saAutocomplete(inp,box);};
+    inp.onkeydown=function(e){if(e.key==='Enter'){box.hidden=true;runStockAnalysis(_saMode);}else if(e.key==='Escape'){box.hidden=true;}};
+    inp.onblur=function(){setTimeout(function(){box.hidden=true;},150);};
+    document.getElementById('sa-modes').querySelectorAll('[data-samode]').forEach(function(b){b.onclick=function(){
+      _saMode=this.dataset.samode;
+      document.querySelectorAll('#sa-modes .sa-mode').forEach(function(x){x.classList.toggle('on',x.dataset.samode===_saMode);});
+    };});
+    document.getElementById('sa-go').onclick=function(){runStockAnalysis(_saMode);};
+  } else {
+    el.innerHTML='<input class="ai-tin" id="ai-t1" placeholder="ticker A"/><span class="ai-vs">vs</span><input class="ai-tin" id="ai-t2" placeholder="ticker B"/><button class="ai-go" id="ai-go">compare</button>';
+    var g2=document.getElementById('ai-go');if(g2)g2.onclick=runAIAnalysis;
+  }
+}
+
+// ── orchestrator: live financials → news-aware deep prompt → structured JSON ──
+async function runStockAnalysis(mode){
+  var res=document.getElementById('ai-result');if(!res)return;
+  var inp=document.getElementById('sa-input');
+  var raw=(inp&&inp.value||'').trim();
+  if(!raw){res.innerHTML='<div class="port-ai-err">Type a company name or ticker.</div>';return;}
+  mode=mode||'deep';
+  var go=document.getElementById('sa-go');if(go)go.disabled=true;
+  var own=getHoldings().filter(function(h){return (h.ticker||'').toUpperCase()===extractTicker(raw);})[0];
+  res.innerHTML='<div class="port-ai-load">📊 fetching live financials for '+esc(raw)+'…</div>';
+  try{
+    var fin=await prefetchFinancials(raw);
+    var finBlock=financialsToPromptBlock(fin);
+    res.innerHTML='<div class="port-ai-load">running '+(mode==='lite'?'quick scan':'deep analysis')+' on '+esc(raw)+(fin?' · live data ✓':'')+'…</div>';
+    var maxTok=mode==='lite'?2400:6000;
+    var prompt=analysisPrompt(raw,mode,null,finBlock);
+    if(own)prompt+='\n\n(Context: the investor already holds '+own.shares+' shares at avg cost RM'+own.cost+', now RM'+own.price+'.)';
+    var d=await callClaudeJSON(prompt,maxTok);
+    renderStockAnalysis(d,!!fin);
+  }catch(e){
+    res.innerHTML='<div class="port-ai-err">Couldn’t complete the analysis ('+esc(e&&e.message||'error')+').<br><span class="port-ai-hint">Needs the Cloudflare API key set (OPENROUTER_API_KEY etc.). Try again or use quick mode.</span></div>';
+  }
+  if(go)go.disabled=false;
+}
+
+// ── rich renderer (new hub style; defensive — renders only present fields) ──
+function saRecClass(r){r=(r||'').toLowerCase();if(r.indexOf('strong buy')>=0)return'sb';if(r.indexOf('buy')>=0)return'b';if(r.indexOf('strong sell')>=0)return'ss';if(r.indexOf('sell')>=0)return's';return'h';}
+function saList(arr){return '<ul class="sa-ul">'+(arr||[]).map(function(x){return '<li>'+esc(typeof x==='string'?x:(x.point||x.risk||x.event||JSON.stringify(x)))+'</li>';}).join('')+'</ul>';}
+function saSection(title,inner){return inner?'<div class="sa-sec"><div class="sa-sec-h">'+esc(title)+'</div>'+inner+'</div>':'';}
+function saChip(label,val){return val?'<span class="sa-chip"><b>'+esc(label)+'</b> '+esc(val)+'</span>':'';}
+function renderStockAnalysis(d,live){
+  var res=document.getElementById('ai-result');if(!res||!d)return;
+  var cur=d.currency||'';
+  var rating=(typeof d.rating==='number')?d.rating.toFixed(1):(d.rating||'—');
+  var html='<div class="sa-result">';
+  // header
+  html+='<div class="sa-head">'+
+    '<div class="sa-head-l">'+
+      '<div class="sa-name">'+esc(d.companyName||d.ticker||'—')+'</div>'+
+      '<div class="sa-meta">'+[d.ticker,d.sector,d.industry,cur].filter(Boolean).map(esc).join(' · ')+'</div>'+
+      (d.oneLiner?'<div class="sa-oneliner">'+esc(d.oneLiner)+'</div>':'')+
+    '</div>'+
+    '<div class="sa-head-r">'+
+      '<div class="sa-rating"><span class="sa-rating-n">'+esc(rating)+'</span><span class="sa-rating-d">/10</span></div>'+
+      (d.recommendation?'<div class="sa-rec '+saRecClass(d.recommendation)+'">'+esc(d.recommendation)+'</div>':'')+
+      '<div class="sa-subrate">'+[d.confidence?('conf: '+d.confidence):'',(typeof d.riskScore==='number')?('risk: '+d.riskScore.toFixed(1)):''].filter(Boolean).map(esc).join(' · ')+'</div>'+
+    '</div></div>';
+  // dimension scores
+  if(d.dimensionScores&&d.dimensionScores.length){
+    html+=saSection('scorecard',d.dimensionScores.map(function(s){
+      var pct=Math.max(0,Math.min(100,(+s.score||0)*10));
+      return '<div class="sa-dim"><div class="sa-dim-top"><span class="sa-dim-name">'+esc(s.dimension)+'</span><span class="sa-dim-score">'+(typeof s.score==='number'?s.score.toFixed(1):esc(s.score))+'</span></div>'+
+        '<div class="sa-bar"><div class="sa-bar-f" style="width:'+pct+'%"></div></div>'+
+        (s.justification?'<div class="sa-dim-j">'+esc(s.justification)+'</div>':'')+'</div>';
+    }).join(''));
+  }
+  // valuation
+  var v=d.valuation;
+  if(v){
+    var vchips=[saChip('current',(cur+' '+(v.currentPrice||'')).trim()),saChip('bear',v.fairValueBear),saChip('base',v.fairValueBase),saChip('bull',v.fairValueBull),saChip('margin of safety',(typeof v.marginOfSafety==='number'?v.marginOfSafety+'%':v.marginOfSafety)),saChip('method',v.method),saChip('WACC',v.wacc)].join('');
+    html+=saSection('valuation'+(v.label?' — '+v.label:''),'<div class="sa-chips">'+vchips+'</div>'+(v.mosCheckRationale?'<div class="sa-note">'+esc(v.mosCheckRationale)+'</div>':''));
+  }
+  // moat
+  if(d.moatStrength){
+    html+=saSection('moat','<div class="sa-chips">'+saChip('strength',d.moatStrength)+saChip('source',d.moatSource)+saChip('durability',d.moatDurability)+saChip('earnings quality',d.earningsQuality)+'</div>');
+  }
+  // bull / bear — supports both array form (lite) and framework form (deep)
+  var bull = (d.bullCase&&d.bullCase.length)?saList(d.bullCase) : (d.lynchPitch?('<div class="sa-note">'+esc(d.lynchPitch.bottomLine||d.lynchPitch.simpleReason||'')+'</div>'+(d.lynchPitch.whyMarketMissing?'<div class="sa-sub">Why the market may be missing it: '+esc(d.lynchPitch.whyMarketMissing)+'</div>':'')):'');
+  var bear = (d.bearCase&&d.bearCase.length)?saList(d.bearCase) : (d.mungerInvert?('<div class="sa-note">'+esc(d.mungerInvert.mainFailureMode||'')+'</div>'+(d.mungerInvert.bearEvidence?'<div class="sa-sub">Evidence to watch: '+esc(d.mungerInvert.bearEvidence)+'</div>':'')):'');
+  if(bull||bear){
+    html+='<div class="sa-bullbear">'+
+      (bull?'<div class="sa-bb sa-bull"><div class="sa-bb-h">▲ bull case</div>'+bull+'</div>':'')+
+      (bear?'<div class="sa-bb sa-bear"><div class="sa-bb-h">▼ bear case</div>'+bear+'</div>':'')+'</div>';
+  }
+  // growth
+  var g=d.growthAnalysis;
+  if(g){
+    html+=saSection('growth','<div class="sa-chips">'+saChip('assumption',g.growthAssumption)+saChip('verdict',g.assumptionVerdict)+'</div>'+
+      (g.primaryConstraint?'<div class="sa-note"><b>Primary constraint:</b> '+esc(g.primaryConstraint)+(g.constraintType?' ('+esc(g.constraintType)+')':'')+'</div>':'')+
+      (g.fragilePoint?'<div class="sa-sub">Most fragile: '+esc(g.fragilePoint)+'</div>':''));
+  }
+  // financial health
+  var fh=d.financialHealth;
+  if(fh){
+    html+=saSection('financial health','<div class="sa-chips">'+saChip('cash conversion',fh.cashConversion)+saChip('FCF',fh.fcfTrend)+saChip('debt',fh.debtPosition)+saChip('working capital',fh.workingCapital)+'</div>'+(fh.summary?'<div class="sa-note">'+esc(fh.summary)+'</div>':''));
+  }
+  // sector KPIs / key metrics
+  if(d.sectorKPIs&&d.sectorKPIs.length){
+    html+=saSection('sector KPIs',d.sectorKPIs.map(function(k){return '<div class="sa-kpi"><b>'+esc(k.metric)+'</b> '+esc(k.value||'')+(k.interpretation?' — <span class="sa-sub-inline">'+esc(k.interpretation)+'</span>':'')+'</div>';}).join(''));
+  } else if(d.keyMetrics&&d.keyMetrics.length){
+    html+=saSection('key metrics to track',saList(d.keyMetrics));
+  }
+  // catalysts
+  if(d.catalysts&&d.catalysts.length){
+    html+=saSection('catalysts',d.catalysts.map(function(c){var dir=(c.direction||'').toLowerCase();var arrow=dir.indexOf('up')>=0?'▲':dir.indexOf('down')>=0?'▼':'•';return '<div class="sa-cat"><span class="sa-cat-a '+(dir.indexOf('up')>=0?'up':dir.indexOf('down')>=0?'dn':'')+'">'+arrow+'</span> '+esc(c.event||'')+(c.timeframe?' <span class="sa-sub-inline">('+esc(c.timeframe)+')</span>':'')+'</div>';}).join(''));
+  }
+  // return profile
+  var rp=d.returnProfile;
+  if(rp&&(rp.bear||rp.base||rp.bull)){
+    function rpcell(lbl,o){return o?'<div class="sa-rp-c"><div class="sa-rp-l">'+lbl+'</div><div class="sa-rp-v">'+esc(o.cagr||'')+'</div><div class="sa-rp-cond">'+esc(o.condition||'')+'</div></div>':'';}
+    html+=saSection('5-year return profile','<div class="sa-rp">'+rpcell('bear',rp.bear)+rpcell('base',rp.base)+rpcell('bull',rp.bull)+'</div>');
+  }
+  // outlook
+  if(d.outlook&&(d.outlook.y1||d.outlook.y3||d.outlook.y5)){
+    html+=saSection('outlook','<div class="sa-chips">'+saChip('1y',d.outlook.y1)+saChip('3y',d.outlook.y3)+saChip('5y+',d.outlook.y5)+'</div>');
+  }
+  // thesis breaker + verdict
+  if(d.thesisBreaker)html+=saSection('thesis breaker','<div class="sa-note sa-breaker">'+esc(d.thesisBreaker)+'</div>');
+  var verdict=d.verdict||(d.lynchPitch&&d.lynchPitch.bottomLine);
+  if(verdict)html+='<div class="sa-verdict"><div class="sa-verdict-h">verdict</div>'+esc(verdict)+'</div>';
+  html+='<div class="sa-foot">'+(live?'live Yahoo Finance data + market news factored in · ':'')+'AI-generated · general information, not financial advice</div>';
+  html+='</div>';
+  res.innerHTML=html;
+}
+
+
 
 // ════════════ PROPERTY — comprehensive single-scenario analyzer ════════════
 function propFmt(n){return Math.round(n).toLocaleString();}
