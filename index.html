@@ -7195,7 +7195,18 @@ function seedMonthly(){
   var cur=curMonthStr(),mk=Object.keys(months);
   return {months:months,current:months[cur]?cur:mk[mk.length-1]};
 }
-function getMonthlyStore(){var s=load('monthly-v9',null);if(!s||!s.months){s=seedMonthly();store('monthly-v9',s);}return s;}
+function getMonthlyStore(){
+  var s=load('monthly-v9',null);
+  if(!s||!s.months){s=seedMonthly();store('monthly-v9',s);}
+  // one-time correction (Jun 2026): refresh Jan–May from corrected seed (May rebalance,
+  // May income +Criminal Lit notes, Feb +Parking, etc.). Preserves Jun & any edits elsewhere.
+  if(!load('monthly-fix-janmay-1',0)){
+    var seed=seedMonthly();
+    ['Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026'].forEach(function(m){if(seed.months[m])s.months[m]=seed.months[m];});
+    store('monthly-v9',s);store('monthly-fix-janmay-1',1);
+  }
+  return s;
+}
 function saveMonthlyStore(s){store('monthly-v9',s);}
 function curMonthData(){var s=getMonthlyStore();if(!s.current||!s.months[s.current])return {income:[],bills:[],expenses:[],savings:[]};return s.months[s.current];}
 function mtAdd(arrKey,obj){var s=getMonthlyStore();if(!s.current)return;if(!s.months[s.current])s.months[s.current]={income:[],bills:[],expenses:[],savings:[]};if(!s.months[s.current][arrKey])s.months[s.current][arrKey]=[];s.months[s.current][arrKey].push(obj);saveMonthlyStore(s);renderMonthlyFull();}
