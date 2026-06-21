@@ -2223,6 +2223,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .treat-meta{font-size:10px;color:var(--t4);margin-top:3px;line-height:1.5;}
 .treat-act{text-align:right;flex-shrink:0;}
 .treat-last{display:block;font-size:9.5px;color:var(--t5);margin-bottom:4px;}
+.treat-remark{display:inline-block;font-size:9.5px;color:#8f6a26;background:var(--honey-bg);border-radius:6px;padding:1px 6px;margin-left:2px;}
+.treat-log-row{display:flex;align-items:baseline;gap:9px;padding:6px 0;border-bottom:1px solid rgba(60,52,44,0.05);font-size:12px;}
+.treat-log-row .tl-date{flex:0 0 84px;font-size:11px;color:var(--honey);font-weight:500;font-variant-numeric:tabular-nums;}
+.treat-log-row .tl-name{flex:1;color:var(--t1);min-width:0;}
+.treat-log-row .tl-clinic{font-size:10.5px;color:var(--t4);}
+.treat-log-row .row-x{flex:0 0 auto;}
 .emo-section{background:rgba(170,150,190,0.05);border-radius:14px;padding:20px 22px;margin:0 -22px;}
 .emo-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
 .emo-slider{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
@@ -3247,6 +3253,10 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
         <div class="mt-sub">
           <div class="re-eyebrow">皮肤管理 · skin treatments</div>
           <div class="treat-goal">目标🎯 颌面好看 · 面部平整度高 · 皮肉紧实 · 外轮廓流畅 · 淡颜</div>
+          <div class="re-eyebrow" style="margin-top:12px;">记录 · log <span class="sec-count" id="mt-treat-log-count"></span></div>
+          <div id="mt-treat-log"></div>
+          <div class="add-row" data-add="treat-log"><span class="add-plus">+</span><input class="add-in add-time" placeholder="date YYYY-MM-DD" data-field="date" style="flex:0 0 118px;"/><input class="add-in" placeholder="treatment" data-field="name"/><input class="add-in add-time" placeholder="clinic" data-field="clinic" style="flex:0 0 98px;"/></div>
+          <div class="re-eyebrow" style="margin-top:16px;">计划 · plan</div>
           <div class="mt-next" id="mt-skin-next"></div>
           <div class="flow-scroll"><div id="mt-treatments"></div></div>
         </div>
@@ -4046,6 +4056,7 @@ function wireAdd(){
         if(kind==='bucket'&&fields.text){var d=getBucket();d.push({id:Date.now(),text:fields.text,category:fields.category||'experience',priority:fields.priority||'someday',done:false});store('bucket',d);renderBucketList();}
         if(kind==='trip'&&fields.name){var d=getDreams();d.push({id:'u'+Date.now(),name:fields.name,flag:fields.flag||'',budget:fields.budget||'',note:fields.note||'',when:fields.when||''});saveDreams(d);renderTrips();}
         if(kind==='prop-dd'&&fields.text){var d=getDD();d.push({id:muid(),text:fields.text,category:fields.category||'Other',done:false});store('property-due-diligence',d);renderDueDiligence();}
+        if(kind==='treat-log'&&(fields.name||fields.date)){var d=mtTreatLog();d.push({id:muid(),date:fields.date||todayStr(),name:fields.name||'treatment',clinic:fields.clinic||''});store('treatment-log',d);renderTreatmentLog();}
         if(kind==='transaction'&&fields.type){var d=getTx();d.push({id:muid(),date:fields.date||new Date().toISOString().slice(0,10),type:fields.type,ticker:fields.ticker||'',shares:parseFloat(fields.shares)||0,price:parseFloat(fields.price)||0,amount:parseFloat(fields.amount)||0,fees:0,notes:''});store('transactions-v3',d);renderTransactions();}
         if(kind==='port-note'&&fields.note){var d=getNotes();d.push({id:muid(),date:fields.date||new Date().toISOString().slice(0,10),ticker:fields.ticker||'',note:fields.note,sentiment:fields.sentiment||'neutral'});store('portfolio-notes',d);renderPortfolioNotes();}
         if(kind==='mv-video'&&(fields.url||fields.title)){var d=getWorkoutVideos();d.push({id:muid(),url:fields.url||'',bvid:bvFromUrl(fields.url),title:fields.title||'workout',creator:fields.creator||'',type:fields.type||'',duration:0,favourite:false});store('workout-videos',d);renderVideoLibrary();}
@@ -6565,14 +6576,49 @@ var SBIC={
 // ─── GLOW-UP MAINTENANCE (cel-glowup-maint-v1) ───
 /* ════════════ MAINTENANCE — 6 sections (MT2–MT6) ════════════ */
 var DEF_MT_BEAUTY=[{id:1,name:'Nails + toes',cadenceWeeks:3,lastDone:null,category:'Hands'},{id:2,name:'Hair trim',cadenceWeeks:8,lastDone:null,category:'Hair'},{id:3,name:'Brow grooming',cadenceWeeks:4,lastDone:null,category:'Brows'},{id:4,name:'Signature scent — restock',cadenceWeeks:12,lastDone:null,category:'Scent'},{id:5,name:'Daily cuticle oil',cadenceWeeks:0,lastDone:null,category:'Hands',daily:true},{id:6,name:'Clean makeup brushes',cadenceWeeks:1,lastDone:null,category:'Makeup'},{id:7,name:'Lash extensions',cadenceWeeks:3,lastDone:null,category:'Lashes'},{id:8,name:'Scalp treatment',cadenceWeeks:4,lastDone:null,category:'Hair'},{id:9,name:'Facial (professional)',cadenceWeeks:4,lastDone:null,category:'Face'},{id:10,name:'Dental check-up',cadenceWeeks:26,lastDone:null,category:'Health'},{id:11,name:'Eye check-up',cadenceWeeks:52,lastDone:null,category:'Health'},{id:12,name:'Full health screening',cadenceWeeks:52,lastDone:null,category:'Health'}];
-var DEF_TREATMENTS={skin:[{id:1,name:'光子嫩肤',type:'黑金超光子嫩肤',freq:'2-3 months',price:'RM388',clinic:'gangnam31',lastDone:null},{id:2,name:'水光针',type:'juvelook / 丽珠兰',freq:'2-3 months',price:'',clinic:'vybeauty',lastDone:null},{id:3,name:'皮肤管理 针清',type:'针清',freq:'monthly',price:'RM88',clinic:'gangnam31',lastDone:null}],contour:[{id:4,name:'小颜整骨',type:'',freq:'2 weeks',price:'配套',clinic:'bone bliss',lastDone:null},{id:5,name:'Emface',type:'',freq:'TBD',price:'',clinic:'',lastDone:null},{id:6,name:'手术 — 全切双眼皮+提肌',type:'永久',freq:'done',price:'RM7900',clinic:'Kaman Beauty',lastDone:'2025-10-20'},{id:8,name:'大外轮廓 轮廓针',type:'下颌线',freq:'1-2 months',price:'模特 RM680',clinic:'vybeauty',lastDone:null}],botox:[{id:9,name:'瘦脸针+下颌缘',type:'',freq:'1.5-2 years',price:'',clinic:'vybeauty',lastDone:null},{id:10,name:'瘦肩针',type:'',freq:'yearly',price:'模特 RM680',clinic:'vybeauty',lastDone:null},{id:11,name:'牙龈肉毒',type:'',freq:'3 months',price:'模特 RM400',clinic:'vybeauty',lastDone:null}],body:[{id:12,name:'纹眉',type:'',freq:'yearly',price:'RM1380',clinic:'Pristine Strokes',lastDone:null},{id:13,name:'爆瘦针',type:'',freq:'2 weeks',price:'RM1491',clinic:'vybeauty',lastDone:null},{id:14,name:'溶脂针/体雕针',type:'手臂，大腿',freq:'monthly',price:'模特 RM300',clinic:'vybeauty',lastDone:null}],filler:[{id:16,name:'双C 鼻子眉弓',type:'',freq:'1-2 years',price:'',clinic:'',lastDone:null},{id:17,name:'下巴周围',type:'尽量别打面中',freq:'1-2 years',price:'',clinic:'',lastDone:null}]};
+var DEF_TREATMENTS={
+  skin:[
+    {id:1,name:'光子嫩肤',type:'黑金超光子嫩肤',freq:'2-3 months',price:'RM388',clinic:'gangnam31',remark:'RM3288 无限次 · 送韩式水光针',lastDone:null},
+    {id:2,name:'水光针',type:'juvelook / 丽珠兰 / 三文鱼水光',freq:'2-3 months',price:'',clinic:'vybeauty',remark:'',lastDone:null},
+    {id:3,name:'皮肤管理 针清',type:'针清',freq:'monthly',price:'RM88',clinic:'gangnam31',remark:'',lastDone:null},
+    {id:18,name:'冰点除毛',type:'身体',freq:'monthly',price:'RM88',clinic:'gangnam31',remark:'',lastDone:null}
+  ],
+  contour:[
+    {id:4,name:'小颜整骨',type:'',freq:'2 weeks',price:'配套',clinic:'bone bliss & ag beauty / ng wellness',remark:'',lastDone:null},
+    {id:5,name:'Emface',type:'',freq:'TBD',price:'',clinic:'',remark:'',lastDone:null},
+    {id:6,name:'手术 — 全切双眼皮+提肌+拆线+药',type:'永久',freq:'done',price:'RM7900',clinic:'Kaman Beauty',remark:'',lastDone:'2025-10-20'},
+    {id:19,name:'面部平整度 — 光电',type:'inmode / onda / 钛提升',freq:'2 months (初期 3 个月)',price:'',clinic:'',remark:'25 岁后',lastDone:null},
+    {id:8,name:'大外轮廓 — 轮廓针',type:'下颌线 · 紧致度 (脸颊凹陷)',freq:'1-2 months',price:'模特 RM680',clinic:'vybeauty',remark:'',lastDone:null}
+  ],
+  botox:[
+    {id:9,name:'瘦脸针 + 下颌缘 + 颈阔肌提升',type:'',freq:'1.5-2 years',price:'',clinic:'vybeauty',remark:'',lastDone:null},
+    {id:10,name:'瘦肩针',type:'',freq:'yearly',price:'模特 RM680',clinic:'vybeauty',remark:'',lastDone:null},
+    {id:11,name:'牙龈肉毒',type:'',freq:'3 months',price:'模特 RM400',clinic:'vybeauty',remark:'',lastDone:null}
+  ],
+  body:[
+    {id:12,name:'纹眉',type:'',freq:'yearly',price:'RM1380',clinic:'Pristine Strokes',remark:'',lastDone:null},
+    {id:13,name:'爆瘦针',type:'',freq:'2 weeks',price:'RM1491 (配 1 送 1)',clinic:'vybeauty',remark:'',lastDone:null},
+    {id:14,name:'溶脂针 / 体雕针',type:'手臂，大腿',freq:'monthly',price:'模特 RM300',clinic:'vybeauty',remark:'',lastDone:null},
+    {id:20,name:'洗牙',type:'',freq:'monthly',price:'',clinic:'',remark:'',lastDone:null}
+  ],
+  filler:[
+    {id:16,name:'双C 鼻子眉弓',type:'',freq:'1-2 years',price:'',clinic:'',remark:'',lastDone:null},
+    {id:17,name:'下巴周围',type:'尽量别打面中',freq:'1-2 years',price:'',clinic:'',remark:'',lastDone:null}
+  ]
+};
+// chronological record of treatments actually done (newest entries can be in any order; render sorts)
+var DEF_TREAT_LOG=[
+  {id:'t2',date:'2026-06-20',name:'皮肤管理',clinic:'gangnam.skin'},
+  {id:'t1',date:'2026-02-21',name:'皮肤管理',clinic:'gangnam.skin'}
+];
 var TREAT_CATS={skin:'皮肤',contour:'五官轮廓',botox:'肉毒',body:'身体管理',filler:'填充'};
 var EMO_PRACTICES=[{text:'Name the feeling before reacting',category:'awareness'},{text:'One boundary this week — say no to something',category:'boundaries'},{text:'Brain dump — write everything out, then close the notebook',category:'release'},{text:"Identify one thought pattern that isn't serving you",category:'awareness'},{text:'10 min alone with no input — no phone, no music, just sitting',category:'stillness'},{text:'Ask: am I reacting to now, or to something old?',category:'awareness'},{text:'Let one thing be imperfect today',category:'release'},{text:'Check: am I consuming to avoid feeling?',category:'awareness'}];
 var DEF_MT_ENV=[{id:1,text:'Organise desk + drawers',done:false,category:'space'},{id:2,text:'Organise wardrobe — sell / donate / throw away',done:false,category:'space'},{id:3,text:'Organise accessories',done:false,category:'space'},{id:4,text:'Get rid of old socks + underwear',done:false,category:'space'},{id:5,text:'Organise + get rid of makeups',done:false,category:'space'},{id:6,text:'Organise technology (chargers, cords)',done:false,category:'space'},{id:7,text:'Reset skincare + restock',done:false,category:'space'},{id:8,text:'Clear wallet + bag receipts',done:false,category:'space'},{id:9,text:'Laundry',done:false,category:'chores'},{id:10,text:'Vacuum',done:false,category:'chores'},{id:11,text:'Clean bathroom + kitchen',done:false,category:'chores'},{id:12,text:'Take out trash',done:false,category:'chores'},{id:13,text:'Tidy space + wipe surfaces',done:false,category:'chores'}];
 var DEF_MT_DIGITAL=[{id:1,text:'Unsubscribe unnecessary emails',done:false},{id:2,text:'Turn off unwanted notifications',done:false},{id:3,text:'Reorganise likes / saves in XHS + TikTok',done:false},{id:4,text:'Delete unwanted apps',done:false},{id:5,text:'Go through subscriptions',done:false},{id:6,text:'Create new playlists',done:false},{id:7,text:'Tidy notes app',done:false},{id:8,text:'Clear out photos',done:false},{id:9,text:'Clear desktop folders',done:false}];
 var DEF_MT_PERSONAL=[{id:1,text:'Life audit + previous year reflection',lastDone:null},{id:2,text:'Reading list for the year',lastDone:null},{id:3,text:'Update finances',lastDone:null},{id:4,text:'Update Notion pages',lastDone:null},{id:5,text:'Update calendar events',lastDone:null},{id:6,text:'Journal book — new entry',lastDone:null}];
 function mtBeautyData(){return load('maintenance-beauty',DEF_MT_BEAUTY);}
-function mtTreatData(){return load('beauty-treatments',DEF_TREATMENTS);}
+function mtTreatData(){if(!load('treat-plan-v2',0)){store('beauty-treatments',DEF_TREATMENTS);store('treat-plan-v2',1);}return load('beauty-treatments',DEF_TREATMENTS);}
+function mtTreatLog(){return load('treatment-log',DEF_TREAT_LOG);}
 function mtEnvData(){return load('maintenance-env',DEF_MT_ENV);}
 function mtDigitalData(){return load('maintenance-digital',DEF_MT_DIGITAL);}
 function mtPersonalData(){return load('maintenance-personal',DEF_MT_PERSONAL);}
@@ -6607,11 +6653,23 @@ function renderTreatments(){
   el.innerHTML=Object.keys(data).map(function(cat){
     return '<div class="treat-cat"><div class="treat-cat-h" data-treatcat="'+cat+'">'+esc(TREAT_CATS[cat]||cat)+' <span>'+data[cat].length+'</span></div><div class="treat-items">'+data[cat].map(function(t){
       var done=t.freq==='done';
-      return '<div class="treat-row"><div class="treat-info"><div class="treat-n">'+esc(t.name)+(done?' <span class="treat-done">✓</span>':'')+'</div><div class="treat-meta">'+[esc(t.type),'every '+esc(t.freq),esc(t.price),esc(t.clinic)].filter(Boolean).join(' · ')+'</div></div>'+(done?'':'<div class="treat-act"><span class="treat-last">'+(t.lastDone?ago(t.lastDone):'never')+'</span><button class="mt-done-btn" data-treatdone="'+cat+'|'+t.id+'">done</button></div>')+'</div>';
+      var metaParts=done?[esc(t.type),esc(t.price),esc(t.clinic),(t.lastDone?'✓ '+esc(t.lastDone):'')]:[esc(t.type),'every '+esc(t.freq),esc(t.price),esc(t.clinic)];
+      var meta=metaParts.filter(Boolean).join(' · ')+(t.remark?' <span class="treat-remark">'+esc(t.remark)+'</span>':'');
+      return '<div class="treat-row"><div class="treat-info"><div class="treat-n">'+esc(t.name)+(done?' <span class="treat-done">✓</span>':'')+'</div><div class="treat-meta">'+meta+'</div></div>'+(done?'':'<div class="treat-act"><span class="treat-last">'+(t.lastDone?ago(t.lastDone):'never')+'</span><button class="mt-done-btn" data-treatdone="'+cat+'|'+t.id+'">done</button></div>')+'</div>';
     }).join('')+'</div></div>';
   }).join('');
   el.querySelectorAll('[data-treatcat]').forEach(function(h){h.onclick=function(){this.parentElement.classList.toggle('open');};});
   el.querySelectorAll('[data-treatdone]').forEach(function(b){b.onclick=function(){var pr=this.dataset.treatdone.split('|'),d=mtTreatData();d[pr[0]].forEach(function(x){if(String(x.id)===pr[1])x.lastDone=new Date().toISOString().slice(0,10);});store('beauty-treatments',d);renderTreatments();};});
+}
+function fmtTreatDate(d){var p=String(d||'').split('-');if(p.length<3)return d||'';var MN=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return (MN[+p[1]]||p[1])+' '+(+p[2])+', '+p[0];}
+function renderTreatmentLog(){
+  var el=document.getElementById('mt-treat-log');if(!el)return;
+  var d=mtTreatLog().slice().sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
+  setT('mt-treat-log-count',d.length?d.length+' done':'');
+  el.innerHTML=d.length?d.map(function(t){
+    return '<div class="treat-log-row"><span class="tl-date">'+esc(fmtTreatDate(t.date))+'</span><span class="tl-name">'+esc(t.name)+'</span><span class="tl-clinic">'+(t.clinic?'@ '+esc(t.clinic):'')+'</span><button class="row-x" data-tldel="'+esc(t.id)+'">×</button></div>';
+  }).join(''):'<div class="soft-empty">no treatments logged yet — add one below.</div>';
+  el.querySelectorAll('[data-tldel]').forEach(function(b){b.onclick=function(){var id=this.dataset.tldel;store('treatment-log',mtTreatLog().filter(function(x){return String(x.id)!==id;}));renderTreatmentLog();};});
 }
 function renderEmotional(){
   var e=mtEmo();
@@ -6672,7 +6730,7 @@ function renderMaintenanceFocus(){
     renderMaintenanceFull();
   };});
 }
-function renderMaintenanceFull(){bindMtTabs();renderMaintenanceFocus();renderBeautyMaintenance();renderTreatments();renderEnvReset();renderDigitalCleanse();renderPersonalCleanse();}
+function renderMaintenanceFull(){bindMtTabs();renderMaintenanceFocus();renderBeautyMaintenance();renderTreatmentLog();renderTreatments();renderEnvReset();renderDigitalCleanse();renderPersonalCleanse();}
 window.renderMaintenanceFull=renderMaintenanceFull;
 
 var MAINT=[{"name": "Hair trim", "weeks": 6, "cat": "Hair", "last": null}, {"name": "Scalp treatment", "weeks": 4, "cat": "Hair", "last": null}, {"name": "Facial (professional)", "weeks": 8, "cat": "Face", "last": null}, {"name": "Reassess skincare routine", "weeks": 13, "cat": "Face", "last": null}, {"name": "Toss expired skincare/makeup", "weeks": 13, "cat": "Face", "last": null}, {"name": "Brow grooming", "weeks": 4, "cat": "Brows", "last": null}, {"name": "Brow lamination", "weeks": 8, "cat": "Brows", "last": null}, {"name": "Lash lift / tint", "weeks": 6, "cat": "Lashes", "last": null}, {"name": "Wax · upper lip", "weeks": 4, "cat": "Body", "last": null}, {"name": "Wax · brazilian / body", "weeks": 4, "cat": "Body", "last": null}, {"name": "Body massage", "weeks": 4, "cat": "Body", "last": null}, {"name": "Mani / pedi", "weeks": 3, "cat": "Nails", "last": null}, {"name": "Dental check-up", "weeks": 26, "cat": "Health", "last": null}, {"name": "Eye check-up", "weeks": 52, "cat": "Health", "last": null}, {"name": "OB-GYN check", "weeks": 52, "cat": "Health", "last": null}, {"name": "Full health screening", "weeks": 52, "cat": "Health", "last": null}];
