@@ -8697,6 +8697,17 @@ function pushWidgetSnapshot(){
 }
 window.widgetToken=widgetToken;window.pushWidgetSnapshot=pushWidgetSnapshot;
 window.addEventListener('load',function(){setTimeout(pushWidgetSnapshot,1500);});
+// ── deep link: ?go=<deckId> jumps straight into that flashcard session (for widgets/shortcuts) ──
+(function(){try{
+  var go=new URLSearchParams(location.search).get('go');if(!go)return;
+  var lang=go.indexOf('ko')===0?'ko':(go.indexOf('jp')===0?'jp':null);if(!lang)return;
+  window.addEventListener('load',function(){setTimeout(function(){
+    var th=document.getElementById('threshold');if(th)th.classList.add('gone');
+    try{switchView('mind');}catch(e){}
+    try{switchSub('mind',lang==='ko'?'korean':'japanese');}catch(e){}
+    setTimeout(function(){try{fcStart(lang,go);}catch(e){}},400);
+  },250);});
+}catch(e){}})();
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')pushWidgetSnapshot();});
 </script>
 </body>
