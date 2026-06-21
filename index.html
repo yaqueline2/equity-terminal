@@ -2926,6 +2926,10 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   .yag-val{flex:1;text-align:left;margin:0;font-size:15px;font-weight:500;}
   .yag-delta{flex:0 0 auto;min-height:0;font-size:11.5px;}
   .yag-dot,.yag-line{display:none;}
+  /* sector rows: let the name flex instead of fixed widths */
+  .sector-n{flex:1 1 auto !important;}
+  .sector-v{flex:0 0 70px !important;}
+  .m-hide-mobile{display:none !important;}
   /* rings: smaller so the number leads */
   .fin-nw-head{gap:14px;padding-bottom:18px;}
   .fin-nw-fig{font-size:40px;}
@@ -3321,7 +3325,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       </div>
       <div class="mv-rail">
         <!-- SUMMARY — this month in numbers -->
-        <div class="sec-flush" data-focal="stat" style="position:relative;">
+        <div class="sec-flush m-fold" data-fold="this month in numbers" data-focal="stat" style="position:relative;">
           <span class="doodle hide-sm" data-doodle="donut" style="top:-16px;right:-12px;width:34px;transform:rotate(9deg);"></span>
           <div class="re-eyebrow">this month <span class="cn">本月</span></div>
           <div class="metric-list mv-stat-strip" id="mv-stats"></div>
@@ -3351,7 +3355,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <div class="pl-leaf"><div class="re-eyebrow">upcoming sessions <span class="cn">预约</span> <button class="mini-btn" id="pl-up-add">+ book</button></div><div id="pl-upcoming"></div></div>
     </div>
     <!-- ROW 1 — stats + personal records (left) · one photo (right) -->
-    <div class="pl-top">
+    <div class="pl-top m-fold" data-fold="stats & personal records">
       <div class="pl-top-main">
         <div class="pl-statrow" id="pl-statrow"></div>
         <div class="pl-leaf"><div class="re-eyebrow">personal records <span class="cn">成就</span></div><div class="metric-list" id="pl-records"></div></div>
@@ -3362,7 +3366,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- ROW 1b — favourite studios (full width) -->
-    <div class="pl-sec">
+    <div class="pl-sec m-fold" data-fold="favourite studios">
       <div class="pl-leaf"><div class="re-eyebrow">favourite studios <span class="cn">工作室</span> <button class="mini-btn" id="pl-studio-toggle">show all 22</button></div>
         <div class="flow-scroll"><div class="studio-grid" id="pl-studios"></div></div></div>
     </div>
@@ -3415,9 +3419,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- the full map — reference detail, secondary to the focus above -->
-    <div class="re-eyebrow mt-map-label">the full picture <span class="cn">全貌</span></div>
+    <div class="re-eyebrow mt-map-label m-hide-mobile">the full picture <span class="cn">全貌</span></div>
     <!-- body · space · screen · soul — a 2×2 map of the upkeep of a life -->
-    <div class="mt-map">
+    <div class="mt-map m-fold" data-fold="the full picture · body · space · screen · soul">
       <section class="mt-q">
         <div class="mt-q-h">body <span class="cn">身体</span> <span class="sec-count" id="mt-beauty-due"></span></div>
         <div class="mt-sub">
