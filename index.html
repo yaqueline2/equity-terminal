@@ -4057,22 +4057,6 @@ function renderDots(){
 }
 
 // ─── GOALS (hero) ───
-var DEF_GOALS=[
-  {name:'Career — Bar call · law firm Q4',dots:2},
-  {name:'Finance — RM 60k saved · RM 1.5k/mo',dots:1},
-  {name:'Hobbies — 6 books · docs · china + japan',dots:2},
-  {name:'Self — pilates · 한국어 · piano',dots:2}
-];
-function renderGoals(){
-  var data=load('goals',DEF_GOALS),el=document.getElementById('goals-list');
-  if(!el)return;
-  el.innerHTML=data.map(function(g,i){
-    var dots=[0,1,2].map(function(d){return '<span class="gl-d'+(d<g.dots?' on':'')+'" data-i="'+i+'" data-d="'+d+'"></span>';}).join('');
-    return '<div class="gl-row"><span class="gl-n">'+esc(g.name)+'</span><div class="gl-dots">'+dots+'</div><button class="row-x" data-del="'+i+'">×</button></div>';
-  }).join('');
-  el.querySelectorAll('.gl-d').forEach(function(c){c.onclick=function(){var d=load('goals',DEF_GOALS);d[+this.dataset.i].dots=(+this.dataset.d)+1;store('goals',d);renderGoals();};});
-  el.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){var d=load('goals',DEF_GOALS);d.splice(+this.dataset.del,1);store('goals',d);renderGoals();};});
-}
 
 // ─── READING ───
 var DEF_READ=[
@@ -4105,9 +4089,7 @@ function wireAdd(){
         if(e.key!=='Enter')return;
         var fields={};row.querySelectorAll('.add-in').forEach(function(i){fields[i.dataset.field]=i.value.trim();});
         if(kind==='today'&&fields.task){var d=load('today',DEF_TODAY);d.push({task:fields.task,time:fields.time||'',done:false});store('today',d);renderToday();}
-        if(kind==='goals'&&fields.name){var d=load('goals',DEF_GOALS);d.push({name:fields.name,dots:0});store('goals',d);renderGoals();}
         if(kind==='pilsession'&&fields.studio){var d=load('pil-extra',[]);d.push({id:muid(),d:fields.date||new Date().toISOString().slice(0,10),t:fields.type||'Reformer',s:fields.studio,n:fields.note||''});store('pil-extra',d);renderPilatesFull();}
-        if(kind==='movement'&&(fields.type||fields.note)){var d=load('movement',[]);d.push({d:fields.date||new Date().toISOString().slice(0,10),t:fields.type||'Other',n:fields.note||''});store('movement',d);renderMovement();}
         if(kind==='holding'&&fields.ticker){var d=load('holdings-v3',[]);d.push({ticker:fields.ticker,shares:fields.shares||'',cost:fields.cost||'',price:fields.price||fields.cost||''});store('holdings-v3',d);renderInvestments();}
         if(kind==='dividend'&&fields.ticker&&fields.amount){var d=load('dividends-v3',[]);d.push({date:fields.date||new Date().toISOString().slice(0,10),ticker:fields.ticker,amount:parseFloat(fields.amount)||0});store('dividends-v3',d);renderInvestments();}
         if(kind==='bucket'&&fields.text){var d=getBucket();d.push({id:Date.now(),text:fields.text,category:fields.category||'experience',priority:fields.priority||'someday',done:false});store('bucket',d);renderBucketList();}
@@ -8023,6 +8005,7 @@ function isoMonday(){var d=new Date();var day=(d.getDay()+6)%7;d.setDate(d.getDa
 window.renderHomeFull=renderHomeFull;
 
 /* ════════════ SCRIBBLES — personal wiki of places & notes ════════════ */
+var CHINA_CITIES=['北京 Beijing','上海 Shanghai','广州 Guangzhou','深圳 Shenzhen','成都 Chengdu','杭州 Hangzhou','重庆 Chongqing','武汉 Wuhan','西安 Xian','南京 Nanjing','苏州 Suzhou','天津 Tianjin','长沙 Changsha','郑州 Zhengzhou','青岛 Qingdao','厦门 Xiamen','昆明 Kunming','大理 Dali','丽江 Lijiang','宁波 Ningbo','无锡 Wuxi','济南 Jinan','合肥 Hefei','福州 Fuzhou','沈阳 Shenyang','哈尔滨 Harbin','大连 Dalian','三亚 Sanya','桂林 Guilin','西双版纳 Xishuangbanna','珠海 Zhuhai','佛山 Foshan','东莞 Dongguan','贵阳 Guiyang','南宁 Nanning','太原 Taiyuan'];
 var SCRIBBLE_CITIES=[['all','all areas'],['Bangsar','Bangsar, KL'],['TTDI','TTDI, KL'],['Sri Hartamas','Sri Hartamas, KL'],['Bukit Jalil','Bukit Jalil, KL'],['Mont Kiara','Mont Kiara, KL'],['Chinatown','Chinatown, KL'],['Damansara','Damansara Heights, KL'],['Subang','Subang Jaya'],['Petaling Jaya','Petaling Jaya'],['Puchong','Puchong'],['武汉','武汉 Wuhan'],['重庆','重庆 Chongqing'],['杭州','杭州 Hangzhou']];
 // ── curated cafes & restaurants (auto-populate; recovered from original hub) ──
 var CAFES=[{n:"Lorong by nost & Phoanim",area:"Bangsar, KL",vibe:"Minimalist · specialty coffee",must:"Dirty matcha, croissants, seasonal pastries · Colab between nost coffee & Phoanim bakery. Beautiful open-air space.",v:false},
@@ -8181,7 +8164,7 @@ function renderScribbles(){
   var nb=activeNotebook(s),areas=noteAreas(nb);
   // data-driven city filter — only when this folder has areas
   var radar=document.getElementById('scribble-radar'),cs=document.getElementById('scribble-city');
-  if(radar){if(!!PLACE_META[nb.id]&&areas.length){radar.style.display='';cs.innerHTML='<option value="all">all areas</option>'+areas.sort().map(function(a){return '<option value="'+esc(a)+'">'+esc(a)+'</option>';}).join('');cs.value=(areas.indexOf(s.cityFilter)>=0?s.cityFilter:'all');
+  if(radar){var __isStudios=nb.id==='studios';var __opts=__isStudios?CHINA_CITIES:areas.slice().sort();if(!!PLACE_META[nb.id]&&(__opts.length||__isStudios)){radar.style.display='';cs.innerHTML='<option value="all">'+(__isStudios?'all cities':'all areas')+'</option>'+__opts.map(function(a){return '<option value="'+esc(a)+'">'+esc(a)+'</option>';}).join('');cs.value=(__opts.indexOf(s.cityFilter)>=0?s.cityFilter:'all');
       cs.onchange=function(){var ss=getScribbles();ss.cityFilter=this.value;saveScribbles(ss);renderScribbles();};
       var disc=document.getElementById('scribble-discover');if(disc)disc.onclick=function(){var ss=getScribbles(),city=(ss.cityFilter==='all'?(areas[0]||''):ss.cityFilter);window.open('https://www.google.com/maps/search/'+encodeURIComponent(nb.name.replace(/ to.*$| places$/,'')+' near '+city),'_blank');};
     }else radar.style.display='none';}
@@ -8216,19 +8199,6 @@ function renderScribbles(){
     if(isPlace){n.entries.unshift({id:id,title:'',area:'',hours:'',tags:[],content:'',visited:false,date:new Date().toISOString()});saveScribbles(ss);renderScribbles();openPlaceEditor(id);}
     else{pruneEmptyNote();n.entries.unshift({id:id,title:'',content:'',area:'',tags:[],img:'',visited:false,date:new Date().toISOString(),pinned:false});saveScribbles(ss);_noteEdit=id;_noteFocus=true;renderScribbles();}
   };}
-}
-function noteCardHTML(e){
-  var prev=notePreview(e);
-  var img=e.img?'<div class="ncard-ph"><img src="'+esc(e.img)+'" alt="" loading="lazy" onerror="this.parentNode.classList.add(\'noimg\');this.remove();"/></div>':'<div class="ncard-ph noimg"><span class="ncard-q">\u201C\u201D</span></div>';
-  return '<article class="ncard" data-noteopen="'+e.id+'">'+img+
-    '<div class="ncard-body">'+
-      '<div class="ncard-date">'+(e.pinned?'📌 ':'')+noteDate(e.date)+'</div>'+
-      '<h3 class="ncard-title">'+esc(e.title||'Untitled')+'</h3>'+
-      '<p class="ncard-prev">'+esc(prev?prev.slice(0,120):'No additional text yet.')+'</p>'+
-      (e.area?'<div class="ncard-area">📍 '+esc(e.area)+'</div>':'')+
-    '</div>'+
-    '<button class="ncard-del" data-ndel="'+e.id+'" title="delete">×</button>'+
-  '</article>';
 }
 function placeCardHTML(e){
   var tags=(e.tags||[]).slice(0,4).join(' · ');
@@ -8430,7 +8400,7 @@ function switchSub(view,sub){
   var sec=document.querySelector('.view[data-view="'+view+'"]');if(!sec)return;
   var subs=sec.querySelectorAll('.subview');if(!subs.length)return;
   subs.forEach(function(s){var on=s.dataset.sub===sub;s.hidden=!on;s.classList.toggle('act',on);});
-  if(sub==='flow'){renderToday();renderRituals();renderDots();renderGoals();renderReading();renderYearEarth();renderWeekStrip();renderHomeSummary();}
+  if(sub==='flow'){renderToday();renderRituals();renderDots();renderReading();renderYearEarth();renderWeekStrip();renderHomeSummary();}
   if(sub==='rituals')renderRitualsFull();
   if(sub==='home')renderHomeFull();
   if(sub==='scribbles')renderScribbles();
@@ -8474,7 +8444,7 @@ function switchView(view){
 document.querySelectorAll('.nv').forEach(function(n){n.onclick=function(){switchView(this.dataset.view);};});
 
 // ── guarded init: one failing renderer must NOT blank the rest of the hub ──
-[checkSpotifyAuth,renderToday,renderRituals,renderDots,renderGoals,renderReading,wireAdd,
+[checkSpotifyAuth,renderToday,renderRituals,renderDots,renderReading,wireAdd,
  function(){simpleList('korean',DEF_KOREAN,'korean-list','korean','task');},
  function(){simpleList('japanese',DEF_JAPANESE,'japanese-list','japanese','task');},
  renderKoreanFull,renderJapaneseFull,
