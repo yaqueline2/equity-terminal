@@ -835,6 +835,19 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   /* hero stat band wraps 2-per-row instead of overflowing */
   .fl-stats{flex-wrap:wrap;row-gap:14px;}
   .fl-stats>*{flex:1 0 42%;}
+  /* ── clean light subview strip (was a heavy dark band) ── */
+  .sb{background:rgba(247,244,240,0.85) !important;backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
+      border-bottom:1px solid rgba(60,52,44,0.07) !important;padding:9px 14px !important;gap:7px !important;top:44px !important;
+      scrollbar-width:none;}
+  .sb::-webkit-scrollbar{display:none;}
+  .sb::before{display:none !important;}
+  .sb-label{display:none !important;}
+  .sb-i{background:rgba(60,52,44,0.05) !important;color:var(--t2) !important;font-weight:500 !important;
+        padding:7px 15px !important;border-radius:999px !important;gap:6px !important;font-size:12.5px !important;}
+  .sb-i .sb-ic{opacity:0.65;}
+  .sb-i.a{background:var(--t1) !important;color:#F7F4F0 !important;}
+  .sb-i.a::before{display:none !important;}
+  .sb-i.a .sb-ic{opacity:1;}
 }
 @media(max-width:640px){
   .ink{padding:20px 18px 50px;}
