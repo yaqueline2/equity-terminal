@@ -1435,6 +1435,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 
 /* ══ ARTICLE CARDS (Cosmos/Readwise style — title-forward, composed) ══ */
 .art-card{position:relative;display:block;text-decoration:none;background:var(--card);border:1px solid rgba(60,52,44,0.05);border-radius:11px;overflow:hidden;transition:transform 0.18s,box-shadow 0.18s;}
+.art-del{position:absolute;top:7px;right:7px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(255,253,250,0.92);color:var(--t3);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .14s;z-index:3;}
+.art-card:hover .art-del{opacity:0.92;}
+.art-del:hover{color:var(--blush);}
 .art-card:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(60,52,44,0.09);}
 .art-card-top{position:relative;padding:11px 13px 10px;}
 .art-card-spine{position:absolute;left:0;top:0;bottom:0;width:3px;}
@@ -3401,6 +3404,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <div class="art-divider"></div>
       <div class="art-main">
         <div class="dash-filters" id="art-cats"></div>
+        <div class="add-row" data-add="article"><span class="add-plus">+</span><input class="add-in" placeholder="article title" data-field="title"/><input class="add-in add-time" placeholder="author" data-field="author" style="flex:0 0 120px;"/><input class="add-in add-time" placeholder="https://…" data-field="link" style="flex:0 0 150px;"/><input class="add-in add-time" placeholder="category" data-field="cat" style="flex:0 0 96px;"/></div>
         <div class="masonry" id="art-grid"></div>
       </div>
     </div>
@@ -4102,7 +4106,7 @@ function wireAdd(){
         var fields={};row.querySelectorAll('.add-in').forEach(function(i){fields[i.dataset.field]=i.value.trim();});
         if(kind==='today'&&fields.task){var d=load('today',DEF_TODAY);d.push({task:fields.task,time:fields.time||'',done:false});store('today',d);renderToday();}
         if(kind==='goals'&&fields.name){var d=load('goals',DEF_GOALS);d.push({name:fields.name,dots:0});store('goals',d);renderGoals();}
-        if(kind==='pilsession'&&fields.studio){var d=load('pil-extra',[]);d.push({d:fields.date||new Date().toISOString().slice(0,10),t:fields.type||'Reformer',s:fields.studio,n:fields.note||''});store('pil-extra',d);renderPilatesFull();}
+        if(kind==='pilsession'&&fields.studio){var d=load('pil-extra',[]);d.push({id:muid(),d:fields.date||new Date().toISOString().slice(0,10),t:fields.type||'Reformer',s:fields.studio,n:fields.note||''});store('pil-extra',d);renderPilatesFull();}
         if(kind==='movement'&&(fields.type||fields.note)){var d=load('movement',[]);d.push({d:fields.date||new Date().toISOString().slice(0,10),t:fields.type||'Other',n:fields.note||''});store('movement',d);renderMovement();}
         if(kind==='holding'&&fields.ticker){var d=load('holdings-v3',[]);d.push({ticker:fields.ticker,shares:fields.shares||'',cost:fields.cost||'',price:fields.price||fields.cost||''});store('holdings-v3',d);renderInvestments();}
         if(kind==='dividend'&&fields.ticker&&fields.amount){var d=load('dividends-v3',[]);d.push({date:fields.date||new Date().toISOString().slice(0,10),ticker:fields.ticker,amount:parseFloat(fields.amount)||0});store('dividends-v3',d);renderInvestments();}
@@ -4133,6 +4137,7 @@ function wireAdd(){
         if(kind==='mt-goal'&&fields.name){var d=getGoalBuckets();d.push({id:muid(),name:fields.name,icon:fields.icon||'•',target:parseFloat(fields.target)||0,saved:0,monthly:parseFloat(fields.monthly)||0,targetDate:fields.targetDate||'',color:'rgba(201,148,156,0.75)'});store('goal-buckets-v3',d);renderMonthGoals();}
         if(kind==='mt-wish'&&fields.n){var d=getWishlist();d.push({n:fields.n,cat:fields.cat||'',target:parseFloat(fields.target)||0,pri:fields.pri||'low',note:''});store('wishlist-v2',d);renderMtWishlist();}
         if(kind==='reading'&&fields.title){var d=load('reading',DEF_READ);d.push({title:fields.title,sub:fields.sub||'',pct:null});store('reading',d);renderReading();}
+        if(kind==='article'&&(fields.title||fields.link)){var d=getArticles();d.unshift({id:muid(),title:fields.title||'(untitled)',author:fields.author||'',cat:(fields.cat||'wellness').toLowerCase(),link:fields.link||'#',date:todayStr(),read:'unread'});saveArticles(d);renderArticles();}
         row.querySelectorAll('.add-in').forEach(function(i){i.value='';});
       });
     });
@@ -6122,9 +6127,11 @@ function artCover(s,cls){var pal=ART_CAT_PAL[s.cat]||['#A89CC0','var(--lavender)
 var _artFeat=Math.floor(Math.random()*1000),_jpFeat=0;
 function renderSubstacks(){renderArticles();}
 function artReadMin(s){var n=(s.title||'').length+(s.author||'').length;return Math.max(3,Math.min(14,Math.round(n/9)));}
+function getArticles(){var d=load('articles-v1',null);if(!d){d=SUBSTACKS.slice();store('articles-v1',d);}return d;}
+function saveArticles(d){store('articles-v1',d);}
 function renderArticles(){
   var grid=document.getElementById('art-grid');if(!grid)return;
-  var clean=SUBSTACKS.filter(function(s){return s.title&&s.title.indexOf('(saved')<0;});
+  var clean=getArticles().filter(function(s){return s.title&&s.title.indexOf('(saved')<0;});
   setT('ss-count',clean.length+' saved · favourites');
   // category filter
   var cats=['all'];clean.forEach(function(s){if(s.cat&&cats.indexOf(s.cat)<0)cats.push(s.cat);});
@@ -6142,11 +6149,13 @@ function renderArticles(){
     var catPill=s.cat?'<span class="art-card-cat" style="background:'+pal[0]+'22;color:'+pal[1]+'">'+esc(s.cat)+'</span>':'';
     var date=s.date?fmtArtDate(s.date):'';
     return '<a class="art-card'+(hasImg?' img':'')+'" href="'+esc(s.link)+'" target="_blank" rel="noopener">'+cover+
+      '<button class="art-del" data-adel="'+esc(s.id)+'" title="delete">×</button>'+
       '<div class="art-card-top"><span class="art-card-spine" style="background:'+pal[0]+'"></span>'+catPill+
       '<div class="art-card-title">'+esc(s.title)+'</div>'+
       '<div class="art-card-meta"><span class="art-card-auth">'+esc(s.author||'unknown')+'</span></div></div>'+
       '<div class="art-card-foot"><span class="art-readtime">'+artReadMin(s)+' min read</span>'+(date?'<span class="art-card-dot">·</span><span>'+date+'</span>':'')+'<span class="art-card-arrow">↗</span></div></a>';
-  }).join('')||'<div class="bk-empty">nothing in this category</div>';
+  }).join('')||'<div class="bk-empty">nothing here yet — add one above</div>';
+  grid.querySelectorAll('[data-adel]').forEach(function(b){b.onclick=function(e){e.preventDefault();e.stopPropagation();var id=this.dataset.adel;if(!confirm('Remove this article?'))return;saveArticles(getArticles().filter(function(x){return String(x.id)!==id;}));renderArticles();};});
   renderPrompts();
 }
 function fmtArtDate(d){var p=String(d).split('-');if(p.length<2)return d;var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return MN[(+p[1]-1)]+' '+(p[0]);}
@@ -6518,7 +6527,8 @@ function renderPilatesFull(){
     var mks=Object.keys(byMo).sort().reverse();
     logEl.innerHTML=mks.map(function(k){var p=k.split('-');var title=p.length===2?(MN[+p[1]-1]+' '+p[0]):k;
       return '<div class="pl-mo"><div class="pl-mo-h">'+title+'<span>'+byMo[k].length+'</span></div>'+byMo[k].map(function(s){var i=plSessions().indexOf(s);
-        return '<div class="pl-row"><span class="pl-d">'+(+(s.d||'').split('-')[2]||'')+' '+MSx[(+(s.d||'').split('-')[1]-1)]+'</span><span class="pl-dot" style="background:'+plTypeColor(s.t)+'"></span><span class="pl-ty">'+esc(s.t||'')+'</span><span class="pl-st">'+esc(s.s||'')+'</span><span class="pl-n">'+esc(s.n||'')+'</span></div>';}).join('')+'</div>';}).join('');}
+        return '<div class="pl-row"><span class="pl-d">'+(+(s.d||'').split('-')[2]||'')+' '+MSx[(+(s.d||'').split('-')[1]-1)]+'</span><span class="pl-dot" style="background:'+plTypeColor(s.t)+'"></span><span class="pl-ty">'+esc(s.t||'')+'</span><span class="pl-st">'+esc(s.s||'')+'</span><span class="pl-n">'+esc(s.n||'')+'</span>'+(s.id?'<button class="row-x" data-pildel="'+esc(s.id)+'">×</button>':'')+'</div>';}).join('')+'</div>';}).join('');
+    logEl.querySelectorAll('[data-pildel]').forEach(function(b){b.onclick=function(){var id=this.dataset.pildel;store('pil-extra',load('pil-extra',[]).filter(function(x){return String(x.id)!==id;}));renderPilatesFull();};});}
   // P4 studios
   var stEl=document.getElementById('pl-studios');
   if(stEl){var list=PIL_STUDIOS.slice().sort(function(a,b){return (b.f?1:0)-(a.f?1:0)||(byStudio[b.s]||0)-(byStudio[a.s]||0);});
