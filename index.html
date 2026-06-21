@@ -2890,6 +2890,14 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .bm-body{flex:1;min-height:0;overflow:hidden;position:relative;padding:6px 12px 4px;display:flex;justify-content:center;}
 .bm-quote{writing-mode:vertical-rl;text-orientation:mixed;font-family:var(--font-display);font-style:italic;font-size:12.5px;line-height:1.55;color:var(--t2);max-height:100%;}
 .bm-body::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26px;background:linear-gradient(to top,var(--bm-bg,#FBF7F0),transparent);}
+/* screenshot quote cards */
+.bm-has-shot .bm-body{padding:6px;display:block;}
+.bm-has-shot .bm-body::after{display:none;}
+.bm-shot{width:100%;border-radius:3px;display:block;max-height:210px;object-fit:cover;object-position:top;}
+.bm-shot-cap{writing-mode:horizontal-tb;display:block;font-size:10px;line-height:1.4;color:var(--t4);margin-top:5px;font-style:normal;}
+.qm-shot{width:100%;border-radius:8px;display:block;margin-bottom:14px;}
+.add-shot{flex:0 0 auto;border:1px solid var(--rule);background:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-size:14px;padding:5px 9px;line-height:1;}
+.add-shot:hover{background:rgba(201,148,156,0.12);}
 .bm-foot{border-top:1px dashed var(--rule);padding:9px 9px 11px;text-align:center;font-family:var(--font-hand);font-size:14px;color:var(--t3);line-height:1.25;}
 .bm-del{position:absolute;top:-13px;right:-9px;width:21px;height:21px;border-radius:50%;border:1px solid var(--rule2);background:var(--bg);color:var(--t5);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .14s;z-index:3;}
 .bm:hover .bm-del{opacity:1;}
@@ -3453,7 +3461,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
     <div class="sec-tabs" id="quotes-filter"></div>
     <div class="bm-wall" id="quotes-list"></div>
-    <div class="add-row" data-add="quote"><span class="add-plus">+</span><input class="add-in" placeholder="a quote, line, or excerpt…" data-field="text"/><input class="add-in add-time" placeholder="author" data-field="author" style="flex:0 0 100px;"/><input class="add-in add-time" placeholder="source" data-field="source" style="flex:0 0 88px;"/><select class="add-in add-time" data-field="type" style="flex:0 0 76px;"><option>quote</option><option>essay</option><option>lyric</option><option>note</option></select><input class="add-in add-time" placeholder="link (for essays)" data-field="link" style="flex:0 0 96px;"/></div>
+    <div class="add-row" data-add="quote"><span class="add-plus">+</span><input class="add-in" placeholder="a quote, line, or excerpt…" data-field="text"/><input class="add-in add-time" placeholder="author" data-field="author" style="flex:0 0 100px;"/><input class="add-in add-time" placeholder="source" data-field="source" style="flex:0 0 88px;"/><select class="add-in add-time" data-field="type" style="flex:0 0 76px;"><option>quote</option><option>essay</option><option>lyric</option><option>note</option></select><input class="add-in add-time" placeholder="link (for essays)" data-field="link" style="flex:0 0 96px;"/><button class="add-shot" id="quote-shot" title="add a screenshot">📷</button><input type="file" accept="image/*" id="quote-shot-input" hidden/></div>
   </div>
 
   <!-- ░░ ARTICLES subview — journal prompts (left) ↔ editorial grid (right) ░░ -->
@@ -6978,11 +6986,12 @@ function bookmarkHTML(q,i){
   var h=BM_SIZES[seed%BM_SIZES.length];
   var rot=(((seed*29)%5)-2)*0.55; // stable ~ -1.1..1.1deg
   var title=q.author||q.source||(q.type||'kept');
-  return '<div class="bm" data-bm="'+(q.id!=null?q.id:i)+'" style="--qa:'+accent+';height:'+h+'px;transform:rotate('+rot.toFixed(2)+'deg);">'+
+  var inner=q.img?'<img class="bm-shot" src="'+esc(q.img)+'" alt="screenshot" loading="lazy"/>'+(q.text?'<span class="bm-quote bm-shot-cap">'+esc(q.text)+'</span>':''):'<span class="bm-quote">'+esc(q.text)+'</span>';
+  return '<div class="bm'+(q.img?' bm-has-shot':'')+'" data-bm="'+(q.id!=null?q.id:i)+'" style="--qa:'+accent+';'+(q.img?'':'height:'+h+'px;')+'transform:rotate('+rot.toFixed(2)+'deg);">'+
     '<span class="bm-loop"></span>'+
     '<button class="bm-del" data-qdel="'+(q.id!=null?q.id:i)+'" title="remove">&times;</button>'+
     '<span class="bm-tag">'+esc(q.type||'quote')+'</span>'+
-    '<div class="bm-body"><span class="bm-quote">'+esc(q.text)+'</span></div>'+
+    '<div class="bm-body">'+inner+'</div>'+
     '<div class="bm-foot">'+esc(title)+'</div>'+
   '</div>';
 }
@@ -6994,7 +7003,7 @@ function openQuoteModal(q){
   var ov=document.createElement('div');ov.className='cel-ov';
   ov.innerHTML='<div class="cel-modal qm-modal" style="--qa:'+accent+';">'+
     '<div class="cel-modal-h"><span class="qm-tag">'+esc(q.type||'quote')+'</span><button class="cel-modal-x">&times;</button></div>'+
-    '<div class="cel-modal-b qm-b"><p class="qm-text">'+esc(q.text)+'</p>'+by+link+'</div></div>';
+    '<div class="cel-modal-b qm-b">'+(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':'')+(q.text?'<p class="qm-text">'+esc(q.text)+'</p>':'')+by+link+'</div></div>';
   document.body.appendChild(ov);
   function close(){ov.remove();document.removeEventListener('keydown',esckey);}
   function esckey(e){if(e.key==='Escape')close();}
@@ -7019,6 +7028,18 @@ function renderQuotes(){
     if(q)openQuoteModal(q);
   };});
   el.querySelectorAll('[data-qdel]').forEach(function(b){b.onclick=function(e){e.stopPropagation();var id=this.dataset.qdel;store('quotes',getQuotes().filter(function(q){return String(q.id)!==String(id);}));renderQuotes();};});
+  var shotBtn=document.getElementById('quote-shot'),shotIn=document.getElementById('quote-shot-input');
+  if(shotBtn&&shotIn&&!shotBtn.dataset.b){shotBtn.dataset.b='1';
+    shotBtn.onclick=function(){shotIn.click();};
+    shotIn.onchange=function(){var f=this.files[0];this.value='';if(!f||!/^image\//.test(f.type))return;
+      var rd=new FileReader();rd.onload=function(){var img=new Image();
+        img.onload=function(){var max=1400,w=img.width,h=img.height;if(w>max||h>max){var s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);}
+          var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+          var data;try{data=c.toDataURL('image/jpeg',0.85);}catch(e){data=rd.result;}
+          var qs=getQuotes();qs.unshift({id:muid(),text:'',author:'',source:'',type:'essay',link:'',img:data,date:todayStr()});store('quotes',qs);renderQuotes();};
+        img.onerror=function(){};img.src=rd.result;};
+      rd.readAsDataURL(f);};
+  }
 }
 window.renderQuotes=renderQuotes;
 
