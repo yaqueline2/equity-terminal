@@ -7900,10 +7900,11 @@ function renderFlash(lang){
       '<div class="fc-deck-counts">'+pills+'</div><span class="fc-deck-arrow">›</span></button>';
   }).join('');
   var synced=!!fcSyncToken();
-  html+='<div class="fc-foot"><span class="fc-resetlink" data-sync="'+lang+'">'+(synced?'☁ synced · '+FC_NEW_PER_DAY+'/day':'☁ set up sync')+'</span><span class="fc-resetlink" data-reset="'+lang+'">reset progress</span></div>';
+  html+='<div class="fc-foot"><span class="fc-resetlink" data-sync="'+lang+'">'+(synced?'☁ synced · '+FC_NEW_PER_DAY+'/day':'☁ set up sync')+'</span><span class="fc-resetlink" data-widget="1">📲 widget</span><span class="fc-resetlink" data-reset="'+lang+'">reset progress</span></div>';
   el.innerHTML=html;
   el.querySelectorAll('.fc-deck').forEach(function(b){b.onclick=function(){fcStart(this.dataset.lang,this.dataset.deck);};});
   var sy=el.querySelector('[data-sync]');if(sy)sy.onclick=function(){fcSetupSync(this.dataset.sync);};
+  var wg=el.querySelector('[data-widget]');if(wg)wg.onclick=function(){pushWidgetSnapshot();prompt('iPhone widget — paste this URL into the Scriptable widget script (it shows your cards-due + to-dos):',location.origin+'/api/widget?token='+widgetToken());};
   var rl=el.querySelector('[data-reset]');if(rl)rl.onclick=function(){
     if(confirm('Reset all '+(lang==='ko'?'Korean':'Japanese')+' flashcard progress? This clears your review history (the cards stay).')){
       FC_DECKS[lang].forEach(function(d){store('srs-'+d.id,{});});renderFlash(lang);
@@ -8678,6 +8679,24 @@ function applyMobileFolds(){
 }
 window.applyMobileFolds=applyMobileFolds;
 window.addEventListener('load',applyMobileFolds);
+</script>
+<script>
+// ── home-screen widget snapshot (for the iOS Scriptable widget) ──
+function widgetToken(){var t=load('widget-token',null);if(!t){t='w'+Math.random().toString(36).slice(2,12);store('widget-token',t);}return t;}
+function buildWidgetSnapshot(){
+  var snap={updated:Date.now()};
+  try{var todos=load('today',(typeof DEF_TODAY!=='undefined'?DEF_TODAY:[]))||[];
+    snap.todos={done:todos.filter(function(x){return x.done;}).length,total:todos.length};}catch(e){}
+  try{var due=0,fresh=0;if(typeof FC_DECKS!=='undefined'){['ko','jp'].forEach(function(l){(FC_DECKS[l]||[]).forEach(function(d){var c=fcCounts(d);due+=c.due;fresh+=c.newCards;});});}
+    snap.vocab={due:due,fresh:fresh};}catch(e){}
+  return snap;
+}
+function pushWidgetSnapshot(){
+  try{fetch('/api/widget?token='+encodeURIComponent(widgetToken()),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(buildWidgetSnapshot())}).catch(function(){});}catch(e){}
+}
+window.widgetToken=widgetToken;window.pushWidgetSnapshot=pushWidgetSnapshot;
+window.addEventListener('load',function(){setTimeout(pushWidgetSnapshot,1500);});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')pushWidgetSnapshot();});
 </script>
 </body>
 </html>
