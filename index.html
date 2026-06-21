@@ -4006,7 +4006,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 // ═══ THRESHOLD ═══
 (function(){
   var h=new Date().getHours();
-  var wp = 'assets/wallpaper.png';
+  var wp = (window.matchMedia&&window.matchMedia('(max-width:700px)').matches) ? 'assets/mobile-wallpaper.png' : 'assets/wallpaper.png';
   document.getElementById('th-bg').style.backgroundImage="url('"+wp+"')";
   function thTick(){
     var n=new Date();
