@@ -2713,6 +2713,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
    ════════════════════════════════════════════════════════════════ */
 /* the focus band — what needs you now, leads the page */
 [data-sub="maintenance"] .mt-focus{background:rgba(204,133,151,0.08);border:1px solid rgba(204,133,151,0.18);border-radius:16px;padding:20px 24px 16px;margin-top:8px;}
+[data-sub="maintenance"] .mt-skin{background:rgba(204,133,151,0.06);border:1px solid rgba(204,133,151,0.16);border-radius:16px;padding:18px 24px 20px;margin-top:22px;}
+[data-sub="maintenance"] .mt-skin-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;}
+[data-sub="maintenance"] .mt-skin-title{font-family:var(--font-hand);font-size:24px;color:var(--t1);}
+[data-sub="maintenance"] .mt-skin-title .cn{font-family:var(--font);font-size:13px;color:var(--t4);margin-left:2px;}
+[data-sub="maintenance"] .mt-skin-cols{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:14px;align-items:start;}
+@media(max-width:760px){[data-sub="maintenance"] .mt-skin-cols{grid-template-columns:1fr;gap:20px;}}
 [data-sub="maintenance"] .mt-focus-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px;flex-wrap:wrap;}
 [data-sub="maintenance"] .mt-focus-big{font-family:var(--font-hand);font-size:27px;font-weight:400;color:var(--t1);line-height:1.05;margin-top:4px;}
 [data-sub="maintenance"] .mt-focus-sub{font-size:11.5px;font-weight:300;color:var(--t4);max-width:230px;text-align:right;line-height:1.5;}
@@ -3254,6 +3260,26 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <div class="mt-focus-list" id="mt-focus-list"></div>
     </div>
 
+    <!-- SKIN TREATMENTS — its own section -->
+    <div class="mt-skin">
+      <div class="mt-skin-head">
+        <span class="mt-skin-title">皮肤管理 · skin treatments <span class="cn">医美</span></span>
+      </div>
+      <div class="treat-goal">目标🎯 颌面好看 · 面部平整度高 · 皮肉紧实 · 外轮廓流畅 · 淡颜</div>
+      <div class="mt-skin-cols">
+        <div class="mt-skin-col">
+          <div class="re-eyebrow">记录 · log <span class="sec-count" id="mt-treat-log-count"></span></div>
+          <div id="mt-treat-log"></div>
+          <div class="add-row" data-add="treat-log"><span class="add-plus">+</span><input class="add-in add-time" placeholder="date YYYY-MM-DD" data-field="date" style="flex:0 0 118px;"/><input class="add-in" placeholder="treatment" data-field="name"/><input class="add-in add-time" placeholder="clinic" data-field="clinic" style="flex:0 0 98px;"/></div>
+        </div>
+        <div class="mt-skin-col">
+          <div class="re-eyebrow">计划 · plan</div>
+          <div class="mt-next" id="mt-skin-next"></div>
+          <div class="flow-scroll"><div id="mt-treatments"></div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- the full map — reference detail, secondary to the focus above -->
     <div class="re-eyebrow mt-map-label">the full picture <span class="cn">全貌</span></div>
     <!-- body · space · screen · soul — a 2×2 map of the upkeep of a life -->
@@ -3264,16 +3290,6 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
           <div class="re-eyebrow">beauty &amp; glow-up <span class="cn">美容</span></div>
           <div class="mt-next" id="mt-beauty-next"></div>
           <div class="flow-scroll"><div id="mt-beauty-routine"></div></div>
-        </div>
-        <div class="mt-sub">
-          <div class="re-eyebrow">皮肤管理 · skin treatments</div>
-          <div class="treat-goal">目标🎯 颌面好看 · 面部平整度高 · 皮肉紧实 · 外轮廓流畅 · 淡颜</div>
-          <div class="re-eyebrow" style="margin-top:12px;">记录 · log <span class="sec-count" id="mt-treat-log-count"></span></div>
-          <div id="mt-treat-log"></div>
-          <div class="add-row" data-add="treat-log"><span class="add-plus">+</span><input class="add-in add-time" placeholder="date YYYY-MM-DD" data-field="date" style="flex:0 0 118px;"/><input class="add-in" placeholder="treatment" data-field="name"/><input class="add-in add-time" placeholder="clinic" data-field="clinic" style="flex:0 0 98px;"/></div>
-          <div class="re-eyebrow" style="margin-top:16px;">计划 · plan</div>
-          <div class="mt-next" id="mt-skin-next"></div>
-          <div class="flow-scroll"><div id="mt-treatments"></div></div>
         </div>
       </section>
       <section class="mt-q">
