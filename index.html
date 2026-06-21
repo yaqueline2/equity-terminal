@@ -2797,8 +2797,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 [data-sub="maintenance"] .mt-skin-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;}
 [data-sub="maintenance"] .mt-skin-title{font-family:var(--font-hand);font-size:24px;color:var(--t1);}
 [data-sub="maintenance"] .mt-skin-title .cn{font-family:var(--font);font-size:13px;color:var(--t4);margin-left:2px;}
-[data-sub="maintenance"] .mt-skin-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:14px;align-items:start;}
-@media(max-width:820px){[data-sub="maintenance"] .mt-skin-cols{grid-template-columns:1fr;}}
+[data-sub="maintenance"] .mt-skin-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:14px;align-items:start;}
+[data-sub="maintenance"] .mt-skin-col{min-width:0;}
+@media(max-width:820px){[data-sub="maintenance"] .mt-skin-cols{grid-template-columns:minmax(0,1fr);}}
 /* skin treatment tables — record + plan, both scrollable */
 [data-sub="maintenance"] .treat-table-wrap{overflow:auto;border:1px solid rgba(204,133,151,0.2);border-radius:12px;background:rgba(255,255,255,0.5);margin-top:6px;}
 [data-sub="maintenance"] .treat-log-wrap{max-height:230px;}
@@ -2900,6 +2901,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .add-shot:hover{background:rgba(201,148,156,0.12);}
 /* mobile "view details" disclosure — heavy blocks fold on phones, untouched on desktop */
 .m-fold-btn{display:none;}
+/* in-app receipt overlay (mobile PDF view you can dismiss) */
+.receipt-ov{position:fixed;inset:0;z-index:600;background:#fff;display:flex;flex-direction:column;}
+.receipt-ov-bar{display:flex;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid rgba(60,52,44,0.12);background:var(--bg);flex:none;}
+.receipt-ov-bar button{border:none;background:rgba(60,52,44,0.06);color:var(--t1);font:500 13px var(--font);padding:9px 16px;border-radius:12px;cursor:pointer;}
+.receipt-ov-bar .receipt-print{background:var(--blush);color:#fff;}
+.receipt-frame{flex:1;width:100%;border:none;background:#fff;}
 @media(max-width:700px){
   .m-fold{display:none !important;}
   .m-fold.m-open{display:block !important;}
@@ -2948,6 +2955,11 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   .split-title{font-size:22px;}
   .fl-h{font-size:19px;}
   .sec-title{font-size:10.5px;}
+  /* movement training-program: split pills become a horizontal scroll row, not a cut-off right stack */
+  .prog-head{flex-direction:column;align-items:stretch;gap:10px;}
+  [data-sub="movement"] .prog-filters{margin-left:0;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;}
+  [data-sub="movement"] .prog-filters::-webkit-scrollbar{display:none;}
+  .prog-filters>*{flex:0 0 auto;}
 }
 .bm-foot{border-top:1px dashed var(--rule);padding:9px 9px 11px;text-align:center;font-family:var(--font-hand);font-size:14px;color:var(--t3);line-height:1.25;}
 .bm-del{position:absolute;top:-13px;right:-9px;width:21px;height:21px;border-radius:50%;border:1px solid var(--rule2);background:var(--bg);color:var(--t5);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .14s;z-index:3;}
@@ -7762,9 +7774,18 @@ function buildYearReceipt(){
   openReceiptWindow(rcDoc(year,'year in review · '+year,body));
 }
 function openReceiptWindow(html){
-  var w=window.open('','_blank','width=400,height=760');
-  if(!w){alert('Pop-up blocked — allow pop-ups to save the receipt as a PDF.');return;}
-  w.document.open();w.document.write(html);w.document.close();w.focus();
+  var isMobile=window.matchMedia('(max-width:700px)').matches;
+  if(!isMobile){
+    var w=window.open('','_blank','width=400,height=760');
+    if(w){w.document.open();w.document.write(html);w.document.close();w.focus();return;}
+  }
+  // mobile (or popup blocked): dismissible in-app overlay so you can always go back
+  var ov=document.createElement('div');ov.className='receipt-ov';
+  ov.innerHTML='<div class="receipt-ov-bar"><button class="receipt-close">‹ back</button><button class="receipt-print">save / print</button></div><iframe class="receipt-frame" title="receipt"></iframe>';
+  document.body.appendChild(ov);
+  var f=ov.querySelector('.receipt-frame');var d=f.contentDocument||f.contentWindow.document;d.open();d.write(html);d.close();
+  ov.querySelector('.receipt-close').onclick=function(){ov.remove();};
+  ov.querySelector('.receipt-print').onclick=function(){try{f.contentWindow.focus();f.contentWindow.print();}catch(e){window.print();}};
 }
 function renderMonthlyFull(){
   var rb=document.getElementById('mt-rebalance');if(rb&&!rb.dataset.b){rb.dataset.b='1';rb.onclick=openRebalance;}
@@ -8278,6 +8299,7 @@ function mirrorPlaces(s){
     nb.entries=items.map(function(p){var old=prev[p.id]||{};
       return {id:p.id,title:p.name,area:p.area,tags:[],content:'',img:'assets/rednote/'+p.id+'.webp',
         link:'https://www.google.com/maps/search/'+encodeURIComponent(p.name+' '+p.area+' Malaysia'),
+        rn:'https://www.rednote.com/explore/'+p.id,
         visited:old.visited||false,rating:0,date:old.date||new Date().toISOString(),pinned:false};});
   });
 }
@@ -8338,7 +8360,7 @@ function renderScribbles(){
     var __rnb=(typeof REDNOTE_BOARDS!=='undefined'&&REDNOTE_BOARDS[nb.id])?'<a class="rn-board-link" href="'+REDNOTE_BOARDS[nb.id]+'" target="_blank" rel="noopener">↗ open my board on rednote · always live</a>':'';
     stage.innerHTML=__rnb+(entries.length?entries.map(placeCardHTML).join(''):'<div class="scrib-empty-editor">no places yet.</div>');
     stage.querySelectorAll('[data-pdel]').forEach(function(b){b.onclick=function(ev){ev.stopPropagation();var id=this.dataset.pdel,ss=getScribbles(),n=activeNotebook(ss);n.entries=n.entries.filter(function(x){return String(x.id)!==String(id);});saveScribbles(ss);renderScribbles();};});
-    stage.querySelectorAll('[data-place]').forEach(function(c){c.onclick=function(e){if(e.target.closest('[data-pdel]'))return;var pid=this.dataset.place,ss=getScribbles(),n=activeNotebook(ss),ent=(n.entries||[]).filter(function(x){return String(x.id)===String(pid);})[0];if(ent&&ent.link){window.open(ent.link,'_blank','noopener');return;}openPlaceEditor(pid);};});
+    stage.querySelectorAll('[data-place]').forEach(function(c){c.onclick=function(e){if(e.target.closest('[data-pdel]'))return;var pid=this.dataset.place,ss=getScribbles(),n=activeNotebook(ss),ent=(n.entries||[]).filter(function(x){return String(x.id)===String(pid);})[0];var onMob=window.matchMedia('(max-width:700px)').matches;var url=(onMob&&ent&&ent.rn)?ent.rn:(ent&&ent.link);if(url){window.open(url,'_blank','noopener');return;}openPlaceEditor(pid);};});
   } else {
     // NOTES — index sidebar (no pictures) + reading page on the right
     stage.className='scrib-notes';
