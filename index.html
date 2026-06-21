@@ -7952,6 +7952,26 @@ window.renderHomeFull=renderHomeFull;
 
 /* ════════════ SCRIBBLES — personal wiki of places & notes ════════════ */
 var SCRIBBLE_CITIES=[['all','all areas'],['Bangsar','Bangsar, KL'],['TTDI','TTDI, KL'],['Sri Hartamas','Sri Hartamas, KL'],['Bukit Jalil','Bukit Jalil, KL'],['Mont Kiara','Mont Kiara, KL'],['Chinatown','Chinatown, KL'],['Damansara','Damansara Heights, KL'],['Subang','Subang Jaya'],['Petaling Jaya','Petaling Jaya'],['Puchong','Puchong'],['武汉','武汉 Wuhan'],['重庆','重庆 Chongqing'],['杭州','杭州 Hangzhou']];
+// ── curated cafes & restaurants (auto-populate; recovered from original hub) ──
+var CAFES=[{n:"Lorong by nost & Phoanim",area:"Bangsar, KL",vibe:"Minimalist · specialty coffee",must:"Dirty matcha, croissants, seasonal pastries · Colab between nost coffee & Phoanim bakery. Beautiful open-air space.",v:false},
+  {n:"Adough Atelier",area:"Sri Hartamas, KL",vibe:"French patisserie · brunch",must:"Croissants (plain / almond / pistachio), quiche, pain au chocolat · Known for some of KL's best laminated pastries. Small intimate space.",v:false},
+  {n:"Noto Cafe & Bakery",area:"Sri Hartamas, KL",vibe:"Japanese-inspired · bakery",must:"Japanese milk bread, matcha croissant, onigiri · Japanese-inspired bakery-cafe. Fresh bakes throughout the day.",v:false},
+  {n:"Scoby Cafe",area:"Bukit Jalil, KL",vibe:"Healthy · kombucha bar",must:"Kombucha flights, acai bowls, grain bowls · Health-conscious cafe with great ambiance. Known for probiotic drinks.",v:false},
+  {n:"Shikomi",area:"TTDI, KL",vibe:"Japanese kissaten · matcha",must:"Uji matcha latte, shokupan toast, Japanese cheesecake · Japanese-style kissaten (tea house). Calm, woody interior.",v:false},
+  {n:"Yorimichi",area:"TTDI, KL",vibe:"Japanese · teahouse",must:"Warabi mochi, hojicha latte, matcha parfait · Cozy Japanese-inspired tea house. The warabi mochi is a must.",v:false},
+  {n:"Wawafish",area:"Petaling Jaya, Selangor",vibe:"Aesthetic · brunch",must:"Fish-based brunch items, specialty coffee · Trendy spot with aesthetic interiors. Great for photos.",v:false},
+  {n:"Monk",area:"SS15, Subang Jaya",vibe:"Industrial · specialty coffee",must:"Filter coffee, flat white, sourdough toast · Industrial-chic coffee bar popular with the local creative crowd.",v:false},
+  {n:"Nomad's",area:"Bangsar South, KL",vibe:"Co-working · brunch",must:"Big breakfast, eggs benedict, pour-over · Great for working from cafe. Spacious with power outlets.",v:false},
+  {n:"Smai Bakery",area:"Mont Kiara, KL",vibe:"Artisan bakery · pastries",must:"Sourdough loaves, cinnamon rolls, canelé · Small-batch artisan bakery. Items sell out by noon on weekends.",v:false},
+  {n:"Yellow Brick Road",area:"Damansara Heights, KL",vibe:"Whimsical · brunch",must:"Waffles, ricotta hotcakes, smoothie bowls · Whimsical interiors, great brunch menu. Very Instagrammable.",v:false},
+  {n:"The Hungry Tapir",area:"Chinatown, KL",vibe:"Plant-based · heritage",must:"Nasi lemak (vegan), durian pancakes, oat latte · 100% plant-based cafe in a restored heritage shophouse.",v:false},
+  {n:"Old Froyo",area:"Taman Desa, KL",vibe:"Froyo · dessert",must:"Original tart froyo, fresh fruit toppings · OG frozen yogurt spot. Clean flavors, generous portions.",v:false},
+  {n:"Breakfast Spot",area:"KL City Centre, KL",vibe:"All-day breakfast · brunch",must:"Full English, shakshuka, french toast stack · Reliable brunch spot. Good portions and consistent quality.",v:false},
+  {n:"The Glasshopper",area:"Chow Kit, KL",vibe:"Wine bar · bistro",must:"Natural wines, cheese board, small plates · Intimate wine bar meets cafe. Great date night vibes.",v:false},
+  {n:"Ono Specialty Coffee & Matcha",area:"Bukit Damansara, KL",vibe:"Matcha specialist · cozy",must:"Ceremonial matcha latte, hojicha, coffee tonic · Dedicated matcha bar with premium Japanese tea sourcing.",v:false}];
+var RESTAURANTS=[{n:"Flat 18",area:"Chinatown, KL",cuisine:"Western · fusion",must:"Truffle pasta, grain bowls, specialty coffee · Heritage shophouse setting. Beautiful interior.",v:true},
+  {n:"Kojitsu Kitchen",area:"TTDI, KL",cuisine:"Japanese · omakase",must:"Chef's omakase set, seasonal sashimi · Intimate home-kitchen omakase. Book via DM/WhatsApp only. Very exclusive.",v:false},
+  {n:"Junghee @ The Campus",area:"Ampang, KL",cuisine:"Korean · casual dining",must:"Kimchi jjigae, bulgogi, bibimbap, Korean fried chicken · Authentic Korean restaurant at The Campus Ampang. Popular with Korean community. Good banchan spread.",v:false}];
 function buildPlaceEntries(){
   function mk(arr,gn,ga,gt,gc,gv){return (arr||[]).map(function(x,i){return {id:i+1,title:gn(x),area:ga(x),tags:gt(x),content:gc(x),img:'',visited:gv(x),rating:0,date:new Date().toISOString(),pinned:false};});}
   var sp=function(s){return (s||'').split('·').map(function(t){return t.trim();}).filter(Boolean);};
@@ -7966,7 +7986,7 @@ var PLACE_META={cafes:['Cafes to visit','🍵'],restaurants:['Restaurants to try
 function migrateToScribbles(){
   if(load('scribbles',null))return;
   var p=buildPlaceEntries();
-  store('scribbles',{notebooks:[{id:'cafes',name:'Cafes to visit',icon:'🍵',entries:p.cafes},{id:'restaurants',name:'Restaurants to try',icon:'🍜',entries:p.restaurants},{id:'studios',name:'写真馆 Studios',icon:'📸',entries:p.studios},{id:'beauty',name:'Beauty places',icon:'💅',entries:p.beauty},{id:'general',name:'Notes',icon:'📝',entries:[]}],activeNotebook:'cafes',cityFilter:'all'});
+  store('scribbles',{notebooks:[{id:'cafes',name:'Cafes to visit',icon:'🍵',entries:p.cafes},{id:'restaurants',name:'Restaurants to try',icon:'🍜',entries:p.restaurants},{id:'studios',name:'写真馆 Studios',icon:'📸',entries:p.studios},{id:'beauty',name:'Beauty places',icon:'💅',entries:p.beauty},{id:'general',name:'Notes',icon:'📝',entries:[]},{id:'guides',name:'Guides',icon:'📔',entries:[]}],activeNotebook:'cafes',cityFilter:'all'});
 }
 // re-seed the curated place folders if they've lost their entries
 function repairScribblePlaces(s){
@@ -8014,10 +8034,39 @@ function seedSampleNote(s){
   }
   s.scribV=3;
 }
+var GUIDE_SEED=[
+ {id:'guide-cats',title:'🐱 Cats & kittens — what to buy',content:"<h2>\ud83d\udc31 essentials to buy</h2><p>Checklist for bringing home a kitten \u2014 fill in price / where / link as you shop.</p><ul><li><b>Carrier</b> \u2014 hard or soft-sided \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Litter box</b> + scoop \u2014 covered or open \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Litter</b> \u2014 tofu (low-dust, flushable) or clumping bentonite \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Kitten food</b> \u2014 wet + dry, kitten formula (higher protein) \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Bowls</b> \u2014 shallow ceramic/steel, or a water fountain \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Scratching post</b> \u2014 tall enough to stretch fully \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Bed / blanket</b> \u2014 soft, washable \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Toys</b> \u2014 wand teaser, balls, kicker \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Grooming</b> \u2014 soft brush, nail clipper \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Health</b> \u2014 dewormer, flea treatment, first vet visit + vaccines \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li></ul><h2>\ud83d\udcd6 guides &amp; resources</h2><ul><li><a href=\"\">(paste an article / XHS / YouTube link)</a></li></ul><h2>\ud83d\udcdd notes</h2><p>Preferred vet, diet that worked, anything to remember.</p>"},
+ {id:'guide-apartment',title:'🏠 Apartment — buy list + inspiration',content:"<h2>\ud83c\udfe0 things to buy</h2><p>Furnishing checklist \u2014 fill in price / link as you decide.</p><ul><li><b>Bed + mattress</b> \u2014 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Sofa</b> \u2014 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Dining table + chairs</b> \u2014 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Wardrobe / storage</b> \u2014 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Desk + chair</b> \u2014 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Lighting</b> \u2014 warm lamps, floor lamp \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Kitchen</b> \u2014 cookware, utensils, kettle, small appliances \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Soft furnishings</b> \u2014 rug, curtains, cushions, throws \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Bathroom</b> \u2014 towels, mat, storage \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li><li><b>Decor</b> \u2014 art, plants, mirror, vases \u00b7 RM \u2014 \u00b7 <a href=\"\">link</a></li></ul><h2>\ud83d\udecb inspiration</h2><p>Paste inspiration photos of your future home here \u2014 press <b>/</b> and pick <b>Image</b> (upload) or <b>Image from URL</b>.</p><h2>\ud83d\udd17 shopping links</h2><ul><li><a href=\"\">(IKEA / Shopee / Taobao / store link)</a></li></ul>"}
+];
+function injectGuides(s){
+  var del=s.deletedFolders||[];if(del.indexOf('guides')>=0)return;
+  var nb=s.notebooks.filter(function(n){return n.id==='guides';})[0];
+  if(!nb){nb={id:'guides',name:'Guides',icon:'📔',entries:[]};s.notebooks.push(nb);}
+  GUIDE_SEED.forEach(function(g){
+    if(!nb.entries.some(function(e){return String(e.id)===g.id;}))
+      nb.entries.push({id:g.id,title:g.title,content:g.content,area:'',tags:['guide'],img:'',visited:false,date:new Date().toISOString(),pinned:true});
+  });
+}
+// cafes & restaurants auto-mirror the curated CAFES/RESTAURANTS list (no manual add); visited state preserved
+function mirrorPlaces(s){
+  var del=s.deletedFolders||[];
+  var cfgs=[['cafes',(typeof CAFES!=='undefined'?CAFES:[]),'vibe'],['restaurants',(typeof RESTAURANTS!=='undefined'?RESTAURANTS:[]),'cuisine']];
+  var sp=function(x){return (x||'').split('·').map(function(t){return t.trim();}).filter(Boolean);};
+  cfgs.forEach(function(cfg){
+    var id=cfg[0],list=cfg[1];if(del.indexOf(id)>=0||!list.length)return;
+    var nb=s.notebooks.filter(function(n){return n.id===id;})[0];
+    if(!nb){nb={id:id,name:PLACE_META[id][0],icon:PLACE_META[id][1],entries:[]};s.notebooks.push(nb);}
+    var prev={};(nb.entries||[]).forEach(function(e){prev[e.title]=e;});
+    nb.entries=list.map(function(x,i){var old=prev[x.n]||{};
+      return {id:old.id||(i+1),title:x.n,area:x.area||'',tags:sp(x[cfg[2]]),content:x.must||'',img:old.img||'',visited:(old.visited!==undefined?old.visited:!!x.v),rating:old.rating||0,date:old.date||new Date().toISOString(),pinned:old.pinned||false};});
+  });
+}
 function getScribbles(){migrateToScribbles();var s=load('scribbles',null);if(!s)return null;
   var del=s.deletedFolders||[];
   NOTE_FOLDERS.forEach(function(f){if(del.indexOf(f[0])>=0)return;if(!s.notebooks.some(function(n){return n.id===f[0];}))s.notebooks.push({id:f[0],name:f[1],icon:f[2],entries:[]});});
   repairScribblePlaces(s);
+  mirrorPlaces(s);
+  injectGuides(s);
   seedSampleNote(s);
   tidyScribbles(s);
   store('scribbles',s);return s;}
