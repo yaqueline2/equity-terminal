@@ -2717,8 +2717,26 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 [data-sub="maintenance"] .mt-skin-head{display:flex;align-items:baseline;gap:12px;margin-bottom:4px;}
 [data-sub="maintenance"] .mt-skin-title{font-family:var(--font-hand);font-size:24px;color:var(--t1);}
 [data-sub="maintenance"] .mt-skin-title .cn{font-family:var(--font);font-size:13px;color:var(--t4);margin-left:2px;}
-[data-sub="maintenance"] .mt-skin-cols{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:14px;align-items:start;}
-@media(max-width:760px){[data-sub="maintenance"] .mt-skin-cols{grid-template-columns:1fr;gap:20px;}}
+[data-sub="maintenance"] .mt-skin-cols{display:grid;grid-template-columns:1fr;gap:24px;margin-top:14px;align-items:start;}
+/* skin treatment tables — record + plan, both scrollable */
+[data-sub="maintenance"] .treat-table-wrap{overflow:auto;border:1px solid rgba(204,133,151,0.2);border-radius:12px;background:rgba(255,255,255,0.5);margin-top:6px;}
+[data-sub="maintenance"] .treat-log-wrap{max-height:230px;}
+[data-sub="maintenance"] .treat-plan-wrap{max-height:480px;}
+[data-sub="maintenance"] .treat-table{width:100%;border-collapse:collapse;font-family:var(--font);font-size:13px;}
+[data-sub="maintenance"] .treat-table th{position:sticky;top:0;background:var(--bg);text-align:left;font-weight:600;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--t4);padding:9px 12px;border-bottom:1px solid rgba(204,133,151,0.22);z-index:2;}
+[data-sub="maintenance"] .treat-table td{padding:9px 12px;border-bottom:1px solid rgba(0,0,0,0.05);color:var(--t2);vertical-align:top;line-height:1.35;}
+[data-sub="maintenance"] .treat-table tbody tr:last-child td{border-bottom:none;}
+[data-sub="maintenance"] .treat-table .tt-cat td{background:rgba(204,133,151,0.1);font-family:var(--font-hand);font-size:16px;color:var(--t1);padding:8px 12px;position:sticky;top:33px;z-index:1;}
+[data-sub="maintenance"] .treat-table .tt-cat-n{display:inline-block;margin-left:6px;font-family:var(--font);font-size:11px;color:var(--t4);}
+[data-sub="maintenance"] .treat-table .tt-name{color:var(--t1);font-weight:500;}
+[data-sub="maintenance"] .treat-table .tt-date{white-space:nowrap;color:var(--t3);}
+[data-sub="maintenance"] .treat-table .tt-when,[data-sub="maintenance"] .treat-table .tt-price{white-space:nowrap;}
+[data-sub="maintenance"] .treat-table .tt-price{color:var(--t1);}
+[data-sub="maintenance"] .treat-table .tt-remark{display:block;color:var(--t4);font-size:11px;margin-top:3px;}
+[data-sub="maintenance"] .treat-table .tt-doneflag{color:#8197A8;font-size:11.5px;white-space:nowrap;}
+[data-sub="maintenance"] .treat-table .tt-is-done .tt-name{color:var(--t3);}
+[data-sub="maintenance"] .treat-table .row-x{border:none;background:none;color:var(--t4);cursor:pointer;font-size:15px;line-height:1;padding:0;}
+[data-sub="maintenance"] .treat-table .row-x:hover{color:#CC8597;}
 [data-sub="maintenance"] .mt-focus-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px;flex-wrap:wrap;}
 [data-sub="maintenance"] .mt-focus-big{font-family:var(--font-hand);font-size:27px;font-weight:400;color:var(--t1);line-height:1.05;margin-top:4px;}
 [data-sub="maintenance"] .mt-focus-sub{font-size:11.5px;font-weight:300;color:var(--t4);max-width:230px;text-align:right;line-height:1.5;}
@@ -3251,15 +3269,6 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
       <span class="dash-head-stat">the upkeep of a life — body, space, screen, soul</span>
     </div>
 
-    <!-- THE FOCUS — what actually needs you right now, pulled from every category -->
-    <div class="mt-focus" data-focal="stat">
-      <div class="mt-focus-head">
-        <div><div class="focal-eyebrow">start here · what needs you now</div><div class="mt-focus-big" id="mt-focus-count">—</div></div>
-        <div class="mt-focus-sub" id="mt-focus-sub"></div>
-      </div>
-      <div class="mt-focus-list" id="mt-focus-list"></div>
-    </div>
-
     <!-- SKIN TREATMENTS — its own section -->
     <div class="mt-skin">
       <div class="mt-skin-head">
@@ -3273,9 +3282,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
           <div class="add-row" data-add="treat-log"><span class="add-plus">+</span><input class="add-in add-time" placeholder="date YYYY-MM-DD" data-field="date" style="flex:0 0 118px;"/><input class="add-in" placeholder="treatment" data-field="name"/><input class="add-in add-time" placeholder="clinic" data-field="clinic" style="flex:0 0 98px;"/></div>
         </div>
         <div class="mt-skin-col">
-          <div class="re-eyebrow">计划 · plan</div>
+          <div class="re-eyebrow">计划 · plan <span class="cn">2027 roadmap</span></div>
           <div class="mt-next" id="mt-skin-next"></div>
-          <div class="flow-scroll"><div id="mt-treatments"></div></div>
+          <div id="mt-treatments"></div>
         </div>
       </div>
     </div>
@@ -6677,29 +6686,35 @@ function renderBeautyMaintenance(){
   }).join('');
   el.querySelectorAll('[data-mtbeauty]').forEach(function(b){b.onclick=function(){var id=this.dataset.mtbeauty,d=mtBeautyData();d.forEach(function(x){if(String(x.id)===id)x.lastDone=new Date().toISOString().slice(0,10);});store('maintenance-beauty',d);renderBeautyMaintenance();};});
 }
+var TREAT_CAT_EN={skin:'skin',contour:'face & contour',botox:'botox',body:'body',filler:'filler'};
 function renderTreatments(){
   var el=document.getElementById('mt-treatments');if(!el)return;var data=mtTreatData();
-  var pending=[];Object.keys(data).forEach(function(cat){data[cat].forEach(function(t){if(t.freq!=='done'&&!t.lastDone)pending.push(t.name);});});
-  setT('mt-skin-next',pending.length?('↪ to book · '+pending.slice(0,2).join(' · ')+(pending.length>2?' +'+(pending.length-2):'')):'↪ all booked / up to date');
-  el.innerHTML=Object.keys(data).map(function(cat){
-    return '<div class="treat-cat"><div class="treat-cat-h" data-treatcat="'+cat+'">'+esc(TREAT_CATS[cat]||cat)+' <span>'+data[cat].length+'</span></div><div class="treat-items">'+data[cat].map(function(t){
+  var total=0;Object.keys(data).forEach(function(c){total+=data[c].length;});
+  setT('mt-skin-next','↪ '+total+' treatments mapped across 5 areas · scroll for cost + cadence');
+  var rows='';
+  Object.keys(data).forEach(function(cat){
+    rows+='<tr class="tt-cat"><td colspan="5">'+esc(TREAT_CATS[cat]||cat)+' · '+esc(TREAT_CAT_EN[cat]||cat)+' <span class="tt-cat-n">'+data[cat].length+'</span></td></tr>';
+    data[cat].forEach(function(t){
       var done=t.freq==='done';
-      var metaParts=done?[esc(t.type),esc(t.price),esc(t.clinic),(t.lastDone?'✓ '+esc(t.lastDone):'')]:[esc(t.type),'every '+esc(t.freq),esc(t.price),esc(t.clinic)];
-      var meta=metaParts.filter(Boolean).join(' · ')+(t.remark?' <span class="treat-remark">'+esc(t.remark)+'</span>':'');
-      return '<div class="treat-row"><div class="treat-info"><div class="treat-n">'+esc(t.name)+(done?' <span class="treat-done">✓</span>':'')+'</div><div class="treat-meta">'+meta+'</div></div>'+(done?'':'<div class="treat-act"><span class="treat-last">'+(t.lastDone?ago(t.lastDone):'never')+'</span><button class="mt-done-btn" data-treatdone="'+cat+'|'+t.id+'">done</button></div>')+'</div>';
-    }).join('')+'</div></div>';
-  }).join('');
-  el.querySelectorAll('[data-treatcat]').forEach(function(h){h.onclick=function(){this.parentElement.classList.toggle('open');};});
-  el.querySelectorAll('[data-treatdone]').forEach(function(b){b.onclick=function(){var pr=this.dataset.treatdone.split('|'),d=mtTreatData();d[pr[0]].forEach(function(x){if(String(x.id)===pr[1])x.lastDone=new Date().toISOString().slice(0,10);});store('beauty-treatments',d);renderTreatments();};});
+      var when=done?'<span class="tt-doneflag">✓ done'+(t.lastDone?' · '+esc(t.lastDone):'')+'</span>':esc(t.freq||'TBD');
+      var details=esc(t.type||'')+(t.remark?'<span class="tt-remark">'+esc(t.remark)+'</span>':'');
+      rows+='<tr'+(done?' class="tt-is-done"':'')+'><td class="tt-name">'+esc(t.name)+'</td><td>'+(details||'—')+'</td><td class="tt-when">'+when+'</td><td class="tt-price">'+(esc(t.price)||'—')+'</td><td>'+(esc(t.clinic)||'—')+'</td></tr>';
+    });
+  });
+  el.innerHTML='<div class="treat-table-wrap treat-plan-wrap"><table class="treat-table treat-plan-table">'+
+    '<thead><tr><th>treatment</th><th>details</th><th style="width:118px;">how often</th><th style="width:92px;">price</th><th style="width:128px;">clinic</th></tr></thead><tbody>'+
+    rows+'</tbody></table></div>';
 }
 function fmtTreatDate(d){var p=String(d||'').split('-');if(p.length<3)return d||'';var MN=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return (MN[+p[1]]||p[1])+' '+(+p[2])+', '+p[0];}
 function renderTreatmentLog(){
   var el=document.getElementById('mt-treat-log');if(!el)return;
   var d=mtTreatLog().slice().sort(function(a,b){return String(b.date||'').localeCompare(String(a.date||''));});
   setT('mt-treat-log-count',d.length?d.length+' done':'');
-  el.innerHTML=d.length?d.map(function(t){
-    return '<div class="treat-log-row"><span class="tl-date">'+esc(fmtTreatDate(t.date))+'</span><span class="tl-name">'+esc(t.name)+'</span><span class="tl-clinic">'+(t.clinic?'@ '+esc(t.clinic):'')+'</span><button class="row-x" data-tldel="'+esc(t.id)+'">×</button></div>';
-  }).join(''):'<div class="soft-empty">no treatments logged yet — add one below.</div>';
+  el.innerHTML=d.length?('<div class="treat-table-wrap treat-log-wrap"><table class="treat-table">'+
+    '<thead><tr><th style="width:108px;">date</th><th>treatment</th><th>clinic</th><th style="width:28px;"></th></tr></thead><tbody>'+
+    d.map(function(t){
+      return '<tr><td class="tt-date">'+esc(fmtTreatDate(t.date))+'</td><td class="tt-name">'+esc(t.name)+'</td><td>'+esc(t.clinic||'')+'</td><td><button class="row-x" data-tldel="'+esc(t.id)+'">×</button></td></tr>';
+    }).join('')+'</tbody></table></div>'):'<div class="soft-empty">no treatments logged yet — add one below.</div>';
   el.querySelectorAll('[data-tldel]').forEach(function(b){b.onclick=function(){var id=this.dataset.tldel;store('treatment-log',mtTreatLog().filter(function(x){return String(x.id)!==id;}));renderTreatmentLog();};});
 }
 function renderEmotional(){
@@ -6761,7 +6776,7 @@ function renderMaintenanceFocus(){
     renderMaintenanceFull();
   };});
 }
-function renderMaintenanceFull(){bindMtTabs();renderMaintenanceFocus();renderBeautyMaintenance();renderTreatmentLog();renderTreatments();renderEnvReset();renderDigitalCleanse();renderPersonalCleanse();}
+function renderMaintenanceFull(){bindMtTabs();renderBeautyMaintenance();renderTreatmentLog();renderTreatments();renderEnvReset();renderDigitalCleanse();renderPersonalCleanse();}
 window.renderMaintenanceFull=renderMaintenanceFull;
 
 var MAINT=[{"name": "Hair trim", "weeks": 6, "cat": "Hair", "last": null}, {"name": "Scalp treatment", "weeks": 4, "cat": "Hair", "last": null}, {"name": "Facial (professional)", "weeks": 8, "cat": "Face", "last": null}, {"name": "Reassess skincare routine", "weeks": 13, "cat": "Face", "last": null}, {"name": "Toss expired skincare/makeup", "weeks": 13, "cat": "Face", "last": null}, {"name": "Brow grooming", "weeks": 4, "cat": "Brows", "last": null}, {"name": "Brow lamination", "weeks": 8, "cat": "Brows", "last": null}, {"name": "Lash lift / tint", "weeks": 6, "cat": "Lashes", "last": null}, {"name": "Wax · upper lip", "weeks": 4, "cat": "Body", "last": null}, {"name": "Wax · brazilian / body", "weeks": 4, "cat": "Body", "last": null}, {"name": "Body massage", "weeks": 4, "cat": "Body", "last": null}, {"name": "Mani / pedi", "weeks": 3, "cat": "Nails", "last": null}, {"name": "Dental check-up", "weeks": 26, "cat": "Health", "last": null}, {"name": "Eye check-up", "weeks": 52, "cat": "Health", "last": null}, {"name": "OB-GYN check", "weeks": 52, "cat": "Health", "last": null}, {"name": "Full health screening", "weeks": 52, "cat": "Health", "last": null}];
