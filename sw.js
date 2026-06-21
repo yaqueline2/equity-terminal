@@ -1,6 +1,6 @@
 // sw.js — service worker for cel's headspace PWA
 // Offline-first for assets + decks; network-first for the page; API never cached.
-const CACHE = 'cel-headspace-v1';
+const CACHE = 'cel-headspace-v2';
 const PRECACHE = [
   './',
   'manifest.json',
@@ -38,7 +38,7 @@ self.addEventListener('fetch', e => {
   }
 
   // assets (decks, icons, fonts, css): cache-first
-  const isAsset = /\.(json|png|jpe?g|ttf|woff2?|css)$/i.test(url.pathname) || url.pathname.includes('/decks/');
+  const isAsset = /\.(json|png|jpe?g|webp|gif|svg|ttf|woff2?|css)$/i.test(url.pathname) || url.pathname.includes('/decks/');
   if (isAsset) {
     e.respondWith(
       caches.match(req).then(m => m || fetch(req).then(r => {

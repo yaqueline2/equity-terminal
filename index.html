@@ -832,6 +832,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   .topnav-nav .nv.act{background:rgba(255,252,248,0.98);box-shadow:0 1px 5px rgba(44,36,32,0.1);}
   .sb{top:46px !important;}
   .page{padding-bottom:88px !important;}
+  /* hero stat band wraps 2-per-row instead of overflowing */
+  .fl-stats{flex-wrap:wrap;row-gap:14px;}
+  .fl-stats>*{flex:1 0 42%;}
 }
 @media(max-width:640px){
   .ink{padding:20px 18px 50px;}
@@ -3850,7 +3853,25 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 </div>
 </div>
 
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+// install hint — only on mobile browsers, not when already installed/dismissed
+(function(){
+  try{
+    var standalone=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+    if(standalone||!window.matchMedia('(max-width:700px)').matches||localStorage.getItem('cel-install-hint')==='x')return;
+    var deferred=null;
+    window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;});
+    window.addEventListener('load',function(){setTimeout(function(){
+      var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+      var b=document.createElement('div');
+      b.style.cssText='position:fixed;left:14px;right:14px;bottom:84px;z-index:400;display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:16px;background:rgba(28,26,23,0.92);color:#F4F0EB;font:400 12.5px var(--font);box-shadow:0 8px 28px rgba(28,26,23,0.3);backdrop-filter:blur(10px);';
+      b.innerHTML='<span style="flex:1;line-height:1.4;">📲 Add to your home screen'+(isIOS?' — tap <b>Share</b> then <b>“Add to Home Screen”</b>':' for the full app')+'</span>'+(deferred?'<button id="ih-add" style="border:none;background:#C9949C;color:#fff;padding:7px 12px;border-radius:10px;font:inherit;cursor:pointer;">Install</button>':'')+'<button id="ih-x" style="border:none;background:none;color:rgba(244,240,235,0.6);font-size:16px;cursor:pointer;padding:0 2px;">✕</button>';
+      document.body.appendChild(b);
+      b.querySelector('#ih-x').onclick=function(){localStorage.setItem('cel-install-hint','x');b.remove();};
+      var add=b.querySelector('#ih-add');if(add)add.onclick=function(){if(deferred){deferred.prompt();}localStorage.setItem('cel-install-hint','x');b.remove();};
+    },2500);});
+  }catch(e){}
+})();</script>
 
 <!-- ░░ FLASHCARD REVIEW OVERLAY ░░ -->
 <div class="fc-ov" id="fc-ov" hidden data-lang="ko">
