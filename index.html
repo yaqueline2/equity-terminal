@@ -2909,6 +2909,30 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   .m-fold-chev{transition:transform .2s var(--spring);color:var(--t4);font-size:18px;line-height:1;}
   .m-fold-btn.m-open .m-fold-chev{transform:rotate(90deg);}
 }
+/* ══ mobile-specific chart/visual designs (purpose-built, not shrunk desktop) ══ */
+@media(max-width:700px){
+  /* monthly "at a glance" → compact 2×2 tiles, not 4 tall cards */
+  .mag-grid{grid-template-columns:repeat(2,1fr) !important;gap:8px;}
+  .mag-stat{padding:12px 14px;border-radius:14px;}
+  .mag-stat-val{font-size:18px;}
+  .mag-hero{padding:16px 16px;}
+  .mag-hero-net{font-size:30px;}
+  /* "2026 in a glance" → vertical list (month · value · delta), not a cramped scroll */
+  .yag-wrap{overflow-x:visible;}
+  .yag-timeline{flex-direction:column;min-width:0;align-items:stretch;padding:2px 0;}
+  .yag-month{display:flex;align-items:center;gap:10px;min-width:0;padding:11px 2px;border-bottom:1px solid rgba(60,52,44,0.06);text-align:left;}
+  .yag-month:last-child{border-bottom:none;}
+  .yag-label{flex:0 0 58px;font-size:10.5px;margin:0;}
+  .yag-val{flex:1;text-align:left;margin:0;font-size:15px;font-weight:500;}
+  .yag-delta{flex:0 0 auto;min-height:0;font-size:11.5px;}
+  .yag-dot,.yag-line{display:none;}
+  /* rings: smaller so the number leads */
+  .fin-nw-head{gap:14px;padding-bottom:18px;}
+  .fin-nw-fig{font-size:40px;}
+  .fin-nw-ring,.fin-nw-ring .ring{width:92px;height:92px;}
+  .fin-nw-ring .ring-pct{font-size:21px;}
+  .fin-hero-ring .ring-wrap,.fin-hero-ring .ring-wrap svg{width:88px;height:88px;}
+}
 .bm-foot{border-top:1px dashed var(--rule);padding:9px 9px 11px;text-align:center;font-family:var(--font-hand);font-size:14px;color:var(--t3);line-height:1.25;}
 .bm-del{position:absolute;top:-13px;right:-9px;width:21px;height:21px;border-radius:50%;border:1px solid var(--rule2);background:var(--bg);color:var(--t5);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .14s;z-index:3;}
 .bm:hover .bm-del{opacity:1;}
