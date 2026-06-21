@@ -7577,7 +7577,8 @@ function bindCollapsibles(){document.querySelectorAll('.collapsible').forEach(fu
 var FC_DECKS={
   ko:[
     {id:'ko-grammar',name:'Grammar Sentences',cn:'语法句子',file:'decks/korean-grammar.json',count:2412,sub:'Evita · sentences'},
-    {id:'ko-cheat',name:'Grammar Cheat Sheet',cn:'语法速记',file:'decks/korean-cheatsheet.json',count:240,sub:'quick grammar'}
+    {id:'ko-cheat',name:'Grammar Cheat Sheet',cn:'语法速记',file:'decks/korean-cheatsheet.json',count:240,sub:'quick grammar'},
+    {id:'ko-vocab',name:'Vocabulary',cn:'词汇',file:'decks/korean-vocab-evita.json',count:6500,sub:'Evita · core words'}
   ],
   jp:[
     {id:'jp-core',name:'Core 2000',cn:'核心2000',file:'decks/japanese-core2000.json',count:2007,sub:'frequent words · EN'},
@@ -7729,7 +7730,7 @@ function fcClose(){
 })();
 
 // ─── cross-device sync (Cloudflare KV, opt-in via passphrase) ───
-var FC_ALL_DECKS=['ko-grammar','ko-cheat','jp-core','jp-egg'];
+var FC_ALL_DECKS=['ko-grammar','ko-cheat','ko-vocab','jp-core','jp-egg'];
 function fcSyncToken(){return load('sync-token','');}
 function fcGatherSrs(){var o={};FC_ALL_DECKS.forEach(function(id){var s=load('srs-'+id,null);if(s&&Object.keys(s).length)o[id]=s;});return o;}
 function fcMergeRemote(remote){
