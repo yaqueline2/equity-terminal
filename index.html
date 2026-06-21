@@ -8687,8 +8687,9 @@ function buildWidgetSnapshot(){
   var snap={updated:Date.now()};
   try{var todos=load('today',(typeof DEF_TODAY!=='undefined'?DEF_TODAY:[]))||[];
     snap.todos={done:todos.filter(function(x){return x.done;}).length,total:todos.length};}catch(e){}
-  try{var due=0,fresh=0;if(typeof FC_DECKS!=='undefined'){['ko','jp'].forEach(function(l){(FC_DECKS[l]||[]).forEach(function(d){var c=fcCounts(d);due+=c.due;fresh+=c.newCards;});});}
-    snap.vocab={due:due,fresh:fresh};}catch(e){}
+  try{var due=0,fresh=0,per={ko:{due:0,fresh:0},jp:{due:0,fresh:0}},decks={};
+    if(typeof FC_DECKS!=='undefined'){['ko','jp'].forEach(function(l){(FC_DECKS[l]||[]).forEach(function(d){var c=fcCounts(d);due+=c.due;fresh+=c.newCards;per[l].due+=c.due;per[l].fresh+=c.newCards;decks[d.id]={name:d.name,lang:l,due:c.due,fresh:c.newCards};});});}
+    snap.vocab={due:due,fresh:fresh};snap.ko=per.ko;snap.jp=per.jp;snap.decks=decks;}catch(e){}
   return snap;
 }
 function pushWidgetSnapshot(){
