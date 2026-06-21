@@ -2898,6 +2898,17 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .qm-shot{width:100%;border-radius:8px;display:block;margin-bottom:14px;}
 .add-shot{flex:0 0 auto;border:1px solid var(--rule);background:rgba(255,255,255,0.6);border-radius:8px;cursor:pointer;font-size:14px;padding:5px 9px;line-height:1;}
 .add-shot:hover{background:rgba(201,148,156,0.12);}
+/* mobile "view details" disclosure — heavy blocks fold on phones, untouched on desktop */
+.m-fold-btn{display:none;}
+@media(max-width:700px){
+  .m-fold{display:none !important;}
+  .m-fold.m-open{display:block !important;}
+  .m-fold-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;box-sizing:border-box;
+    margin:6px 0 16px;padding:13px 16px;border:1px solid rgba(60,52,44,0.08);border-radius:14px;
+    background:var(--card);font:500 13px var(--font);color:var(--t2);cursor:pointer;box-shadow:0 1px 3px rgba(60,52,44,0.04);}
+  .m-fold-chev{transition:transform .2s var(--spring);color:var(--t4);font-size:18px;line-height:1;}
+  .m-fold-btn.m-open .m-fold-chev{transform:rotate(90deg);}
+}
 .bm-foot{border-top:1px dashed var(--rule);padding:9px 9px 11px;text-align:center;font-family:var(--font-hand);font-size:14px;color:var(--t3);line-height:1.25;}
 .bm-del{position:absolute;top:-13px;right:-9px;width:21px;height:21px;border-radius:50%;border:1px solid var(--rule2);background:var(--bg);color:var(--t5);font-size:13px;line-height:1;cursor:pointer;opacity:0;transition:opacity .14s;z-index:3;}
 .bm:hover .bm-del{opacity:1;}
@@ -3594,7 +3605,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- 2026 in a glance — at the top -->
-    <section class="fin-sec">
+    <section class="fin-sec m-fold" data-fold="2026 in a glance">
       <div class="sec-title"><span id="fin-yag-yr">2026</span> in a glance <span class="cn">全年</span> <span class="sec-count" id="fin-yag-sum"></span></div>
       <div class="yag-wrap"><div class="yag-timeline" id="fin-yag"></div></div>
     </section>
@@ -3613,7 +3624,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- balance sheet — full detail -->
-    <section class="fin-sec">
+    <section class="fin-sec m-fold" data-fold="balance sheet · assets & liabilities">
       <div class="sec-title">balance sheet <span class="cn">资产负债</span> <span class="sec-count">assets · liabilities — the detail behind net worth</span></div>
       <div id="fin-balance"></div>
       <div class="add-row" data-add="debt"><span class="add-plus">+</span><input class="add-in" placeholder="liability name" data-field="name"/><input class="add-in add-time" placeholder="lender" data-field="notes" style="flex:0 0 100px;"/><input class="add-in add-time" placeholder="original" data-field="total" style="flex:0 0 72px;"/><input class="add-in add-time" placeholder="remaining" data-field="remaining" style="flex:0 0 80px;"/><input class="add-in add-time" placeholder="monthly" data-field="monthly" style="flex:0 0 70px;"/><input class="add-in add-time" placeholder="rate%" data-field="rate" style="flex:0 0 56px;"/><select class="add-in add-time" data-field="paidBy" style="flex:0 0 70px;"><option>Self</option><option>Dad</option><option>Mom</option><option>Parents</option></select><input class="add-in add-time" placeholder="ends YYYY-MM" data-field="endDate" style="flex:0 0 84px;"/></div>
@@ -3645,7 +3656,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- SECTION 2 — bank accounts: Maybank · Versa · MooMoo · RYT -->
-    <div class="sec-flush">
+    <div class="sec-flush m-fold" data-fold="bank accounts">
       <span class="doodle hide-sm" data-doodle="milk" style="top:-12px;right:-8px;width:28px;transform:rotate(7deg);"></span>
       <div class="sec-title">bank accounts <span class="cn">账户</span> <span class="sec-count">Maybank editable · Versa · MooMoo · RYT auto from pots</span></div>
       <div class="bank-shelf" id="mt-banks"></div>
@@ -3675,7 +3686,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- SECTION 4 — savings · subscriptions, side by side -->
-    <div class="side-pair eq">
+    <div class="side-pair eq m-fold" data-fold="savings & subscriptions">
       <div class="sec-flush">
         <div class="sec-title">savings <span class="cn">储蓄</span> <button class="mini-btn" id="mt-rebalance" style="margin-left:auto;">↔ rebalance</button></div>
         <div class="sec-subtitle" id="mt-sav-total"></div>
@@ -3692,7 +3703,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- SECTION 5 — savings goals · wishlist, side by side -->
-    <div class="side-pair eq">
+    <div class="side-pair eq m-fold" data-fold="savings goals & wishlist">
       <div class="sec-flush">
         <div class="sec-title">savings goals <span class="cn">目标</span></div>
         <div id="mt-goals"></div>
@@ -3706,7 +3717,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- SECTION 6 — insurance + credit cards, reference, below -->
-    <div class="grouped-block">
+    <div class="grouped-block m-fold" data-fold="insurance & credit cards">
       <div class="gb-section">
         <div class="gb-label">insurance</div>
         <div id="mt-insurance"></div>
@@ -3768,7 +3779,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- allocation, full width -->
-    <div class="sec-flush"><div class="sec-title">allocation <span class="cn">配置</span></div>
+    <div class="sec-flush m-fold" data-fold="allocation"><div class="sec-title">allocation <span class="cn">配置</span></div>
       <div class="side-pair">
         <div><div class="alloc-block-h">by asset class</div><div class="stack-bar" id="port-alloc"></div><div class="stack-legend" id="port-alloc-legend"></div></div>
         <div><div class="alloc-block-h">by geography</div><div class="stack-bar" id="port-geo"></div><div class="stack-legend" id="port-geo-legend"></div></div>
@@ -3776,7 +3787,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     </div>
 
     <!-- dividend income · sector exposure -->
-    <div class="wealth-pair">
+    <div class="wealth-pair m-fold" data-fold="dividend income & sector exposure">
       <section class="sec-flush">
         <div class="sec-title">dividend income <span class="cn">股息</span> · 12 mo</div>
         <div class="div-chart" id="port-divchart"></div>
@@ -3855,7 +3866,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
     <div class="scenario-bar" id="prop-scenarios"></div>
 
     <!-- working area: inputs + results flow into two auto-balanced columns -->
-    <div class="prop-work">
+    <div class="prop-work m-fold" data-fold="property calculator">
       <section class="sec-flush"><div class="sec-title">property details</div><div class="prop-form" id="prop-form"></div></section>
       <section class="sec-flush"><div class="sec-title">upfront costs</div><div class="prop-form" id="prop-cost-inputs"></div></section>
       <section class="sec-flush"><div class="sec-title">cash needed upfront</div><div class="prop-breakdown" id="prop-upfront"></div></section>
@@ -8591,6 +8602,20 @@ document.querySelectorAll('.nv').forEach(function(n){n.onclick=function(){switch
     })
     .catch(function(){/* keep the time-of-day icon */});
 })();
+</script>
+<script>
+// mobile "view details" disclosure: inject a toggle before each .m-fold (CSS hides it on desktop)
+function applyMobileFolds(){
+  document.querySelectorAll('.m-fold').forEach(function(el){
+    if(el.__foldInit)return;el.__foldInit=1;
+    var btn=document.createElement('button');btn.type='button';btn.className='m-fold-btn';
+    btn.innerHTML='<span>'+(el.getAttribute('data-fold')||'view details')+'</span><span class="m-fold-chev">›</span>';
+    el.parentNode.insertBefore(btn,el);
+    btn.addEventListener('click',function(){var o=el.classList.toggle('m-open');btn.classList.toggle('m-open',o);});
+  });
+}
+window.applyMobileFolds=applyMobileFolds;
+window.addEventListener('load',applyMobileFolds);
 </script>
 </body>
 </html>
