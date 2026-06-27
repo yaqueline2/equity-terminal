@@ -849,25 +849,77 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
   .fl-clock{font-size:44px !important;font-weight:200 !important;}
   .fl-when .fl-date{font-size:13px !important;margin-top:3px !important;}
   .fl-wx{font-size:12px !important;margin-top:2px;}
-  /* ── GLANCE — quiet secondary card, small restrained numbers ── */
-  .fl-stats{flex-wrap:wrap;row-gap:0;margin-top:18px;background:rgba(255,253,250,0.55);
-    border:1px solid rgba(60,52,44,0.05);border-radius:16px;padding:0 2px;}
-  .fl-stat{flex:1 0 50%;box-sizing:border-box;padding:13px 16px !important;border-left:none !important;}
-  .fl-stat:nth-child(even){border-left:1px solid rgba(60,52,44,0.06) !important;}
-  .fl-stat:nth-child(n+3){border-top:1px solid rgba(60,52,44,0.06);}
-  .fl-stat-l{font-size:8.5px !important;margin-bottom:5px !important;letter-spacing:0.06em;}
-  .fl-stat-n{font-size:17px !important;line-height:1.05 !important;}
-  .fl-stat-s{font-size:9px !important;margin-top:3px !important;}
-  /* ── rhythm + grouped "Today" card ── */
-  .fl-week{margin:26px 0 !important;}
+  /* ── GLANCE → a SWIPEABLE carousel of big tactile widget cards (Cover-Flow energy) ── */
+  .fl-stats{display:flex !important;flex-direction:row !important;flex-wrap:nowrap !important;gap:14px;
+    margin:22px -18px 2px !important;padding:8px 18px 20px !important;overflow-x:auto;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    background:none !important;border:none !important;border-radius:0 !important;box-shadow:none !important;}
+  .fl-stats::-webkit-scrollbar{display:none;}
+  .fl-stat{flex:0 0 76% !important;scroll-snap-align:center;box-sizing:border-box;
+    display:flex !important;flex-direction:column;justify-content:flex-start;min-height:174px;
+    padding:22px 24px !important;border-radius:26px !important;border:1px solid rgba(60,52,44,0.06) !important;
+    background:linear-gradient(165deg,#FFFEFB,#F3EDE4) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),0 2px 4px rgba(60,52,44,0.05),0 30px 50px -26px rgba(60,52,44,0.6) !important;
+    -webkit-tap-highlight-color:transparent;transition:transform .16s var(--spring);}
+  .fl-stat:active{transform:scale(0.975);}
+  .fl-stat-l{display:flex;align-items:center;gap:10px;font-size:12px !important;letter-spacing:0.07em !important;
+    text-transform:uppercase;color:var(--t4) !important;margin:0 !important;}
+  .fl-stat-l svg{width:18px !important;height:18px !important;color:var(--t4);}
+  .fl-stat-n{text-align:left !important;font-size:46px !important;line-height:1 !important;margin:auto 0 0 !important;}
+  .fl-stat-s{text-align:left !important;font-size:14px !important;color:var(--t4) !important;margin:8px 0 0 !important;}
+  /* ── rhythm + tappable list groups with room to breathe ── */
+  .fl-week{margin:30px 0 !important;}
   .fl-body{display:block !important;}
-  .fl-left{background:var(--card);border:1px solid rgba(60,52,44,0.06);border-radius:18px;
-    padding:18px 16px 14px;box-shadow:0 1px 3px rgba(60,52,44,0.04);margin-bottom:22px;}
-  .fl-left .fl-h{font-size:21px;}
-  .fl-sub{margin-top:20px;}
-  .fl-right .fl-h{font-size:21px;}
-  .fl-photo{max-height:230px;border-radius:16px;}
-  .fl-cap{font-size:12px;}
+  .fl-h{font-size:24px !important;margin-bottom:0;}
+  .fl-left,.fl-right{background:none !important;border:none !important;padding:0 !important;box-shadow:none !important;margin-bottom:32px;}
+  .fl-rule{display:none !important;}
+  #today-list,#reading-list{background:var(--card);border:1px solid rgba(60,52,44,0.05);border-radius:18px;
+    overflow:hidden;margin-top:12px;box-shadow:0 16px 32px -24px rgba(60,52,44,0.45);}
+  #today-list .tt{display:flex;align-items:center;gap:14px;padding:17px 16px !important;
+    border-bottom:1px solid var(--rule2);-webkit-tap-highlight-color:transparent;transition:background .13s;}
+  #today-list .tt:last-child{border-bottom:none;}
+  #today-list .tt:active{background:rgba(60,52,44,0.05);}
+  #today-list .cb{width:25px !important;height:25px !important;flex:none;}
+  #today-list .tt-l{font-size:15.5px !important;flex:1;}
+  #today-list .tt-t{font-size:13px !important;color:var(--t4);}
+  #reading-list .rd{padding:16px !important;border-bottom:1px solid var(--rule2);margin:0 !important;}
+  #reading-list .rd:last-child{border-bottom:none;}
+  [data-sub="flow"] .add-row{margin-top:14px !important;}
+  [data-sub="flow"] .add-in{font-size:15px !important;padding:12px 13px !important;}
+  .fl-sub{margin-top:30px;}
+  .th{margin-top:12px;}
+  .fl-photo{max-height:260px;border-radius:18px;}
+  .fl-cap{font-size:12.5px;}
+  /* ── SKEUOMORPHIC + TACTILE — material panels, pressable rows, pill controls (mobile) ── */
+  [data-sub="flow"] #today-list,[data-sub="flow"] #reading-list{
+    border-radius:22px;background:linear-gradient(180deg,#FFFDFA,#FBF6EF);border:1px solid rgba(60,52,44,0.06);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),0 2px 3px rgba(60,52,44,0.05),0 24px 46px -28px rgba(60,52,44,0.55);}
+  /* rows press inward like a physical button */
+  [data-sub="flow"] #today-list .tt:active{
+    background:rgba(60,52,44,0.045);box-shadow:inset 0 2px 7px rgba(60,52,44,0.09);transform:scale(0.995);}
+  /* recessed, physical checkbox */
+  [data-sub="flow"] #today-list .cb{border:1.5px solid var(--t5);
+    box-shadow:inset 0 1px 3px rgba(60,52,44,0.13),0 1px 0 rgba(255,255,255,0.8);}
+  [data-sub="flow"] #today-list .cb.done{box-shadow:inset 0 1px 2px rgba(0,0,0,0.2),0 1px 0 rgba(255,255,255,0.5);}
+  /* habits → beveled pill buttons */
+  [data-sub="flow"] #ritual-chips{display:flex;flex-wrap:wrap;gap:9px;}
+  [data-sub="flow"] #ritual-chips .chip{border-radius:9999px !important;padding:11px 16px !important;font-size:14px !important;
+    background:linear-gradient(180deg,#FFFDFA,#F3EDE5) !important;border:1px solid rgba(60,52,44,0.09) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),0 2px 5px -1px rgba(60,52,44,0.13) !important;
+    transition:transform .12s var(--spring),box-shadow .12s !important;}
+  [data-sub="flow"] #ritual-chips .chip:active{transform:translateY(1px) scale(0.97);
+    box-shadow:inset 0 2px 5px rgba(60,52,44,0.15) !important;}
+  [data-sub="flow"] #ritual-chips .chip.done{background:linear-gradient(180deg,#3A322C,#29231F) !important;
+    color:#F0EBE3 !important;border-color:rgba(60,52,44,0.2) !important;}
+  /* pill inputs */
+  [data-sub="flow"] .add-in{border-radius:9999px !important;background:rgba(60,52,44,0.04) !important;
+    border:1px solid rgba(60,52,44,0.07) !important;}
+  /* week strip → a tactile material panel, rounded day keys */
+  [data-sub="flow"] .fl-week{background:linear-gradient(180deg,#FFFDFA,#FBF6EF);border:1px solid rgba(60,52,44,0.06);
+    border-radius:20px;padding:5px 3px;overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),0 20px 40px -28px rgba(60,52,44,0.5);}
+  [data-sub="flow"] .fl-wk-day{border-left:none !important;border-radius:14px;padding:12px 4px 13px;}
+  [data-sub="flow"] .fl-wk-num{font-size:21px;}
   /* ── clean light subview strip (was a heavy dark band) ── */
   .sb{background:rgba(247,244,240,0.85) !important;backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
       border-bottom:1px solid rgba(60,52,44,0.07) !important;padding:9px 14px !important;gap:7px !important;top:44px !important;
