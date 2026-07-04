@@ -4153,7 +4153,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 [data-sub="flow"] .flow-year-month .year-month{height:14px;}
 [data-sub="flow"] .flow-year-month .year-month span{display:none;}
 [data-sub="flow"] .flow-year-month .year-progress-note{display:block;margin-top:10px;}
-@media(max-width:520px){[data-sub="flow"] .flow-year-month .year-progress{grid-template-columns:96px minmax(0,1fr);gap:12px;}[data-sub="flow"] .flow-year-month .year-ring{width:96px;height:96px;}[data-sub="flow"] .flow-year-month .year-ring svg{width:96px;height:96px;}}
+@media(max-width:520px){[data-sub="flow"] .flow-year-month .year-progress{grid-template-columns:96px minmax(0,1fr);gap:12px;}[data-sub="flow"] .flow-year-month .year-ring{width:96px;height:96px;}[data-sub="flow"] .flow-year-month .year-ring svg{width:96px;height:96px;}[data-sub="flow"] .flow-year-month .year-ring-label b{font-size:26px;}}
 
 [data-sub="maintenance"] .mt-console{display:grid;grid-template-columns:minmax(250px,.78fr) minmax(0,1.32fr);gap:0;border-top:1px solid rgba(60,52,44,.16);border-bottom:1px solid rgba(60,52,44,.16);background:rgba(255,253,248,.34);margin:6px 0 24px;}
 [data-sub="maintenance"] .mt-console-left,[data-sub="maintenance"] .mt-console-right{min-width:0;padding:18px 20px;}
@@ -5598,7 +5598,7 @@ function renderFlowYearProgress(){
   var months=['J','F','M','A','M','J','J','A','S','O','N','D'];
   var curMonth=now.getFullYear()===targetYear?now.getMonth():(now<start?-1:11);
   var q=Math.max(1,Math.min(4,Math.floor(Math.max(0,curMonth)/3)+1));
-  var pctText=(pct*100).toFixed(1).replace('.0','');
+  var pctText=String(Math.round(pct*100));
   el.innerHTML='<div class="year-progress"><div class="year-ring">'+
     '<svg viewBox="0 0 132 132" aria-hidden="true"><circle class="track" cx="66" cy="66" r="'+radius+'"></circle><circle class="fill" cx="66" cy="66" r="'+radius+'" stroke-dasharray="'+circ.toFixed(2)+'" stroke-dashoffset="'+off.toFixed(2)+'"></circle></svg>'+
     '<div class="year-ring-label"><b>'+pctText+'%</b><span>of 2026</span></div></div>'+
