@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="headspace"/>
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500;9..40,600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,300;1,6..72,400&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
 <style>
@@ -4269,6 +4269,54 @@ body .hr-remove:hover,body .mt-del:hover,body .bs-del:hover,body .pv-x:hover,bod
 body .bk-chip-x{width:18px;height:18px;border-radius:999px;}
 body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right:-6px!important;}
 
+/* ═══════════ THE HEADSPACE TIMES — weekly newspaper ═══════════ */
+/* Flow teaser card — a folded front page you click to open */
+.fp-teaser{display:block;width:100%;text-align:left;margin:2px 0 26px;cursor:pointer;background:#f7f4ec;border:1px solid rgba(60,52,44,.16);border-radius:10px;overflow:hidden;box-shadow:0 16px 32px -28px rgba(60,52,44,.55);transition:transform .16s ease,box-shadow .16s ease;font-family:var(--font-display);}
+.fp-teaser:hover{transform:translateY(-2px);box-shadow:0 24px 42px -28px rgba(60,52,44,.6);}
+.fp-teaser-top{display:flex;justify-content:space-between;align-items:center;font:600 8px var(--font);letter-spacing:.16em;text-transform:uppercase;color:#6b6760;padding:9px 18px 7px;border-bottom:3px double #1c1a17;}
+.fp-teaser-mast{text-align:center;font-family:'UnifrakturCook','Newsreader',serif;font-size:36px;color:#1c1a17;line-height:1;padding:12px 16px 3px;}
+.fp-teaser-sub{text-align:center;font:400 9px var(--font);letter-spacing:.12em;text-transform:uppercase;color:#9e9a92;padding:0 16px 9px;margin:0 14px;border-bottom:1px solid rgba(0,0,0,.24);}
+.fp-teaser-body{padding:13px 18px 15px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;}
+.fp-teaser-head{font-weight:600;font-size:20px;line-height:1.14;color:#1c1a17;}
+.fp-teaser-dek{font-size:12.5px;color:#3b3835;margin-top:5px;line-height:1.4;}
+.fp-teaser-cta{font:600 11px var(--font);color:#A46473;white-space:nowrap;align-self:end;}
+/* Full broadsheet overlay */
+.fp-ov{position:fixed;inset:0;background:rgba(20,18,16,.7);z-index:9600;overflow-y:auto;padding:26px 14px 60px;}
+.fp-close{position:fixed;top:16px;right:20px;z-index:9700;width:42px;height:42px;border-radius:999px;border:none;background:#f7f4ec;color:#1c1a17;font-size:21px;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35);}
+.fp-paper{max-width:940px;margin:0 auto;background:#f7f4ec;color:#1c1a17;font-family:var(--font-display);padding:36px 42px 30px;box-shadow:0 30px 90px rgba(0,0,0,.45);}
+.fp-hdr-top{display:flex;justify-content:space-between;font:400 11px var(--font);color:#3b3835;padding-bottom:6px;}
+.fp-mast{text-align:center;font-family:'UnifrakturCook','Newsreader',serif;font-weight:700;font-size:clamp(44px,8.5vw,94px);line-height:.92;margin:2px 0 6px;}
+.fp-rule-d{border-top:4px double #1c1a17;}
+.fp-dateline{display:flex;justify-content:space-between;align-items:center;gap:12px;font:600 10px var(--font);letter-spacing:.07em;text-transform:uppercase;color:#3b3835;padding:6px 0;border-top:1px solid #1c1a17;border-bottom:4px double #1c1a17;margin-bottom:18px;}
+.fp-dateline span:nth-child(2){letter-spacing:.02em;}
+.fp-mood{text-align:center;font:600 9px var(--font);letter-spacing:.12em;text-transform:uppercase;color:#6b6760;margin:-8px 0 16px;}
+.fp-mood em{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:13px;letter-spacing:0;text-transform:none;color:#A46473;}
+.fp-teaser-mood{text-align:center;font:600 8px var(--font);letter-spacing:.12em;text-transform:uppercase;color:#9e9a92;padding:7px 16px 0;}
+.fp-teaser-mood em{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:11.5px;letter-spacing:0;text-transform:none;color:#A46473;}
+.fp-lead-kicker{text-align:center;font:600 10px var(--font);letter-spacing:.24em;text-transform:uppercase;color:#A46473;margin-bottom:7px;}
+.fp-lead-head{text-align:center;font-weight:600;font-size:clamp(26px,4.4vw,42px);line-height:1.04;margin-bottom:14px;}
+.fp-hero{width:100%;max-height:360px;object-fit:cover;filter:grayscale(1) contrast(1.03);border:1px solid rgba(0,0,0,.25);display:block;}
+.fp-hero-cap{font:italic 400 10.5px var(--font-display);color:#6b6760;margin:5px 0 15px;text-align:center;}
+.fp-lead-body{columns:2;column-gap:26px;column-rule:1px solid rgba(0,0,0,.16);font-size:13.5px;line-height:1.52;text-align:justify;}
+.fp-lead-body p{margin:0 0 9px;}
+.fp-lead-body p:first-of-type::first-letter{float:left;font-weight:600;font-size:58px;line-height:.78;padding:5px 9px 0 0;}
+.fp-cols{columns:3;column-gap:24px;column-rule:1px solid rgba(0,0,0,.16);margin-top:16px;padding-top:15px;border-top:1px solid #1c1a17;}
+.fp-article{break-inside:avoid;margin-bottom:20px;}
+.fp-art-head{font-weight:600;font-size:18px;line-height:1.1;margin-bottom:4px;}
+.fp-art-byline{font:600 8.5px var(--font);letter-spacing:.11em;text-transform:uppercase;color:#6b6760;margin-bottom:7px;}
+.fp-art-body{font-size:12.5px;line-height:1.5;text-align:justify;}
+.fp-art-body p{margin:0 0 8px;}
+.fp-article img{width:100%;filter:grayscale(1) contrast(1.03);border:1px solid rgba(0,0,0,.22);margin:7px 0;display:block;}
+.fp-briefs{columns:5;column-gap:18px;column-rule:1px solid rgba(0,0,0,.16);margin-top:18px;padding-top:11px;border-top:4px double #1c1a17;}
+.fp-brief{break-inside:avoid;margin-bottom:12px;}
+.fp-brief-kicker{font:600 8.5px var(--font);letter-spacing:.08em;text-transform:uppercase;color:#1c1a17;border-bottom:1px solid #1c1a17;padding-bottom:3px;margin-bottom:5px;}
+.fp-brief-title{font-weight:600;font-size:13px;line-height:1.16;margin-bottom:4px;}
+.fp-brief-body{font-size:11px;line-height:1.46;color:#3b3835;text-align:justify;}
+.fp-brief-tag{font:italic 400 10px var(--font-display);color:#A46473;margin-top:5px;}
+.fp-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:8px;border-top:1px solid #1c1a17;font:400 10px var(--font);color:#6b6760;}
+.fp-barcode{height:34px;}
+@media(max-width:720px){.fp-paper{padding:22px 18px;}.fp-lead-body{columns:1;}.fp-cols{columns:1;}.fp-briefs{columns:2;}.fp-hero{max-height:240px;}}
+
 </style>
 
 <!-- ═══ TOP NAV ═══ -->
@@ -4346,6 +4394,8 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
     </div>
 
     <div class="fl-quote" id="fl-quote"></div>
+
+    <div class="fp-teaser" id="fp-teaser" role="button" tabindex="0"></div>
 
     <div class="fl-sub flow-year-panel">
       <span class="doodle hide-sm" data-doodle="sparkle" style="bottom:8px;right:-16px;width:22px;transform:rotate(8deg);opacity:.66;"></span>
@@ -5670,6 +5720,7 @@ function renderHomeSummary(){
   }
   try{renderFlowQuote();}catch(e){}
   try{renderFlowCards();}catch(e){}
+  try{renderFrontpageCard();}catch(e){}
 }
 // day-stable index so "of the day" content only changes once per calendar day
 function dayOfYear(){var n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/864e5);}
@@ -5749,6 +5800,110 @@ function renderFlowCards(){
   }catch(e){}
   el.innerHTML=cards.join('');
 }
+
+/* ═══ THE HEADSPACE TIMES — weekly newspaper (content authored by Cel + Claude in chat, edit here each week) ═══ */
+var FRONTPAGE={
+  masthead:"The Headspace Times",
+  url:"vivisheadspace.pages.dev",
+  place:"Subang Jaya, Selangor",
+  issue:1,
+  date:"Sunday, July 13, 2026",
+  weather:"Warm and partly cloudy 33/24 · A week of court trips, sore glutes, and one Sunday nap",
+  moodWeather:"Fight-or-flight most of the week — then chill. The body lands where it needs to.",
+  price:"$2",
+  tagline:"Information is food for the brain",
+  lead:{
+    kicker:"From the Editor’s Desk",
+    headline:"Past Self Saved Her. This Week She Showed Up Anyway.",
+    hero:"assets/week01-hero.png",
+    heroCap:"The correspondent, somewhere between arrival and departure.",
+    body:[
+      "The week ends the way it needed to — quietly. A Sunday nap beside a sleeping boyfriend, Nuria’s voice from the morning still settling. The rest of the week was not like this. The rest of the week moved at a pace the body could not immediately forget.",
+      "On paper, the brief reads as follows: three workouts (Day 1: surprisingly easy; Day 2: two hours, sore glutes, very happy; Day 3: still sore, still went); three Substacks read on a Monday when scrolling would have been easier; one RHB savings account finally opened — the first real infrastructure for the retire-at-30 dream. And on Friday, a court crisis that made her heart sink, solved entirely by a past version of herself who had the foresight to document everything in WhatsApp. “My past self saved me,” she said. It is a sentence this paper intends to keep.",
+      "The cost does not fit neatly in the same column. A boss who does not track her own filing cart. Passive-aggressive texts after hours. A Friday where the adrenaline ran so high there was no hunger, no rest, only problem after problem — each solved, each unacknowledged. The paper notes it for the record: this is not a sustainable pace. But it also notes this: she kept going, and she kept building, and these two things are not unrelated."
+    ]
+  },
+  articles:[
+    {head:"Three Years With Nuria, and Sunday Still Holds",byline:"By Cel · Culture Desk",body:[
+      "The Sunday ritual is three years old this year and has never failed to arrive on time. This week’s episode — “single & living alone” — played while the week was still finding its footing, and it did what Nuria always does: it made the correspondent feel that being anxious and unsure is simply one of the weather patterns of being alive.",
+      "The appeal has always been the same: she tells everything, stays raw with her feelings, speaks in a Chinese the correspondent understands and a Spanish she admires from a distance. “She feels like my sister,” the correspondent writes. Not because their lives match — they don’t, particularly — but because the honesty does. Each vlog deposits the same residue: cozy, and motivated. The outfits inspire; the mindset inspires more.",
+      "There is a standing fantasy on file, originated during the Newcastle years when Nuria lived in London: that some ordinary afternoon, she might simply be there, around a corner. The correspondent is aware the probability is low. She has not filed it under fantasy. She has filed it under eventually."
+    ]},
+    {head:"The Body Came Back. It Was Sore. It Came Back Anyway.",byline:"By Cel · Body & Wellbeing",img:"assets/week01-cat.png",body:[
+      "The return to movement was not dramatic. It was a 14-day challenge from Bilibili — viral in China — and Day 1 was, in her own words, “surprisingly easy.” This is the best kind of start: not a statement of intent, not a dramatic announcement, just thirty minutes and a quiet satisfaction afterward.",
+      "Day 2 was two hours and a very sore posterior. “My butt hurts, extra tired, but so so happy I did it.” Day 3 was still sore and still done. Friday was a genuine rest — not avoidance, not guilt, just a body and a nervous system that had run adrenaline all day and deserved to stop. Three days on, one rest taken with intention, sore in exactly the right places.",
+      "The original reason for the workouts was something about not liking her shoulders. That is no longer the editorial line. The editorial line, updated this week, is that movement is not punishment, and the body that shows up after a rest is not behind — it simply knows where it left off."
+    ]},
+    {head:"The Work Is Unsustainable. She Is Building the Exit.",byline:"By Cel · Finance & Future",img:"assets/week01-reading.png",body:[
+      "On Tuesday evening, after her second workout of the week, her boss texted about work and the evening dropped hard. On Wednesday, a passive-aggressive comment about the filing cart — she had filed everything; she had told the boss in person; she had made the payment when instructed — and suddenly she was seething inside a professionally worded reply, having done everything correctly, having done it anyway.",
+      "She does not hide what it costs. “I fucking hate this job,” she said, and the paper prints it without asterisks. Not because she hates her colleagues — she doesn’t — but because she hates what the work is: solving other people’s problems at low pay, with high responsibility, through ambiguous instructions that become her fault when they misfire. Call to Bar: 7 October. That is the finish line for this chapter.",
+      "On the same day she opened a savings account at RHB Bank. This is not a coincidence. The dream — retire at 30 on passive income, build vibe sites, code things that are hers — now has an account number. RM1.5k a month has a destination. The exit is being built one deposit at a time, on the same weeks that feel most like staying is impossible. The paper considers this the real story of the week."
+    ]}
+  ],
+  briefs:[
+    {kicker:"Weather of the Mind",title:"Fight-or-flight on a Friday, chill by Sunday",body:"The nervous system runs its own timeline. This week it ran hot through Friday and landed soft on a Sunday nap beside a sleeping boyfriend.",tag:"noted without alarm"},
+    {kicker:"The Screening Room",title:"Nuria Ma · single & living alone",body:"Three years of Sundays, still unmatched. Cozy and motivated, as reliably as ever.",tag:"year three"},
+    {kicker:"The Body",title:"Days 1, 2, 3 — and a rest earned",body:"Sore glutes, two hours, one court day, one genuine rest. The body knows what it’s doing.",tag:"be gentle"},
+    {kicker:"Finance Desk",title:"RHB account opened",body:"RM1.5k/month now has a home. The retire-at-30 infrastructure has its first address.",tag:"13 Jul 2026"},
+    {kicker:"From the Journal Desk",title:"Filed on a Sunday morning",body:"She journalled this morning, before the nap, before 5pm. Two entries in the books this week.",tag:"goal met"}
+  ]
+};
+function fpParas(arr){return (arr||[]).map(function(p){return '<p>'+esc(p)+'</p>';}).join('');}
+function fpFirstSentence(t){t=String(t||'');var m=t.match(/^.*?[.!?…”]/);return (m?m[0]:t).slice(0,160);}
+function fpBarcode(){var bars='',x=0;for(var i=0;i<46;i++){var w=(i%4===0?2:1)+((i*13)%2);bars+='<rect x="'+x+'" y="0" width="'+w+'" height="34" fill="#1c1a17"/>';x+=w+1;}return '<svg class="fp-barcode" width="'+x+'" height="34" viewBox="0 0 '+x+' 34" aria-hidden="true">'+bars+'</svg>';}
+function renderFrontpageCard(){
+  var el=document.getElementById('fp-teaser');if(!el)return;var fp=FRONTPAGE;
+  el.innerHTML=
+    '<div class="fp-teaser-top"><span>'+esc(fp.url)+'</span><span>issue no.'+fp.issue+'</span><span>'+esc(fp.place)+'</span></div>'+
+    '<div class="fp-teaser-mast">'+esc(fp.masthead)+'</div>'+
+    '<div class="fp-teaser-sub">'+esc(fp.date)+' · '+esc(fp.tagline)+'</div>'+
+    (fp.moodWeather?'<div class="fp-teaser-mood">Weather of the mind — <em>'+esc(fp.moodWeather)+'</em></div>':'')+
+    '<div class="fp-teaser-body"><div><div class="fp-teaser-head">'+esc(fp.lead.headline)+'</div>'+
+      '<div class="fp-teaser-dek">'+esc(fpFirstSentence(fp.lead.body[0]))+'</div></div>'+
+      '<div class="fp-teaser-cta">Read this week’s edition →</div></div>';
+  el.onclick=openFrontpage;
+  el.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openFrontpage();}};
+}
+function openFrontpage(){
+  var fp=FRONTPAGE,ov=document.getElementById('fp-ov');if(ov)ov.remove();
+  ov=document.createElement('div');ov.id='fp-ov';ov.className='fp-ov';
+  var arts=fp.articles.map(function(a){
+    return '<div class="fp-article"><div class="fp-art-head">'+esc(a.head)+'</div>'+
+      (a.byline?'<div class="fp-art-byline">'+esc(a.byline)+'</div>':'')+
+      (a.img?'<img src="'+esc(a.img)+'" alt="" onerror="this.remove();"/>':'')+
+      '<div class="fp-art-body">'+fpParas(a.body)+'</div></div>';
+  }).join('');
+  var briefs=fp.briefs.map(function(b){
+    return '<div class="fp-brief"><div class="fp-brief-kicker">'+esc(b.kicker)+'</div>'+
+      '<div class="fp-brief-title">'+esc(b.title)+'</div>'+
+      '<div class="fp-brief-body">'+esc(b.body)+'</div>'+
+      (b.tag?'<div class="fp-brief-tag">'+esc(b.tag)+'</div>':'')+'</div>';
+  }).join('');
+  ov.innerHTML='<button class="fp-close" aria-label="close edition">×</button>'+
+    '<div class="fp-paper">'+
+      '<div class="fp-hdr-top"><span>'+esc(fp.url)+'</span><span>'+esc(fp.place)+'</span></div>'+
+      '<div class="fp-mast">'+esc(fp.masthead)+'</div>'+
+      '<div class="fp-dateline"><span>'+esc(fp.weather)+'</span><span>issue no.'+fp.issue+'</span><span>'+esc(fp.date)+'</span></div>'+
+      (fp.moodWeather?'<div class="fp-mood">Weather of the mind — <em>'+esc(fp.moodWeather)+'</em></div>':'')+
+      '<div class="fp-lead-kicker">'+esc(fp.lead.kicker)+'</div>'+
+      '<div class="fp-lead-head">'+esc(fp.lead.headline)+'</div>'+
+      (fp.lead.hero?'<img class="fp-hero" src="'+esc(fp.lead.hero)+'" alt="" onerror="this.remove();"/>':'')+
+      (fp.lead.heroCap?'<div class="fp-hero-cap">'+esc(fp.lead.heroCap)+'</div>':'')+
+      '<div class="fp-lead-body">'+fpParas(fp.lead.body)+'</div>'+
+      '<div class="fp-cols">'+arts+'</div>'+
+      '<div class="fp-briefs">'+briefs+'</div>'+
+      '<div class="fp-foot"><span>'+esc(fp.price)+' · printed with love · '+esc(fp.masthead)+'</span>'+fpBarcode()+'</div>'+
+    '</div>';
+  document.body.appendChild(ov);
+  function close(){ov.remove();document.removeEventListener('keydown',esckey);}
+  function esckey(e){if(e.key==='Escape')close();}
+  document.addEventListener('keydown',esckey);
+  ov.querySelector('.fp-close').onclick=close;
+  ov.onclick=function(e){if(e.target===ov)close();};
+  document.body.scrollTop=0;ov.scrollTop=0;
+}
+window.renderFrontpageCard=renderFrontpageCard;window.openFrontpage=openFrontpage;
+
 function renderQuarters(){
   var el=document.getElementById('q-flow');if(!el)return;
   var now=new Date(),curQ=quarterOfMonth(now.getMonth());
@@ -6606,8 +6761,26 @@ function syncPrices(){
   });
 }
 // ── AI portfolio review (via /api/claude proxy) ──
+function aiAccessHeaders(){
+  var h={'Content-Type':'application/json'},t=load('ai-access-token','');
+  if(t)h['X-Cel-AI-Token']=t;
+  return h;
+}
+function askAIAccessToken(){
+  var t=prompt('AI access token for this hub');
+  if(!t)return false;
+  store('ai-access-token',t.trim());
+  return true;
+}
+function fetchClaude(body,retry){
+  return fetch('/api/claude',{method:'POST',headers:aiAccessHeaders(),body:JSON.stringify(body)})
+    .then(function(r){
+      if(r.status===401&&retry!==false&&askAIAccessToken())return fetchClaude(body,false);
+      return r;
+    });
+}
 function postClaudeSimple(message,context,cb){
-  fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message,context:context,max_tokens:900})})
+  fetchClaude({message:message,context:context,max_tokens:900})
     .then(function(r){return r.json().catch(function(){return null;}).then(function(j){return {ok:r.ok,j:j};});})
     .then(function(res){var d=res.j;var reply=d&&(d.reply||(d.content&&d.content[0]&&d.content[0].text));if(reply)cb(reply,null);else cb(null,(d&&d.error)||('HTTP '+(res.ok?'200':'error')));})
     .catch(function(e){cb(null,e.message);});
@@ -6642,7 +6815,7 @@ function runPortfolioAI(){
   var ctx='You are a sharp, friendly investing analyst writing for a young Malaysian retail investor (currency RM). You are NOT a licensed financial advisor — frame everything as general considerations and observations, never as directives or guarantees. Be concrete, specific to the holdings given, and concise.';
   postClaudeSimple(msg,ctx,function(reply,err){
     if(btn)btn.disabled=false;
-    if(err||!reply){panel.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">The review runs once the hub is deployed to Cloudflare Pages with an API key (OPENROUTER_API_KEY or similar) set in Settings → Environment variables.</span></div>';return;}
+    if(err||!reply){panel.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">The review runs once the hub is deployed to Cloudflare Pages with OPENROUTER_API_KEY set in Settings → Environment variables.</span></div>';return;}
     panel.innerHTML='<div class="port-ai-head">✨ portfolio review</div><div class="port-ai-body">'+mdLite(reply)+'</div><div class="port-ai-foot">AI-generated from your holdings · general information, not financial advice</div>';
   });
 }
@@ -6684,7 +6857,7 @@ function runAIAnalysis(){
   }
   res.innerHTML='<div class="port-ai-load">thinking it through…</div>';if(go)go.disabled=true;
   postClaudeSimple(msg,AI_CTX,function(reply,err){if(go)go.disabled=false;
-    if(err||!reply){res.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">It runs once the hub is deployed to Cloudflare Pages with an API key (OPENROUTER_API_KEY or similar) set in Settings → Environment variables.</span></div>';return;}
+    if(err||!reply){res.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">It runs once the hub is deployed to Cloudflare Pages with OPENROUTER_API_KEY set in Settings → Environment variables.</span></div>';return;}
     res.innerHTML='<div class="port-ai-body">'+mdLite(reply)+'</div>';});
 }
 function bindAITabs(){
@@ -6760,15 +6933,11 @@ function extractTicker(input) {
   }
 
 function postClaude(messages, system, maxTokens){
-    return fetch(ENDPOINT, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
+    return fetchClaude({
         max_tokens: maxTokens || 4000,
         system: system || SYSTEM,
         messages: messages
-      })
-    }).then(async function(res){
+      }).then(async function(res){
       var raw = await res.text();
       if(!res.ok){
         var msg = raw;
@@ -7276,7 +7445,7 @@ async function runStockAnalysis(mode){
     var d=await callClaudeJSON(prompt,maxTok);
     renderStockAnalysis(d,!!fin);
   }catch(e){
-    res.innerHTML='<div class="port-ai-err">Couldn’t complete the analysis ('+esc(e&&e.message||'error')+').<br><span class="port-ai-hint">Needs the Cloudflare API key set (OPENROUTER_API_KEY etc.). Try again or use quick mode.</span></div>';
+    res.innerHTML='<div class="port-ai-err">Couldn’t complete the analysis ('+esc(e&&e.message||'error')+').<br><span class="port-ai-hint">Needs OPENROUTER_API_KEY set in Cloudflare. Try again or use quick mode.</span></div>';
   }
   if(go)go.disabled=false;
 }
