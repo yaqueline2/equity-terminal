@@ -6760,24 +6760,11 @@ function syncPrices(){
     renderPortfolioFull();recomputeAll();
   });
 }
-// ── AI portfolio review (via /api/claude proxy) ──
-function aiAccessHeaders(){
-  var h={'Content-Type':'application/json'},t=load('ai-access-token','');
-  if(t)h['X-Cel-AI-Token']=t;
-  return h;
-}
-function askAIAccessToken(){
-  var t=prompt('AI access token for this hub');
-  if(!t)return false;
-  store('ai-access-token',t.trim());
-  return true;
-}
-function fetchClaude(body,retry){
-  return fetch('/api/claude',{method:'POST',headers:aiAccessHeaders(),body:JSON.stringify(body)})
-    .then(function(r){
-      if(r.status===401&&retry!==false&&askAIAccessToken())return fetchClaude(body,false);
-      return r;
-    });
+// ── Online AI analysis is intentionally disabled in this local-first hub. ──
+function fetchClaude(){
+  return Promise.resolve(new Response(JSON.stringify({error:'Online AI analysis is disabled in this local-first hub.'}), {
+    status:410, headers:{'Content-Type':'application/json'}
+  }));
 }
 function postClaudeSimple(message,context,cb){
   fetchClaude({message:message,context:context,max_tokens:900})
@@ -6815,7 +6802,7 @@ function runPortfolioAI(){
   var ctx='You are a sharp, friendly investing analyst writing for a young Malaysian retail investor (currency RM). You are NOT a licensed financial advisor — frame everything as general considerations and observations, never as directives or guarantees. Be concrete, specific to the holdings given, and concise.';
   postClaudeSimple(msg,ctx,function(reply,err){
     if(btn)btn.disabled=false;
-    if(err||!reply){panel.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">The review runs once the hub is deployed to Cloudflare Pages with OPENROUTER_API_KEY set in Settings → Environment variables.</span></div>';return;}
+    if(err||!reply){panel.innerHTML='<div class="port-ai-err">Online AI analysis is disabled in this local-first hub.</div>';return;}
     panel.innerHTML='<div class="port-ai-head">✨ portfolio review</div><div class="port-ai-body">'+mdLite(reply)+'</div><div class="port-ai-foot">AI-generated from your holdings · general information, not financial advice</div>';
   });
 }
@@ -6823,7 +6810,7 @@ function bindPortfolioTools(){
   var sb=document.getElementById('port-sync-btn');if(sb&&!sb.dataset.b){sb.dataset.b='1';sb.onclick=syncPrices;}
   var ab=document.getElementById('port-ai-btn');if(ab&&!ab.dataset.b){ab.dataset.b='1';ab.onclick=runPortfolioAI;}
 }
-// ── AI ANALYSIS tab — review · analyse · compare (reuses /api/claude) ──
+// ── AI ANALYSIS tab — intentionally disabled in the local-first hub. ──
 var AI_CTX='You are a sharp, friendly investing analyst writing for a young Malaysian retail investor (currency RM). You are NOT a licensed financial advisor — frame everything as general considerations and observations, never directives or guarantees. Be concrete, specific, and concise. Use short markdown headings (###) and bullet points.';
 function aiHoldingsBlock(){
   var holds=getHoldings(),total=portTotal();if(!holds.length)return null;
@@ -6857,7 +6844,7 @@ function runAIAnalysis(){
   }
   res.innerHTML='<div class="port-ai-load">thinking it through…</div>';if(go)go.disabled=true;
   postClaudeSimple(msg,AI_CTX,function(reply,err){if(go)go.disabled=false;
-    if(err||!reply){res.innerHTML='<div class="port-ai-err">Couldn’t reach the AI service ('+esc(err||'no reply')+').<br><span class="port-ai-hint">It runs once the hub is deployed to Cloudflare Pages with OPENROUTER_API_KEY set in Settings → Environment variables.</span></div>';return;}
+    if(err||!reply){res.innerHTML='<div class="port-ai-err">Online AI analysis is disabled in this local-first hub.</div>';return;}
     res.innerHTML='<div class="port-ai-body">'+mdLite(reply)+'</div>';});
 }
 function bindAITabs(){
@@ -6913,7 +6900,6 @@ window.renderInvestments=renderPortfolioFull;window.renderPortfolioFull=renderPo
 
 
 // ════════════ AI STOCK ANALYSIS ENGINE (ported verbatim from original hub) ════════════
-var ENDPOINT='/api/claude';
 var SYSTEM = "You are a senior equity research analyst and portfolio manager with 20+ years of experience. You analyse stocks and portfolios using rigorous fundamental analysis: business model quality, FCF and earnings quality (7 Rules), competitive moats, the 5-pillar management quality framework (capital allocation track record with ROIC vs WACC, say-do ratio over 8-12 quarters, incentive alignment from proxy filings, transparency quality, and operational execution), sector-specific KPI lenses (banks: NIM/NPL/CET1/ROTCE; SaaS: NRR/ARR growth/Rule of 40; mining: P/NAV/AISC/reserve life; pharma: pipeline NPV/patent cliff; REITs: P/AFFO/occupancy; semis: book-to-bill/design wins/inventory days; insurance: combined ratio/reserve development; energy: EBITDAX/reserve replacement/breakeven), DCF with explicit assumptions (WACC, terminal growth, bull/base/bear scenarios), and the Lynch Pitch (8-question bull case) and Munger Invert (8-point bear case) frameworks. Be direct, specific, evidence-based, and strategic. Tag claims as (disclosed), (inferred), or (unverified). Respond ONLY in valid JSON — no markdown, no text outside the JSON.";
 var LIVE_NEWS=[]; var NEWS_LAST_FETCH=0;
 var FIN_CACHE={}; var FIN_TTL=30*60*1000;
@@ -7445,7 +7431,7 @@ async function runStockAnalysis(mode){
     var d=await callClaudeJSON(prompt,maxTok);
     renderStockAnalysis(d,!!fin);
   }catch(e){
-    res.innerHTML='<div class="port-ai-err">Couldn’t complete the analysis ('+esc(e&&e.message||'error')+').<br><span class="port-ai-hint">Needs OPENROUTER_API_KEY set in Cloudflare. Try again or use quick mode.</span></div>';
+    res.innerHTML='<div class="port-ai-err">Online AI analysis is disabled in this local-first hub.</div>';
   }
   if(go)go.disabled=false;
 }

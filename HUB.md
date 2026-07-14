@@ -29,9 +29,14 @@
 
 ## 3. Backend (Cloudflare Pages Functions) — `functions/api/`
 - **`cards.js`** — flashcard SRS cross-device sync. KV-backed, keyed by a user passphrase (`srs:<token>`). Opt-in via "set up sync".
+- **No hosted Claude/OpenRouter route.** Online AI analysis is intentionally disabled; do not add an API key or recreate a paid AI proxy without Celine's explicit decision.
+- **`financials.js`** — Yahoo Finance quoteSummary proxy for structured stock-analysis inputs.
+- **`rss/[[path]].js`** — Yahoo Finance RSS proxy.
 - **`search.js`** — Yahoo Finance symbol search proxy (powers stock autocomplete in Investments → AI analysis).
+- **`telegram.js`** — Telegram webhook parser that sends a tap-to-import inbox link back to Cel; it stores messages as local notes and does not call an LLM.
 - **`widget.js`** — snapshot store for the iOS home-screen widget (`widget:<token>`). GET/PUT JSON.
-- **KV binding:** all three use the namespace bound as **`FLASHCARDS`** (set in the Cloudflare dashboard). If an API returns 501 "KV not bound", that's why.
+- **`yahoo/[[path]].js`** — Yahoo Finance chart/price proxy.
+- **KV binding:** `cards.js` and `widget.js` use the namespace bound as **`FLASHCARDS`** (set in the Cloudflare dashboard). If one of those APIs returns 501 "KV not bound", that's why.
 
 ## 4. PWA / offline
 - `manifest.json` (display standalone, icons), `sw.js` (cache **`cel-headspace-v2`**, network-first for navigation so edits show, cache-first for assets incl. `webp`), `icons/` (now the pink-flower app icon).
@@ -69,12 +74,27 @@ Desktop is untouched; all mobile rules are gated to `@media(max-width:700px)`.
 The **earliest tracked month's `savings` = opening pot balances**, NOT monthly transfers — exclude from flow math. `computeMaybank`, `getNWHistory` (the "2026 in a glance" cumulative-savings trajectory) depend on this. Keys: monthly `monthly-v9`, subs `subs-v3` (both had read/write key mismatches that were fixed). Never hardcode the current month — use `curMonthStr()`.
 
 ## 10. Working / verifying (for the next AI)
-- Preview tools (`mcp__Claude_Preview__*`): `preview_start` (launch.json name `headspace`, port 7725), load **`http://localhost:7725/index.html`** (root "/" is empty). Skip the gate in evals via `document.getElementById('th-skip').click()` or `?go=...`.
+- Preview tools (`mcp__Claude_Preview__*`): `preview_start` (launch.json name `headspace`, port 7725), load **`http://localhost:7725/`** or **`http://localhost:7725/index.html`**. Skip the gate in evals via `document.getElementById('th-skip').click()` or `?go=...`.
+- Simple Python preview: `python3 serve.py`, then open **`http://127.0.0.1:7724/`**.
+- `serve.py` now includes lightweight local JSON stubs for **`/api/widget`** and **`/api/cards`**, stored in ignored `.local-api/`, so widget/flashcard sync calls do not throw 501 during local browser tests.
 - Mobile testing: `preview_resize` to **390×844**; check `document.documentElement.scrollWidth>392` for overflow; always re-check desktop (1440) isn't broken.
 - After JS edits, syntax-check by extracting `<script>` blocks and `node --check`.
-- The local preview is a static server — **`/api/*` functions do NOT run locally**; test them with `curl` against the deployed site.
+- Other Cloudflare Pages functions still run only in production/Cloudflare tooling; test `claude`, `financials`, `search`, `rss`, `telegram`, and Yahoo proxies against the deployed site or a real Pages dev environment.
 
 ## 11. Status / changelog (newest first)
+- Local-dev QA: removed `.DS_Store` deployment junk, added `serve.py` local `/api/widget` + `/api/cards` JSON stubs, and verified Chromium load with no console errors or failed requests.
+- Hub QA pass: restarted localhost preview, verified all visible subviews for console errors, overflow, broken images, blank cards, missing add buttons, and drifting delete controls; fixed the dynamic quarter calendar add button and removed the unnecessary final Practice/Home image block.
+- Finance wealth header: FIRE badge now shows progress percent and FIRE number, with invested and remaining amounts in the hover title.
+- Flow order: moved the 2026 progress and July calendar into a full-width two-card row above today's page.
+- Finance wealth header: removed the finance command banner and added a small FIRE label at the bottom of the top milestone ring.
+- Hub delete controls: normalized shared `x` buttons so row/table deletes sit inline instead of inheriting drifting absolute positioning across sections.
+- Home restock: moved the restock list to the very top as a full-width inventory table, added area filters, and expanded rows with qty, cadence, last bought, notes, and bought-today action.
+- Flow right column: moved the July/month calendar beside the 2026 progress panel instead of keeping it as a full-width strip.
+- Skin treatment log: fixed the delete `x` button inheriting absolute row positioning inside the table.
+- Flow header: enlarged the profile photo beside the good-morning greeting on desktop and mobile.
+- Flow right column: removed the reading/currently-with-me block, moved 2026 progress above the cat photo, and changed the cat image from cropped cover sizing to full-image contained sizing.
+- Flow refinement: habits now read as soft stamped paper marks, the 7-day tracker uses small stamp-like pips, and added only decorative margin doodles around habits/reading/year progress.
+- Home/Flow editorial redesign: entry gate now exits cleanly without mobile ghosting; first viewport keeps the original good-morning row with net worth, 2026 progress, Korean streak, and together-days stats beside it; lower Home became clipped daily pages with softer to-dos, habit stamp tracker, compact month map, and visible reading clippings.
 - iOS widget pipeline (`/api/widget` + snapshot + Scriptable) + `?go=` deep link to jump straight into a deck. Per-language/per-deck snapshot breakdown.
 - Flower app icon + portrait mobile entry wallpaper (`assets/mobile-wallpaper.png`).
 - Mobile redesign: bottom tab bar, light chip strip, `m-fold` "view details" across Wealth/Practice/Mind, mobile-specific charts, iOS text-size fix, header scaling; fixes for movement program pills, maintenance table blowout, monthly-PDF in-app overlay (was a trapping popup), scribbles XHS links on mobile.

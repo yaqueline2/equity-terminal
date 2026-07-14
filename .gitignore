@@ -1,5 +1,7 @@
 .DS_Store
 **/.DS_Store
-.claude/
-serve.py
+.claude/*
+!.claude/launch.json
+!.claude/serve.js
 cels-headspace-backup-*.json
+.local-api/
