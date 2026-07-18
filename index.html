@@ -3780,7 +3780,7 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .qi-title{font-family:var(--font-hand);font-size:17px;font-weight:400;line-height:1.05;color:var(--t1);letter-spacing:0;max-width:150px;}
 .qi-meta{font:500 8.5px/1.25 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--t4);}
 .qi-line{display:none;}
-.bm.qi .bm-del{top:-4px;right:auto;left:6px;background:rgba(255,255,255,0.86);opacity:0;}
+.bm.qi .bm-del{top:-4px;right:auto;left:6px;background:rgba(255,255,255,0.9);opacity:.58;}
 .bm.qi:hover .bm-del{opacity:.9;}
 .bm.qi.long,.bm.qi.essay,.bm.qi.short{grid-column:auto;}
 @media(max-width:760px){
@@ -3792,15 +3792,17 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 }
 
 /* quotes v4 — mixed-width editorial masonry with natural image proportions */
-#quotes-list{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:8px;grid-auto-flow:dense;column-gap:clamp(22px,3.1vw,52px);row-gap:0;padding:8px 0 64px!important;}
+#quotes-list{display:grid!important;grid-template-columns:repeat(20,minmax(0,1fr));grid-auto-rows:8px;grid-auto-flow:dense;column-gap:clamp(16px,2.1vw,32px);row-gap:0;padding:8px 0 52px!important;}
 #quotes-list .bm.qi,
 #quotes-list .bm.qi:nth-child(2n),
 #quotes-list .bm.qi:nth-child(3n),
-#quotes-list .bm.qi:nth-child(4n){position:relative!important;display:block!important;width:100%!important;min-height:0!important;margin:0!important;padding:0 0 clamp(34px,4vw,64px)!important;grid-column:span 4;grid-template-columns:none!important;transform:none!important;align-self:start;}
-#quotes-list .bm.qi:nth-child(6n+2){grid-column:span 5;padding-top:34px!important;}
-#quotes-list .bm.qi:nth-child(6n+3){grid-column:span 3;padding-top:12px!important;}
-#quotes-list .bm.qi:nth-child(6n+5){grid-column:span 5;padding-top:20px!important;}
-#quotes-list .bm.qi:nth-child(6n){grid-column:span 3;}
+#quotes-list .bm.qi:nth-child(4n){position:relative!important;display:block!important;width:100%!important;min-height:0!important;margin:0!important;padding:0 0 clamp(24px,3vw,44px)!important;grid-column:span 4;grid-template-columns:none!important;transform:none!important;align-self:start;}
+#quotes-list .bm.qi:nth-child(7n+2){grid-column:span 5;padding-top:20px!important;}
+#quotes-list .bm.qi:nth-child(7n+3){grid-column:span 4;padding-top:6px!important;}
+#quotes-list .bm.qi:nth-child(7n+4){grid-column:span 3;}
+#quotes-list .bm.qi:nth-child(7n+5){grid-column:span 4;padding-top:12px!important;}
+#quotes-list .bm.qi:nth-child(7n+6){grid-column:span 5;}
+#quotes-list .bm.qi:nth-child(7n){grid-column:span 3;padding-top:8px!important;}
 #quotes-list .qi-no{display:block;padding:0 0 8px;font-size:12px;color:var(--t4);}
 #quotes-list .qi-media,
 #quotes-list .bm.qi:nth-child(2n) .qi-media{display:block!important;grid-column:auto!important;min-height:0!important;}
@@ -3812,19 +3814,27 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 #quotes-list .qi-paper{height:clamp(150px,18vw,250px);}
 #quotes-list .qi-copy,
 #quotes-list .bm.qi:nth-child(2n) .qi-copy{display:flex!important;grid-column:auto!important;grid-row:auto!important;align-items:flex-start!important;text-align:left!important;gap:5px;margin-top:11px;padding:0 2px;}
-#quotes-list .qi-title{max-width:none;font-size:20px;line-height:1.08;}
-#quotes-list .qi-music{max-width:100%;font-size:9.5px;}
+#quotes-list .qi-title{max-width:none;font-size:16px;line-height:1.12;}
+#quotes-list .qi-meta{font-size:8px;}
+#quotes-list .qi-music{max-width:100%;font-size:8.5px;}
 #quotes-list .bm.qi .bm-del{top:24px;left:auto;right:8px;}
-#quotes-list .bm.qi:nth-child(6n+2) .bm-del{top:58px;}
+#quotes-list .bm.qi:nth-child(7n+2) .bm-del{top:44px;}
 @media(max-width:1080px){
   #quotes-list{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;}
   #quotes-list .bm.qi,#quotes-list .bm.qi:nth-child(n){grid-column:span 1;padding-top:0!important;}
 }
 @media(max-width:700px){
+  #quotes-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px;}
+  #quotes-list .bm.qi,#quotes-list .bm.qi:nth-child(n){grid-column:span 1;padding:0 0 24px!important;margin:0!important;}
+  #quotes-list .qi-copy,#quotes-list .bm.qi:nth-child(2n) .qi-copy{gap:3px;margin-top:7px;}
+  #quotes-list .qi-title{font-size:14px;}
+  #quotes-list .qi-meta{font-size:7px;}
+  #quotes-list .qi-music{font-size:7.5px;}
+  #quotes-list .bm.qi .bm-del{top:22px;}
+}
+@media(max-width:340px){
   #quotes-list{display:block!important;}
-  #quotes-list .bm.qi,#quotes-list .bm.qi:nth-child(n){padding-top:0!important;margin-bottom:36px!important;}
-  #quotes-list .qi-title{font-size:19px;}
-  #quotes-list .bm.qi .bm-del{top:26px;}
+  #quotes-list .bm.qi,#quotes-list .bm.qi:nth-child(n){margin-bottom:28px!important;}
 }
 
 /* monthly — selector row + receipt export bar */
@@ -8843,15 +8853,17 @@ var DEF_QUOTES=(window.DOUYIN_QUOTES||[]).concat([
 真正难得的关系，是这三件事能够慢慢落到一起。
 我们彼此有吸引，又不只剩下吸引。我们相爱，也知道爱解决不了所有现实问题。我们决定结婚，是因为愿意共同生活，愿意承担后果，没有人打算用婚姻困住另一个人。
 性可以很热，爱情可以很深，婚姻也可以很稳。
-最难得的是，它们发生在同一段关系里，两个人都没有敷衍。`,author:"",source:"关系里的性、爱与婚姻",type:"essay",link:""},
-  {id:1,text:"You do not rise to the level of your goals. You fall to the level of your systems.",author:"James Clear",source:"Atomic Habits",type:"quote",link:""},
-  {id:2,text:"The cave you fear to enter holds the treasure you seek.",author:"Joseph Campbell",source:"",type:"quote",link:""},
-  {id:3,text:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",author:"Will Durant",source:"on Aristotle",type:"quote",link:""},
-  {id:4,text:"Discipline is choosing between what you want now and what you want most.",author:"Abraham Lincoln",source:"",type:"quote",link:""},
-  {id:5,text:"Almost everything will work again if you unplug it for a few minutes — including you.",author:"Anne Lamott",source:"",type:"note",link:""},
-  {id:6,text:"How we spend our days is, of course, how we spend our lives.",author:"Annie Dillard",source:"The Writing Life",type:"quote",link:""}
+最难得的是，它们发生在同一段关系里，两个人都没有敷衍。`,author:"",source:"关系里的性、爱与婚姻",type:"essay",link:""}
 ]);
 function quoteTextKey(q){return String((q&&q.text)||'').replace(/\s+/g,' ').trim().slice(0,160);}
+var LEGACY_QUOTE_SAMPLE_KEYS=[
+  "You do not rise to the level of your goals. You fall to the level of your systems.",
+  "The cave you fear to enter holds the treasure you seek.",
+  "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+  "Discipline is choosing between what you want now and what you want most.",
+  "Almost everything will work again if you unplug it for a few minutes — including you.",
+  "How we spend our days is, of course, how we spend our lives."
+].map(function(text){return quoteTextKey({text:text});});
 function quoteIdentity(q){
   if(q&&q.link)return 'link:'+String(q.link).replace(/[?#].*$/,'').replace(/\/$/,'');
   if(q&&q.id!=null)return 'id:'+String(q.id);
@@ -8860,9 +8872,15 @@ function quoteIdentity(q){
 function getQuotes(){
   var d=load('quotes',[]);
   if(!Array.isArray(d))d=[];
-  var changed=false,additions=[];
+  var changed=false,additions=[],deleted=load('quotes-deleted-v1',[]);
+  if(!Array.isArray(deleted))deleted=[];
+  if(!load('quote-samples-removed-v1',0)){
+    d=d.filter(function(q){return LEGACY_QUOTE_SAMPLE_KEYS.indexOf(quoteTextKey(q))<0;});
+    store('quote-samples-removed-v1',1);changed=true;
+  }
   DEF_QUOTES.forEach(function(q){
     var qid=quoteIdentity(q),qtext=quoteTextKey(q);
+    if(deleted.indexOf(qid)>=0||(qtext&&deleted.indexOf('txt:'+qtext)>=0))return;
     var existing=d.concat(additions).find(function(x){return quoteIdentity(x)===qid||(qtext&&quoteTextKey(x)===qtext);});
     if(!existing){additions.push(Object.assign({},q));changed=true;return;}
     ['author','source','music','audio','audioDuration','mediaNote','link','img','images','imageSize','platform','date'].forEach(function(k){
@@ -8900,7 +8918,7 @@ function bookmarkHTML(q,i){
   var title=quoteTitle(q),imgs=quoteImages(q),num='('+(i+1)+'.)';
   var media=imgs.length?('<div class="qi-photo-stack">'+imgs.slice(0,4).map(function(u,ii){return '<img class="qi-img qi-img-'+ii+'" src="'+esc(u)+'" alt="" loading="lazy"/>';}).join('')+'</div>'):'<div class="qi-paper"><span>'+esc(quoteTypeLabel(q.type))+'</span><i></i></div>';
   return '<div class="bm qi '+(isLong?'long ':'short ')+(isEssay?'essay ':'')+(imgs.length?'qi-has-img ':'qi-no-img ')+'" data-bm="'+(q.id!=null?q.id:i)+'" style="--qa:'+accent+';">'+
-    '<button class="bm-del" data-qdel="'+(q.id!=null?q.id:i)+'" title="remove">&times;</button>'+
+    '<button class="bm-del" data-qdel="'+(q.id!=null?q.id:i)+'" title="remove clipping" aria-label="remove clipping">&times;</button>'+
     '<div class="qi-no">'+num+'</div>'+
     '<div class="qi-media">'+media+'</div>'+
     '<div class="qi-copy"><div class="qi-title">'+esc(title)+'</div><div class="qi-meta">'+esc(quoteTypeLabel(q.type))+' · '+quoteReadMin(q.text)+' min</div>'+
@@ -8911,9 +8929,11 @@ function bookmarkHTML(q,i){
 function openQuoteModal(q){
   var accent=Q_ACCENT[q.type]||'var(--blush)';
   var title=q.source||q.author||quoteTypeLabel(q.type);
+  var primedAudio=q.audio?new Audio(q.audio):null,autoplayPromise=null;
+  if(primedAudio){primedAudio.preload='auto';primedAudio.loop=true;primedAudio.playsInline=true;autoplayPromise=primedAudio.play();}
   var src=q.source?'<span class="qm-src">'+esc(q.source)+'</span>':'';
   var by=(q.author||src)?'<div class="qm-by">'+(q.author?'saved from '+esc(q.author)+' ':'')+src+'</div>':'';
-  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="play music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b></div><div class="qm-audio-bar"><i></i></div><audio preload="metadata" loop src="'+esc(q.audio)+'"></audio></div>':'';
+  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="play music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b></div><div class="qm-audio-bar"><i></i></div></div>':'';
   var music=!q.audio&&q.music?'<div class="qm-music"><span>music</span>'+esc(q.music)+'</div>':'';
   var mediaNote=q.mediaNote?'<div class="qm-media-note">'+esc(q.mediaNote)+'</div>':'';
   var link=q.link?'<a class="qm-link" href="'+esc(q.link)+'" target="_blank" rel="noopener">source link &rarr;</a>':'';
@@ -8922,14 +8942,15 @@ function openQuoteModal(q){
     '<div class="cel-modal-h"><div class="qm-head"><span class="qm-tag">'+esc(quoteTypeLabel(q.type))+'</span><div class="qm-title">'+esc(title)+'</div><div class="qm-meta">'+quoteReadMin(q.text)+' min read'+(q.link?' · linked source':'')+'</div></div><button class="cel-modal-x">&times;</button></div>'+
     '<div class="cel-modal-b qm-b">'+(q.text?quoteArticleHTML(q):(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':''))+audio+music+mediaNote+by+link+'</div></div>';
   document.body.appendChild(ov);
-  var audioEl=ov.querySelector('.qm-audio audio'),audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i');
+  var audioEl=primedAudio,audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i');
+  if(audioEl&&audioWrap){audioEl.hidden=true;audioWrap.appendChild(audioEl);}
   function audioState(){if(!audioEl||!audioWrap)return;audioWrap.classList.toggle('is-playing',!audioEl.paused);if(audioBtn)audioBtn.setAttribute('aria-label',audioEl.paused?'play music':'pause music');}
   if(audioEl){
     audioEl.addEventListener('play',audioState);audioEl.addEventListener('pause',audioState);
     audioEl.addEventListener('timeupdate',function(){if(audioFill&&audioEl.duration)audioFill.style.width=((audioEl.currentTime/audioEl.duration)*100)+'%';});
     if(audioBtn)audioBtn.onclick=function(){if(audioEl.paused)audioEl.play().catch(function(){});else audioEl.pause();};
     if(audioBar)audioBar.onclick=function(e){if(audioEl.duration){var r=this.getBoundingClientRect();audioEl.currentTime=Math.max(0,Math.min(audioEl.duration,((e.clientX-r.left)/r.width)*audioEl.duration));}};
-    audioEl.play().catch(function(){audioState();});
+    if(autoplayPromise)autoplayPromise.catch(function(){audioState();});
   }
   function close(){if(audioEl)audioEl.pause();ov.remove();document.removeEventListener('keydown',esckey);}
   function esckey(e){if(e.key==='Escape')close();}
@@ -8957,7 +8978,7 @@ function openQuoteComposer(seed){
   setTimeout(function(){ov.querySelector('#qc-text').focus();},30);
 }
 function layoutQuoteWall(){
-  var el=document.getElementById('quotes-list');if(!el||innerWidth<=700)return;
+  var el=document.getElementById('quotes-list');if(!el||getComputedStyle(el).display!=='grid')return;
   var style=getComputedStyle(el),row=parseFloat(style.gridAutoRows)||8,gap=parseFloat(style.rowGap)||0;
   el.querySelectorAll('.bm.qi').forEach(function(card){
     card.style.gridRowEnd='auto';
@@ -8992,7 +9013,16 @@ function renderQuotes(){
     var id=this.dataset.bm,q=getQuotes().filter(function(x){return String(x.id)===String(id);})[0];
     if(q)openQuoteModal(q);
   };});
-  el.querySelectorAll('[data-qdel]').forEach(function(b){b.onclick=function(e){e.stopPropagation();var id=this.dataset.qdel;store('quotes',getQuotes().filter(function(q){return String(q.id)!==String(id);}));renderQuotes();};});
+  el.querySelectorAll('[data-qdel]').forEach(function(b){b.onclick=function(e){
+    e.stopPropagation();if(!confirm('Remove this clipping?'))return;
+    var id=this.dataset.qdel,current=getQuotes(),target=current.find(function(q){return String(q.id)===String(id);});
+    if(target){
+      var deleted=load('quotes-deleted-v1',[]);if(!Array.isArray(deleted))deleted=[];
+      [quoteIdentity(target),'txt:'+quoteTextKey(target)].forEach(function(key){if(key&&deleted.indexOf(key)<0)deleted.push(key);});
+      store('quotes-deleted-v1',deleted);
+    }
+    store('quotes',current.filter(function(q){return String(q.id)!==String(id);}));renderQuotes();
+  };});
   var shotBtn=document.getElementById('quote-shot'),shotIn=document.getElementById('quote-shot-input');
   var compose=document.getElementById('quote-compose');if(compose&&!compose.dataset.b){compose.dataset.b='1';compose.onclick=function(){openQuoteComposer({type:'essay'});};}
   if(shotBtn&&shotIn&&!shotBtn.dataset.b){shotBtn.dataset.b='1';
