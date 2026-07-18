@@ -5243,7 +5243,15 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
 </div>
 </div>
 
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+<script>if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message',function(e){
+    if(!e.data||e.data.type!=='APP_UPDATED'||e.data.cache!=='cel-headspace-v4')return;
+    var key='cel-sw-reloaded-'+e.data.cache;
+    if(sessionStorage.getItem(key))return;
+    sessionStorage.setItem(key,'1');location.reload();
+  });
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').then(function(reg){reg.update().catch(function(){});}).catch(function(){});});
+}
 // install hint — only on mobile browsers, not when already installed/dismissed
 (function(){
   try{
@@ -8928,12 +8936,29 @@ function bookmarkHTML(q,i){
     (!isEssay&&q.text?'<div class="qi-line">'+esc(quoteExcerpt(q.text,110))+'</div>':'')+'</div>'+
   '</div>';
 }
-function openQuoteModal(q){
+function quoteAudioEngine(){
+  var audio=document.getElementById('quote-audio-engine');
+  if(audio)return audio;
+  audio=document.createElement('audio');audio.id='quote-audio-engine';audio.hidden=true;
+  audio.preload='auto';audio.playsInline=true;audio.setAttribute('playsinline','');audio.setAttribute('webkit-playsinline','');
+  document.body.appendChild(audio);return audio;
+}
+function beginQuoteAudio(q){
+  var audio=quoteAudioEngine();
+  audio.pause();audio.loop=true;audio.muted=false;audio.volume=1;
+  if(!q||!q.audio){audio.removeAttribute('src');return {audio:null,promise:null};}
+  if(audio.getAttribute('src')!==q.audio){audio.src=q.audio;audio.load();}
+  audio.currentTime=0;
+  var promise=null;
+  try{promise=audio.play();}catch(e){promise=Promise.reject(e);}
+  return {audio:audio,promise:promise};
+}
+function openQuoteModal(q,audioSession){
   var accent=Q_ACCENT[q.type]||'var(--blush)';
   var title=q.source||q.author||quoteTypeLabel(q.type);
   var src=q.source?'<span class="qm-src">'+esc(q.source)+'</span>':'';
   var by=(q.author||src)?'<div class="qm-by">'+(q.author?'saved from '+esc(q.author)+' ':'')+src+'</div>':'';
-  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="pause music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b><em class="qm-audio-status">starting</em></div><div class="qm-audio-bar"><i></i></div><audio autoplay playsinline webkit-playsinline loop preload="auto" hidden src="'+esc(q.audio)+'"></audio></div>':'';
+  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="pause music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b><em class="qm-audio-status">starting</em></div><div class="qm-audio-bar"><i></i></div></div>':'';
   var music=!q.audio&&q.music?'<div class="qm-music"><span>music</span>'+esc(q.music)+'</div>':'';
   var mediaNote=q.mediaNote?'<div class="qm-media-note">'+esc(q.mediaNote)+'</div>':'';
   var link=q.link?'<a class="qm-link" href="'+esc(q.link)+'" target="_blank" rel="noopener">source link &rarr;</a>':'';
@@ -8942,7 +8967,7 @@ function openQuoteModal(q){
     '<div class="cel-modal-h"><div class="qm-head"><span class="qm-tag">'+esc(quoteTypeLabel(q.type))+'</span><div class="qm-title">'+esc(title)+'</div><div class="qm-meta">'+quoteReadMin(q.text)+' min read'+(q.link?' · linked source':'')+'</div></div><button class="cel-modal-x">&times;</button></div>'+
     '<div class="cel-modal-b qm-b">'+audio+music+(q.text?quoteArticleHTML(q):(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':''))+mediaNote+by+link+'</div></div>';
   document.body.appendChild(ov);
-  var audioEl=ov.querySelector('.qm-audio audio'),audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i'),audioStatus=ov.querySelector('.qm-audio-status');
+  var playback=audioSession||beginQuoteAudio(q),audioEl=playback.audio,audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i'),audioStatus=ov.querySelector('.qm-audio-status');
   function audioState(){
     if(!audioEl||!audioWrap)return;
     audioWrap.classList.toggle('is-playing',!audioEl.paused);
@@ -8950,6 +8975,7 @@ function openQuoteModal(q){
     if(audioBtn)audioBtn.setAttribute('aria-label',audioEl.paused?'play music':'pause music');
     if(audioStatus)audioStatus.textContent=audioEl.paused?(audioWrap.classList.contains('needs-gesture')?'tap to play':'paused'):'playing';
   }
+  function audioProgress(){if(audioFill&&audioEl.duration)audioFill.style.width=((audioEl.currentTime/audioEl.duration)*100)+'%';}
   function startAudio(){
     if(!audioEl)return;
     audioEl.muted=false;audioEl.volume=1;
@@ -8958,12 +8984,16 @@ function openQuoteModal(q){
   }
   if(audioEl){
     audioEl.addEventListener('play',audioState);audioEl.addEventListener('pause',audioState);
-    audioEl.addEventListener('timeupdate',function(){if(audioFill&&audioEl.duration)audioFill.style.width=((audioEl.currentTime/audioEl.duration)*100)+'%';});
+    audioEl.addEventListener('timeupdate',audioProgress);
     if(audioBtn)audioBtn.onclick=function(){if(audioEl.paused)startAudio();else audioEl.pause();};
     if(audioBar)audioBar.onclick=function(e){if(audioEl.duration){var r=this.getBoundingClientRect();audioEl.currentTime=Math.max(0,Math.min(audioEl.duration,((e.clientX-r.left)/r.width)*audioEl.duration));}};
-    startAudio();
+    if(playback.promise&&playback.promise.catch)playback.promise.catch(function(){audioWrap.classList.add('needs-gesture');audioState();});
+    audioState();
   }
-  function close(){if(audioEl)audioEl.pause();ov.remove();document.removeEventListener('keydown',esckey);}
+  function close(){
+    if(audioEl){audioEl.pause();audioEl.removeEventListener('play',audioState);audioEl.removeEventListener('pause',audioState);audioEl.removeEventListener('timeupdate',audioProgress);}
+    ov.remove();document.removeEventListener('keydown',esckey);
+  }
   function esckey(e){if(e.key==='Escape')close();}
   ov.addEventListener('click',function(e){if(e.target===ov)close();});
   ov.querySelector('.cel-modal-x').onclick=close;
@@ -8998,6 +9028,7 @@ function layoutQuoteWall(){
 }
 function renderQuotes(){
   var el=document.getElementById('quotes-list');if(!el)return;
+  quoteAudioEngine();
   var qs=getQuotes();
   setT('quotes-count',qs.length?qs.length+' kept':'');
   var types=['all'].concat(['quote','essay','lyric','note'].filter(function(t){return qs.some(function(q){return (q.type||'quote')===t;});}));
@@ -9022,7 +9053,7 @@ function renderQuotes(){
   el.querySelectorAll('.bm').forEach(function(c){c.onclick=function(e){
     if(e.target.closest('[data-qdel]'))return;
     var id=this.dataset.bm,q=getQuotes().filter(function(x){return String(x.id)===String(id);})[0];
-    if(q)openQuoteModal(q);
+    if(q)openQuoteModal(q,beginQuoteAudio(q));
   };});
   el.querySelectorAll('[data-qdel]').forEach(function(b){b.onclick=function(e){
     e.stopPropagation();if(!confirm('Remove this clipping?'))return;

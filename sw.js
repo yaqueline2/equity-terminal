@@ -1,6 +1,6 @@
 // sw.js — service worker for cel's headspace PWA
 // Offline-first for assets + decks; network-first for the page; API never cached.
-const CACHE = 'cel-headspace-v3';
+const CACHE = 'cel-headspace-v4';
 const PRECACHE = [
   './',
   'manifest.json',
@@ -20,6 +20,8 @@ self.addEventListener('activate', e => {
     caches.keys()
       .then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then(clients => clients.forEach(client => client.postMessage({ type: 'APP_UPDATED', cache: CACHE })))
   );
 });
 
