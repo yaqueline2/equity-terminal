@@ -3691,6 +3691,8 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .qm-audio-copy{min-width:0;display:flex;align-items:baseline;gap:7px;}
 .qm-audio-copy span{font:700 8px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--t4);}
 .qm-audio-copy b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 11px/1.4 var(--font);color:var(--t2);}
+.qm-audio-copy em{margin-left:auto;white-space:nowrap;font:500 8px/1 var(--font);font-style:normal;color:var(--t4);}
+.qm-audio.needs-gesture .qm-audio-copy em{color:var(--qa,var(--blush));}
 .qm-audio-bar{height:3px;background:rgba(60,52,44,.1);cursor:pointer;overflow:hidden;}
 .qm-audio-bar i{display:block;width:0;height:100%;background:var(--qa,var(--blush));transition:width .15s linear;}
 
@@ -8929,28 +8931,37 @@ function bookmarkHTML(q,i){
 function openQuoteModal(q){
   var accent=Q_ACCENT[q.type]||'var(--blush)';
   var title=q.source||q.author||quoteTypeLabel(q.type);
-  var primedAudio=q.audio?new Audio(q.audio):null,autoplayPromise=null;
-  if(primedAudio){primedAudio.preload='auto';primedAudio.loop=true;primedAudio.playsInline=true;autoplayPromise=primedAudio.play();}
   var src=q.source?'<span class="qm-src">'+esc(q.source)+'</span>':'';
   var by=(q.author||src)?'<div class="qm-by">'+(q.author?'saved from '+esc(q.author)+' ':'')+src+'</div>':'';
-  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="play music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b></div><div class="qm-audio-bar"><i></i></div></div>':'';
+  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="pause music"></button><div class="qm-audio-copy"><span>music</span><b>'+esc(q.music||'Douyin audio')+'</b><em class="qm-audio-status">starting</em></div><div class="qm-audio-bar"><i></i></div><audio autoplay playsinline webkit-playsinline loop preload="auto" hidden src="'+esc(q.audio)+'"></audio></div>':'';
   var music=!q.audio&&q.music?'<div class="qm-music"><span>music</span>'+esc(q.music)+'</div>':'';
   var mediaNote=q.mediaNote?'<div class="qm-media-note">'+esc(q.mediaNote)+'</div>':'';
   var link=q.link?'<a class="qm-link" href="'+esc(q.link)+'" target="_blank" rel="noopener">source link &rarr;</a>':'';
   var ov=document.createElement('div');ov.className='cel-ov';
   ov.innerHTML='<div class="cel-modal qm-modal" style="--qa:'+accent+';">'+
     '<div class="cel-modal-h"><div class="qm-head"><span class="qm-tag">'+esc(quoteTypeLabel(q.type))+'</span><div class="qm-title">'+esc(title)+'</div><div class="qm-meta">'+quoteReadMin(q.text)+' min read'+(q.link?' · linked source':'')+'</div></div><button class="cel-modal-x">&times;</button></div>'+
-    '<div class="cel-modal-b qm-b">'+(q.text?quoteArticleHTML(q):(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':''))+audio+music+mediaNote+by+link+'</div></div>';
+    '<div class="cel-modal-b qm-b">'+audio+music+(q.text?quoteArticleHTML(q):(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':''))+mediaNote+by+link+'</div></div>';
   document.body.appendChild(ov);
-  var audioEl=primedAudio,audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i');
-  if(audioEl&&audioWrap){audioEl.hidden=true;audioWrap.appendChild(audioEl);}
-  function audioState(){if(!audioEl||!audioWrap)return;audioWrap.classList.toggle('is-playing',!audioEl.paused);if(audioBtn)audioBtn.setAttribute('aria-label',audioEl.paused?'play music':'pause music');}
+  var audioEl=ov.querySelector('.qm-audio audio'),audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i'),audioStatus=ov.querySelector('.qm-audio-status');
+  function audioState(){
+    if(!audioEl||!audioWrap)return;
+    audioWrap.classList.toggle('is-playing',!audioEl.paused);
+    if(!audioEl.paused)audioWrap.classList.remove('needs-gesture');
+    if(audioBtn)audioBtn.setAttribute('aria-label',audioEl.paused?'play music':'pause music');
+    if(audioStatus)audioStatus.textContent=audioEl.paused?(audioWrap.classList.contains('needs-gesture')?'tap to play':'paused'):'playing';
+  }
+  function startAudio(){
+    if(!audioEl)return;
+    audioEl.muted=false;audioEl.volume=1;
+    var playResult=audioEl.play();
+    if(playResult&&playResult.catch)playResult.catch(function(){audioWrap.classList.add('needs-gesture');audioState();});
+  }
   if(audioEl){
     audioEl.addEventListener('play',audioState);audioEl.addEventListener('pause',audioState);
     audioEl.addEventListener('timeupdate',function(){if(audioFill&&audioEl.duration)audioFill.style.width=((audioEl.currentTime/audioEl.duration)*100)+'%';});
-    if(audioBtn)audioBtn.onclick=function(){if(audioEl.paused)audioEl.play().catch(function(){});else audioEl.pause();};
+    if(audioBtn)audioBtn.onclick=function(){if(audioEl.paused)startAudio();else audioEl.pause();};
     if(audioBar)audioBar.onclick=function(e){if(audioEl.duration){var r=this.getBoundingClientRect();audioEl.currentTime=Math.max(0,Math.min(audioEl.duration,((e.clientX-r.left)/r.width)*audioEl.duration));}};
-    if(autoplayPromise)autoplayPromise.catch(function(){audioState();});
+    startAudio();
   }
   function close(){if(audioEl)audioEl.pause();ov.remove();document.removeEventListener('keydown',esckey);}
   function esckey(e){if(e.key==='Escape')close();}
