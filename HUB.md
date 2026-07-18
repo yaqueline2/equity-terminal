@@ -13,6 +13,7 @@
 
 ## 2. Tech / architecture
 - **Persistence:** `localStorage`, via `store(key,val)` / `load(key,def)`. All keys are prefixed **`cel-`** internally. Data is **per-device** (the phone install and desktop do NOT share data unless flashcard sync is on).
+- **Quotes archive:** quote records support `text`, `author`, `source`, `music`, `type`, `link`, `img`/`images`, and optional `mediaNote`/`platform`. The verified Douyin batch is generated into `assets/douyin/quotes.js` with stable local media copies by `npm run build:douyin-quotes` from the ACC root. `getQuotes()` merges seed metadata into existing localStorage records without overwriting user edits and deduplicates by source link or normalized text.
 - **HTML escaping:** always use `esc()` for user/dynamic strings.
 - **Structure:** 4 top views — **Home / Practice / Wealth / Mind** (`.view[data-view]`), each with subviews (`.subview[data-sub]`):
   - Home: flow, quarters, scribbles, trips
@@ -82,6 +83,7 @@ The **earliest tracked month's `savings` = opening pot balances**, NOT monthly t
 - Other Cloudflare Pages functions still run only in production/Cloudflare tooling; test `claude`, `financials`, `search`, `rss`, `telegram`, and Yahoo proxies against the deployed site or a real Pages dev environment.
 
 ## 11. Status / changelog (newest first)
+- Quotes/Douyin intake: added 26 browser-verified clippings with full 文案, creator, source link, stable local cover image, and 25 available music credits; the single long spoken video is labelled without an invented song. Added first-class music display/editing and migration-safe quote deduplication.
 - Local-dev QA: removed `.DS_Store` deployment junk, added `serve.py` local `/api/widget` + `/api/cards` JSON stubs, and verified Chromium load with no console errors or failed requests.
 - Hub QA pass: restarted localhost preview, verified all visible subviews for console errors, overflow, broken images, blank cards, missing add buttons, and drifting delete controls; fixed the dynamic quarter calendar add button and removed the unnecessary final Practice/Home image block.
 - Finance wealth header: FIRE badge now shows progress percent and FIRE number, with invested and remaining amounts in the hover title.

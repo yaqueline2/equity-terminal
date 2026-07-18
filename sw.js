@@ -1,9 +1,10 @@
 // sw.js — service worker for cel's headspace PWA
 // Offline-first for assets + decks; network-first for the page; API never cached.
-const CACHE = 'cel-headspace-v2';
+const CACHE = 'cel-headspace-v3';
 const PRECACHE = [
   './',
   'manifest.json',
+  'assets/douyin/quotes.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   'decks/korean-grammar.json', 'decks/korean-cheatsheet.json',
   'decks/japanese-core2000.json', 'decks/japanese-eggrolls-jlpt.json'
