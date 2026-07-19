@@ -8936,22 +8936,100 @@ function bookmarkHTML(q,i){
     (!isEssay&&q.text?'<div class="qi-line">'+esc(quoteExcerpt(q.text,110))+'</div>':'')+'</div>'+
   '</div>';
 }
-function quoteAudioEngine(){
-  var audio=document.getElementById('quote-audio-engine');
-  if(audio)return audio;
-  audio=document.createElement('audio');audio.id='quote-audio-engine';audio.hidden=true;
-  audio.preload='auto';audio.playsInline=true;audio.setAttribute('playsinline','');audio.setAttribute('webkit-playsinline','');
-  document.body.appendChild(audio);return audio;
-}
 function beginQuoteAudio(q){
-  var audio=quoteAudioEngine();
-  audio.pause();audio.loop=true;audio.muted=false;audio.volume=1;
-  if(!q||!q.audio){audio.removeAttribute('src');return {audio:null,promise:null};}
-  if(audio.getAttribute('src')!==q.audio){audio.src=q.audio;audio.load();}
-  audio.currentTime=0;
-  var promise=null;
-  try{promise=audio.play();}catch(e){promise=Promise.reject(e);}
-  return {audio:audio,promise:promise};
+  var previous=document.getElementById('quote-audio-engine');
+  if(previous){previous.pause();previous.removeAttribute('src');previous.load();previous.remove();}
+  if(!q||!q.audio)return {audio:null,promise:null};
+  var audio=document.createElement('audio');audio.id='quote-audio-engine';
+  audio.preload='auto';audio.autoplay=true;audio.loop=true;audio.muted=false;audio.volume=1;
+  audio.playsInline=true;audio.setAttribute('playsinline','');audio.setAttribute('webkit-playsinline','');
+  audio.style.position='fixed';audio.style.width='1px';audio.style.height='1px';audio.style.opacity='0';audio.style.pointerEvents='none';
+  audio.src=q.audio;
+  document.body.appendChild(audio);
+  var Context=window.AudioContext||window.webkitAudioContext,context=null,contextReady=null;
+  try{
+    if(Context){context=new Context();contextReady=Promise.resolve(context.resume()).catch(function(){return null;});}
+  }catch(e){context=null;contextReady=null;}
+  var session={audio:audio,context:context,contextReady:contextReady,source:null,buffer:null,offset:0,startedAt:0,usingWebAudio:false,starting:true,closed:false,onState:null};
+  function startBuffer(buffer,offset){
+    if(session.closed)return;
+    if(session.source){try{session.source.stop();}catch(e){}}
+    var source=context.createBufferSource();
+    source.buffer=buffer;source.loop=true;source.connect(context.destination);
+    session.offset=Math.max(0,offset||0)%buffer.duration;
+    session.startedAt=context.currentTime;
+    session.source=source;session.buffer=buffer;session.usingWebAudio=true;session.starting=false;
+    source.start(0,session.offset);
+    if(session.onState)session.onState();
+  }
+  var mediaPromise=null;
+  try{mediaPromise=audio.play();}catch(e){mediaPromise=Promise.reject(e);}
+  session.promise=Promise.resolve(mediaPromise).then(function(){
+    session.starting=false;
+    if(context&&context.state!=='closed')context.close().catch(function(){});
+    session.context=null;
+    if(session.onState)session.onState();
+  }).catch(function(mediaError){
+    if(!context||!contextReady)throw mediaError;
+    return fetch(q.audio,{cache:'force-cache'})
+      .then(function(response){if(!response.ok)throw new Error('audio download failed ('+response.status+')');return response.arrayBuffer();})
+      .then(function(data){return context.decodeAudioData(data);})
+      .then(function(buffer){startBuffer(buffer,0);});
+  });
+  session.startBuffer=startBuffer;
+  return session;
+}
+function quotePlaybackIsPlaying(session){
+  if(!session)return false;
+  if(session.usingWebAudio)return !!session.source&&session.context&&session.context.state==='running';
+  return !!session.audio&&!session.audio.paused;
+}
+function quotePlaybackTime(session){
+  if(!session)return 0;
+  if(session.usingWebAudio&&session.buffer&&session.source){
+    return (session.offset+(session.context.currentTime-session.startedAt))%session.buffer.duration;
+  }
+  return session.audio?session.audio.currentTime||0:0;
+}
+function quotePlaybackDuration(session){
+  if(!session)return 0;
+  return session.usingWebAudio&&session.buffer?session.buffer.duration:(session.audio&&session.audio.duration)||0;
+}
+function pauseQuotePlayback(session){
+  if(!session)return;
+  if(session.usingWebAudio&&session.source){
+    session.offset=quotePlaybackTime(session);
+    try{session.source.stop();}catch(e){}
+    session.source=null;
+  }else if(session.audio)session.audio.pause();
+  if(session.onState)session.onState();
+}
+function resumeQuotePlayback(session){
+  if(!session)return Promise.resolve();
+  if(session.usingWebAudio&&session.buffer){
+    return Promise.resolve(session.context.resume()).then(function(){session.startBuffer(session.buffer,session.offset);});
+  }
+  if(session.audio){
+    session.audio.muted=false;session.audio.volume=1;
+    return session.audio.play();
+  }
+  return Promise.resolve();
+}
+function seekQuotePlayback(session,seconds){
+  if(!session)return;
+  if(session.usingWebAudio&&session.buffer){
+    var wasPlaying=!!session.source;
+    if(session.source){try{session.source.stop();}catch(e){}session.source=null;}
+    session.offset=Math.max(0,Math.min(session.buffer.duration,seconds));
+    if(wasPlaying)session.startBuffer(session.buffer,session.offset);
+  }else if(session.audio)session.audio.currentTime=seconds;
+}
+function stopQuotePlayback(session){
+  if(!session)return;
+  session.closed=true;
+  if(session.source){try{session.source.stop();}catch(e){}session.source=null;}
+  if(session.audio){session.audio.pause();session.audio.removeAttribute('src');session.audio.load();session.audio.remove();}
+  if(session.context&&session.context.state!=='closed')session.context.close().catch(function(){});
 }
 function openQuoteModal(q,audioSession){
   var accent=Q_ACCENT[q.type]||'var(--blush)';
@@ -8967,31 +9045,36 @@ function openQuoteModal(q,audioSession){
     '<div class="cel-modal-h"><div class="qm-head"><span class="qm-tag">'+esc(quoteTypeLabel(q.type))+'</span><div class="qm-title">'+esc(title)+'</div><div class="qm-meta">'+quoteReadMin(q.text)+' min read'+(q.link?' · linked source':'')+'</div></div><button class="cel-modal-x">&times;</button></div>'+
     '<div class="cel-modal-b qm-b">'+audio+music+(q.text?quoteArticleHTML(q):(q.img?'<img class="qm-shot" src="'+esc(q.img)+'" alt="screenshot"/>':''))+mediaNote+by+link+'</div></div>';
   document.body.appendChild(ov);
-  var playback=audioSession||beginQuoteAudio(q),audioEl=playback.audio,audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i'),audioStatus=ov.querySelector('.qm-audio-status');
+  var playback=audioSession||beginQuoteAudio(q),audioEl=playback.audio,audioWrap=ov.querySelector('.qm-audio'),audioBtn=ov.querySelector('.qm-audio-toggle'),audioBar=ov.querySelector('.qm-audio-bar'),audioFill=ov.querySelector('.qm-audio-bar i'),audioStatus=ov.querySelector('.qm-audio-status'),progressTimer=null;
   function audioState(){
-    if(!audioEl||!audioWrap)return;
-    audioWrap.classList.toggle('is-playing',!audioEl.paused);
-    if(!audioEl.paused)audioWrap.classList.remove('needs-gesture');
-    if(audioBtn)audioBtn.setAttribute('aria-label',audioEl.paused?'play music':'pause music');
-    if(audioStatus)audioStatus.textContent=audioEl.paused?(audioWrap.classList.contains('needs-gesture')?'tap to play':'paused'):'playing';
+    if(!playback||!audioWrap)return;
+    var playing=quotePlaybackIsPlaying(playback);
+    audioWrap.classList.toggle('is-playing',playing);
+    if(playing)audioWrap.classList.remove('needs-gesture');
+    else if(playback.usingWebAudio&&playback.context&&playback.context.state!=='running')audioWrap.classList.add('needs-gesture');
+    if(audioBtn)audioBtn.setAttribute('aria-label',playing?'pause music':'play music');
+    if(audioStatus)audioStatus.textContent=playing?'playing':(playback.starting?'starting':(audioWrap.classList.contains('needs-gesture')?'tap to play':'paused'));
   }
-  function audioProgress(){if(audioFill&&audioEl.duration)audioFill.style.width=((audioEl.currentTime/audioEl.duration)*100)+'%';}
+  function audioProgress(){var duration=quotePlaybackDuration(playback);if(audioFill&&duration)audioFill.style.width=((quotePlaybackTime(playback)/duration)*100)+'%';}
   function startAudio(){
-    if(!audioEl)return;
-    audioEl.muted=false;audioEl.volume=1;
-    var playResult=audioEl.play();
+    if(!playback)return;
+    var playResult=resumeQuotePlayback(playback);
     if(playResult&&playResult.catch)playResult.catch(function(){audioWrap.classList.add('needs-gesture');audioState();});
   }
-  if(audioEl){
+  if(playback&&audioEl){
+    playback.onState=audioState;
     audioEl.addEventListener('play',audioState);audioEl.addEventListener('pause',audioState);
     audioEl.addEventListener('timeupdate',audioProgress);
-    if(audioBtn)audioBtn.onclick=function(){if(audioEl.paused)startAudio();else audioEl.pause();};
-    if(audioBar)audioBar.onclick=function(e){if(audioEl.duration){var r=this.getBoundingClientRect();audioEl.currentTime=Math.max(0,Math.min(audioEl.duration,((e.clientX-r.left)/r.width)*audioEl.duration));}};
+    if(audioBtn)audioBtn.onclick=function(){if(quotePlaybackIsPlaying(playback))pauseQuotePlayback(playback);else startAudio();};
+    if(audioBar)audioBar.onclick=function(e){var duration=quotePlaybackDuration(playback);if(duration){var r=this.getBoundingClientRect();seekQuotePlayback(playback,Math.max(0,Math.min(duration,((e.clientX-r.left)/r.width)*duration)));}};
     if(playback.promise&&playback.promise.catch)playback.promise.catch(function(){audioWrap.classList.add('needs-gesture');audioState();});
+    progressTimer=setInterval(audioProgress,250);
     audioState();
   }
   function close(){
-    if(audioEl){audioEl.pause();audioEl.removeEventListener('play',audioState);audioEl.removeEventListener('pause',audioState);audioEl.removeEventListener('timeupdate',audioProgress);}
+    if(progressTimer)clearInterval(progressTimer);
+    if(audioEl){audioEl.removeEventListener('play',audioState);audioEl.removeEventListener('pause',audioState);audioEl.removeEventListener('timeupdate',audioProgress);}
+    stopQuotePlayback(playback);
     ov.remove();document.removeEventListener('keydown',esckey);
   }
   function esckey(e){if(e.key==='Escape')close();}
@@ -9028,7 +9111,6 @@ function layoutQuoteWall(){
 }
 function renderQuotes(){
   var el=document.getElementById('quotes-list');if(!el)return;
-  quoteAudioEngine();
   var qs=getQuotes();
   setT('quotes-count',qs.length?qs.length+' kept':'');
   var types=['all'].concat(['quote','essay','lyric','note'].filter(function(t){return qs.some(function(q){return (q.type||'quote')===t;});}));
@@ -9050,11 +9132,24 @@ function renderQuotes(){
   el.querySelectorAll('img').forEach(function(img){if(!img.complete)img.addEventListener('load',layoutQuoteWall,{once:true});});
   requestAnimationFrame(layoutQuoteWall);
   if(!window._quoteLayoutBound){window._quoteLayoutBound=1;window.addEventListener('resize',function(){requestAnimationFrame(layoutQuoteWall);});}
-  el.querySelectorAll('.bm').forEach(function(c){c.onclick=function(e){
-    if(e.target.closest('[data-qdel]'))return;
-    var id=this.dataset.bm,q=getQuotes().filter(function(x){return String(x.id)===String(id);})[0];
-    if(q)openQuoteModal(q,beginQuoteAudio(q));
-  };});
+  el.querySelectorAll('.bm').forEach(function(c){
+    function selectedQuote(card){
+      var id=card.dataset.bm;
+      return getQuotes().filter(function(x){return String(x.id)===String(id);})[0];
+    }
+    c.onpointerdown=function(e){
+      if(e.button!=null&&e.button!==0)return;
+      if(e.target.closest('[data-qdel]'))return;
+      var q=selectedQuote(this);
+      if(q&&q.audio)this._quoteAudioSession=beginQuoteAudio(q);
+    };
+    c.onclick=function(e){
+      if(e.target.closest('[data-qdel]'))return;
+      var q=selectedQuote(this),session=this._quoteAudioSession;
+      this._quoteAudioSession=null;
+      if(q)openQuoteModal(q,session||beginQuoteAudio(q));
+    };
+  });
   el.querySelectorAll('[data-qdel]').forEach(function(b){b.onclick=function(e){
     e.stopPropagation();if(!confirm('Remove this clipping?'))return;
     var id=this.dataset.qdel,current=getQuotes(),target=current.find(function(q){return String(q.id)===String(id);});
