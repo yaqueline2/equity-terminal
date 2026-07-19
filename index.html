@@ -4961,6 +4961,9 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
     <div class="month-row">
       <div class="month-selector" id="month-sel"></div>
       <div class="mt-receipt-bar">
+        <button class="mini-btn" id="mt-finance-export">export for Finn</button>
+        <button class="mini-btn" id="mt-finance-import">import Finn update</button>
+        <input type="file" id="mt-finance-file" accept=".json,application/json" hidden/>
         <button class="mini-btn" id="mt-receipt-month">🧾 month PDF</button>
         <button class="mini-btn" id="mt-receipt-year">🧾 year PDF</button>
       </div>
@@ -5283,7 +5286,7 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
   <div class="fc-actions" id="fc-actions"></div>
 </div>
 
-<script src="assets/douyin/quotes.js?v=d272d9b386df"></script>
+<script src="assets/douyin/quotes.js?v=5b52901e19dc"></script>
 <script>
 // ═══ THRESHOLD ═══
 (function(){
@@ -5419,6 +5422,69 @@ function playPianoNote(){
 var DOOD={'water':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDMuNWMwIDAtNiA2LjQtNiAxMC40YTYgNiAwIDAwMTIgMGMwLTQtNi0xMC40LTYtMTAuNFoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOSAxNC41Yy4yIDEuNCAxLjIgMi41IDIuNiAyLjgiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','korean':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMy41IiB5PSIzLjUiIHdpZHRoPSIxNyIgaGVpZ2h0PSIxNyIgcng9IjQuNSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNSIvPjx0ZXh0IHg9IjEyIiB5PSIxNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzJDMjQzMiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiPu2VnDwvdGV4dD48L3N2Zz4=','steps':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTMiIGN5PSI0LjUiIHI9IjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMTMgNi41Yy0xLjIuMy0yIDEuNC0yIDIuOCAwIC44LjMgMS41LjggMi4ybC0yIDRNMTEuOCAxMS41bDMgMS41IDEuMiAzLjVNMTEgMTYuM2wtMiAzLjdNMTQuOCAxNi41bDEgMy41IiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=','read':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDYuNUMxMCA1IDcgNC41IDQuNSA1Yy0uNS4xLS44LjUtLjggMXYxMWMwIC42LjUgMSAxIC45IDIuMy0uMyA1IC4yIDcgMS40IDItMS4yIDQuNy0xLjcgNy0xLjQuNS4xIDEtLjMgMS0uOVY2YzAtLjUtLjMtLjktLjgtMUMxNi45IDQuNSAxNCA1IDEyIDYuNVoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTIgNi41djEzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIi8+PC9zdmc+','piano':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTkgNC41djEwYTIuOCAyLjggMCAxMS0yLjgtMi44SDkiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik05IDguNWg1LjUiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjE3LjUiIGN5PSI2LjUiIHI9IjIuNiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIvPjxwYXRoIGQ9Ik0xNC41IDYuNVYzLjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','cup':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUuNSA5aDEzbC0uOCA5LjVjLS4xIDEuNC0xLjMgMi41LTIuNyAyLjVIOWMtMS40IDAtMi42LTEuMS0yLjctMi41TDUuNSA5WiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xOC4zIDExLjVjMi0uMyAzLjUuNiAzLjQgMi40LS4xIDEuNy0xLjcgMi42LTMuNyAyLjQiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik05IDNjLS42IDEtLjYgMiAwIDNNMTMgMi41Yy0uNiAxLS42IDIgMCAzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=','book':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjggMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE0IDYuNUMxMiA1IDguNSA0LjMgNSA0LjhjLS42LjEtMSAuNi0xIDEuMnYxMmMwIC43LjYgMS4yIDEuMyAxLjEgMy0uNCA2LjQuMiA4LjcgMS42IDIuMy0xLjQgNS43LTIgOC43LTEuNi43LjEgMS4zLS40IDEuMy0xLjFWNmMwLS42LS40LTEuMS0xLTEuMkMxOS41IDQuMyAxNiA1IDE0IDYuNVoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTQgNi41djEzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIi8+PC9zdmc+','coin':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjggMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE0IDMuNGM1LjctLjIgMTAuNyA0LjMgMTAuNiAxMC4zLjEgNi00LjYgMTAuOC0xMC40IDEwLjlDOC4yIDI0LjcgMy40IDIwIDMuNCAxNCAzLjMgOC4yIDguMSAzLjYgMTQgMy40WiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTkuNSAxOC41VjkuMmMxLjYtLjEgMy40LS4yIDQuNC42IDEuMyAxIDEgMy4yLS42IDMuOC0uNy4zLTEuOS4zLTMuMS4ybTIgMGMuOCAxLjUgMS44IDMgMyA0LjQiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNi41IDkuM3Y5LjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','coins':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGVsbGlwc2UgY3g9IjExIiBjeT0iOSIgcng9IjcuMyIgcnk9IjMiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMy43IDl2My40QzMuNyAxNCA3IDE1LjMgMTEgMTUuM3M3LjMtMS4zIDcuMy0yLjlWOSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGVsbGlwc2UgY3g9IjE4LjUiIGN5PSIxNiIgcng9IjcuMyIgcnk9IjMiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMTEuMiAxNnYzLjRjMCAxLjYgMy4zIDIuOSA3LjMgMi45czcuMy0xLjMgNy4zLTIuOVYxNiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+','growth':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMgMTljMy0xIDUuNS00IDgtN3M1LjUtNiA5LTciIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNiA1YzEuNC0uNCAzLS42IDQuMy0uNE0yMC4zIDQuNmMuMyAxLjMuNCAyLjguMiA0LjEiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','nest':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYgMTRjMC00IDQtNyA5LTdzOSAzIDkgNi41YzAgMi0xIDMuNy0yLjYgNC45LS4yIDEuNC0uNSAyLjYtLjUgMi42aC0ybC0uNi0xLjZjLTEgLjMtMi4xLjQtMy4zLjRzLTIuMy0uMS0zLjMtLjRMMTEgMjFIOXMtLjQtMS4zLS42LTIuOEM2LjkgMTcgNiAxNS42IDYgMTRaIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS40IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMTEiIGN5PSIxMyIgcj0iMSIgZmlsbD0iIzJDMjQzMiIvPjxwYXRoIGQ9Ik00LjUgMTMuNUMzLjUgMTMgMy4zIDExLjggMy42IDExTTE0IDdjLjItMS4yIDEtMi4zIDItMi44IiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=','pilates':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMgMTVoMjBNMyAxNWMtLjYgMC0xIC40LTEgMXYxLjVNMjMgMTVjLjYgMCAxIC40IDEgMXYxLjUiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjciIHk9IjExIiB3aWR0aD0iMTAiIGhlaWdodD0iNCIgcng9IjEiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMjMgMTNjMS4zLS4yIDIuNS0uMSAzLjUuNE0yIDEzYy42LS4xIDEuMi0uMSAxLjggMCIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI0IDEyLjVxMSAuNSAyIDAgMS0uNSAyIDAiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNiIgcj0iMiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIvPjxwYXRoIGQ9Ik0xMiA4djIuNSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+','sparkle':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEwIDNjLjQgMi44IDEuMiA0LjYgNCA1LTIuOC41LTMuNiAyLjItNCA1LS40LTIuOC0xLjItNC41LTQtNSAyLjgtLjQgMy42LTIuMiA0LTVaIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+'};
 function store(key,val){try{localStorage.setItem('cel-'+key,JSON.stringify(val));}catch(e){}}
 function load(key,def){try{var v=localStorage.getItem('cel-'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
+var FINANCE_SYNC_KEYS=[
+  'pots-v4','pot-groups','pot-rebalances-v1','assets-v2','debts-v3',
+  'monthly-v9','subs-v3','insurance-v4','goal-buckets-v3','credit-cards',
+  'maybank-start','holdings-v3','transactions-v3','dividends-v3',
+  'portfolio-notes','portfolio-prices','passive-income-goal','fire-plan',
+  'property-scenario','property-scenarios','property-due-diligence','saved-properties'
+];
+function financeSnapshot(){
+  var data={};
+  FINANCE_SYNC_KEYS.forEach(function(key){
+    var raw=localStorage.getItem('cel-'+key);
+    if(raw!==null){try{data[key]=JSON.parse(raw);}catch(e){}}
+  });
+  return {
+    kind:'cel-headspace-finance',
+    version:1,
+    exportedAt:new Date().toISOString(),
+    instructions:'Private finance snapshot. Finn may change only values Celine confirmed; preserve all other keys and records.',
+    data:data
+  };
+}
+function downloadJson(name,value){
+  var blob=new Blob([JSON.stringify(value,null,2)+'\n'],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+}
+function financeImportSummary(payload){
+  var keys=Object.keys(payload.data||{});
+  return keys.map(function(key){
+    var value=payload.data[key];
+    if(key==='monthly-v9'&&value&&value.months)return key+' ('+Object.keys(value.months).length+' months)';
+    if(Array.isArray(value))return key+' ('+value.length+' records)';
+    return key;
+  }).join('\n');
+}
+function validateFinanceImport(payload){
+  if(!payload||payload.kind!=='cel-headspace-finance'||payload.version!==1||!payload.data||typeof payload.data!=='object'||Array.isArray(payload.data)){
+    throw new Error('This is not a valid Headspace finance file.');
+  }
+  var keys=Object.keys(payload.data);
+  if(!keys.length)throw new Error('The finance file contains no data.');
+  var blocked=keys.filter(function(key){return FINANCE_SYNC_KEYS.indexOf(key)<0;});
+  if(blocked.length)throw new Error('Unsupported finance fields: '+blocked.join(', '));
+  keys.forEach(function(key){
+    var value=payload.data[key];
+    if(value===undefined||typeof value==='function')throw new Error('Invalid value for '+key);
+  });
+  return keys;
+}
+function applyFinanceImport(payload){
+  var keys=validateFinanceImport(payload);
+  var backup=financeSnapshot();
+  keys.forEach(function(key){localStorage.setItem('cel-'+key,JSON.stringify(payload.data[key]));});
+  localStorage.setItem('cel-finance-last-import',JSON.stringify({
+    importedAt:new Date().toISOString(),
+    sourceExportedAt:payload.exportedAt||null,
+    keys:keys
+  }));
+  POTS=load('pots-v4',[]);
+  ASSETS=load('assets-v2',[]);
+  window.__lastFinanceImportBackup=backup;
+  renderFinance();renderMonthlyFull();renderInvestments();renderPropertyFull();
+}
 var _saveToastTimer=null;
 function notifySaved(msg){
   var t=document.getElementById('save-toast');
@@ -6150,21 +6216,13 @@ function renderTimeline(){
 // ─── IMPORTED DATA FROM ORIGINAL HUB ───
 var SUBSTACKS=[{"id": 100, "title": "how to pay attention again (the neuroscience of focus in the age of everything)", "author": "mindbox", "cat": "tech", "link": "https://contemplationstation.substack.com/p/how-to-pay-attention-again-the-neuroscience", "date": "2025-06-09", "read": "unread"}, {"id": 101, "title": "how to get your life back together", "author": "postcards by elle", "cat": "wellness", "link": "https://postcardsbyelle.substack.com/p/how-to-get-your-life-together", "date": "2025-06-02", "read": "unread"}, {"id": 102, "title": "how to get smart again", "author": "postcards by elle", "cat": "tech", "link": "https://postcardsbyelle.substack.com/p/how-to-get-smart-again", "date": "2025-05-10", "read": "unread"}, {"id": 103, "title": "25 books to convince you about nonfiction", "author": "Breakfast for Dinner", "cat": "reading", "link": "https://elleseulee.substack.com/p/25-books-to-convince-you-about-nonfiction", "date": "2025-04-12", "read": "unread"}, {"id": 104, "title": "research as leisure activity", "author": "personal canon", "cat": "wellness", "link": "https://www.personalcanon.com/p/research-as-leisure-activity", "date": "2024-05-27", "read": "unread"}, {"id": 105, "title": "who are you when you're not pleasing anyone?", "author": "The Science of Being", "cat": "wellness", "link": "https://softperception.substack.com/p/who-are-you-when-youre-not-pleasing", "date": "2025-06-03", "read": "unread"}, {"id": 106, "title": "a guide to emotional hygiene for overthinkers", "author": "milk and cookies", "cat": "wellness", "link": "https://ayushithakkar.substack.com/p/a-guide-to-emotional-hygiene-for", "date": "2025-06-10", "read": "unread"}, {"id": 107, "title": "where to find media to consume instead of doomscrolling", "author": "Instead of Doomscrolling", "cat": "wellness", "link": "https://mapuc.substack.com/p/where-to-find-media-to-consume-instead", "date": "2025-07-13", "read": "unread"}, {"id": 108, "title": "is philosophy a form of intellectual self-care?", "author": "milk and cookies", "cat": "culture", "link": "https://ayushithakkar.substack.com/p/is-philosophy-a-form-of-intellectual", "date": "2025-08-21", "read": "unread"}, {"id": 109, "title": "why i stopped forcing myself to be productive all the time", "author": "milk and cookies", "cat": "productivity", "link": "https://ayushithakkar.substack.com/p/why-i-stopped-forcing-myself-to-be", "date": "2025-07-22", "read": "unread"}, {"id": 110, "title": "why everything feels temporary (and what to do about it)", "author": "milk and cookies", "cat": "wellness", "link": "https://ayushithakkar.substack.com/p/why-everything-feels-temporary-and", "date": "2025-09-09", "read": "unread"}, {"id": 111, "title": "you’re overspending because you lack values", "author": "Sherry Ning", "cat": "finance", "link": "https://www.sherryning.com/p/youre-overspending-because-you-lack-values", "date": "2025-09-09", "read": "unread"}, {"id": 112, "title": "the death of the public intellectual", "author": "the digital meadow", "cat": "culture", "link": "https://thedigitalmeadow.substack.com/p/the-death-of-the-public-intellectual", "date": "2025-04-02", "read": "unread"}, {"id": 113, "title": "the slow burn of becoming yourself", "author": "one cup of tea", "cat": "wellness", "link": "https://janelledodo.substack.com/p/the-slow-burn-of-becoming-yourself", "date": "2025-06-20", "read": "unread"}, {"id": 114, "title": "how to do everything you want in your twenties", "author": "JW Meditations", "cat": "wellness", "link": "https://jwmeditations.substack.com/p/how-to-do-everything-you-want-in", "date": "2025-03-30", "read": "unread"}, {"id": 115, "title": "i will never decenter men", "author": "jazzy the shazzy wazzy", "cat": "relationships", "link": "https://jazzytheshazzywazzy.substack.com/p/i-will-never-decenter-men", "date": "2025-04-17", "read": "unread"}, {"id": 116, "title": "between Plath and Didion: the most important lesson I learned in my 20s", "author": "Fairy Tales by Caroline", "cat": "culture", "link": "https://fairytalesbycaroline.substack.com/p/between-plath-and-didion-the-most", "date": "2025-01-26", "read": "unread"}, {"id": 117, "title": "how to become well-spoken", "author": "NoteswNat", "cat": "reading", "link": "https://noteswnat.substack.com/p/how-to-become-well-spoken", "date": "2025-11-14", "read": "unread"}, {"id": 118, "title": "Claude — using AI as a thinking partner", "author": "Ruben", "cat": "tech", "link": "https://ruben.substack.com/p/claude", "date": "2025-10-01", "read": "unread"}, {"id": 119, "title": "Claude Cowork — AI-powered desktop productivity", "author": "Ruben", "cat": "productivity", "link": "https://ruben.substack.com/p/claude-cowork", "date": "2025-10-05", "read": "unread"}, {"id": 120, "title": "the art of romanticizing your everyday life", "author": "confessionals", "cat": "wellness", "link": "https://leidiinspired.substack.com/p/the-art-of-romanticizing-your-everyday", "date": "2025-02-15", "read": "unread"}, {"id": 121, "title": "the let them theory", "author": "The Science of Being", "cat": "wellness", "link": "https://softperception.substack.com/p/the-let-them-theory", "date": "2025-05-20", "read": "unread"}, {"id": 122, "title": "can intellectual intimacy replace physical attraction?", "author": "Caitlyn Richardson", "cat": "culture", "link": "https://caitlynrichardson.substack.com/p/can-intellectual-intimacy-replace", "date": "2025-06-15", "read": "unread"}, {"id": 123, "title": "womanhood is the process of understanding yourself", "author": "Caitlyn Richardson", "cat": "relationships", "link": "https://caitlynrichardson.substack.com/p/womanhood-is-the-process-of-understanding", "date": "2025-07-01", "read": "unread"}, {"id": 124, "title": "essays everyone should read", "author": "sushi writes", "cat": "culture", "link": "https://sushiwrites.substack.com/p/essays-everyone-should-read", "date": "2025-08-01", "read": "unread"}, {"id": 125, "title": "how to stop living your life on autopilot", "author": "milk and cookies", "cat": "productivity", "link": "https://ayushithakkar.substack.com/p/how-to-stop-living-your-life-on-autopilot", "date": "2025-08-10", "read": "unread"}, {"id": 126, "title": "you don’t have friends in your adult life because you’re not trying hard enough", "author": "chic girl moment", "cat": "relationships", "link": "https://chicgirlmoment.substack.com/p/you-dont-have-friends-in-your-adult", "date": "2025-05-15", "read": "unread"}, {"id": 127, "title": "the forbidden knowledge about how the world actually works", "author": "ixcarus", "cat": "culture", "link": "https://ixcarus.substack.com/p/the-forbidden-knowledge-about-how", "date": "2025-04-10", "read": "unread"}, {"id": 128, "title": "I’m 38. If you’re in your 20s or 30s, read this.", "author": "Tim Denning", "cat": "reading", "link": "https://timdenning.substack.com/p/im-38-if-youre-in-your-20s-or-30s", "date": "2025-03-15", "read": "unread"}, {"id": 129, "title": "10 Substack essays you need to read", "author": "trauma & company", "cat": "reading", "link": "https://traumaandcompany.substack.com/p/10-substack-essays-you-need-to-read", "date": "2025-09-20", "read": "unread"}, {"id": 130, "title": "how to be organised in 2026", "author": "Anna Newton", "cat": "productivity", "link": "https://annanewton.substack.com/p/how-to-be-organised-in-2026", "date": "2026-01-05", "read": "unread"}, {"id": 131, "title": "100 cool girl hobbies to try in 2026", "author": "NoteswNat", "cat": "productivity", "link": "https://noteswnat.substack.com/p/100-cool-girl-hobbies-to-try-in-2026", "date": "2026-01-10", "read": "unread"}, {"id": 132, "title": "Build a stock analyst with Claude — 5 steps", "author": "Compound With AI", "cat": "finance", "link": "https://substack.com/@compoundwithai/note/c-220050866", "date": "2025-11-01", "read": "unread"}, {"id": 133, "title": "the healing power of small routines", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/the-healing-power-of-small-routines", "date": "2026-03-27", "read": "unread"}, {"id": 134, "title": "self love rituals you need to try", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/self-love-rituals-you-need-to-try", "date": "2026-03-27", "read": "unread"}, {"id": 135, "title": "your sunday reset self love ritual", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/your-sunday-reset-self-love-ritual", "date": "2026-03-27", "read": "unread"}, {"id": 136, "title": "making self love an embodied practice", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/making-self-love-an-embodied-practice", "date": "2026-03-27", "read": "unread"}, {"id": 137, "title": "self care rituals for a burnt out nervous system", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/self-care-rituals-for-a-burnt-out", "date": "2026-03-27", "read": "unread"}, {"id": 138, "title": "self care for when you have nothing left to give", "author": "the fairy & the moon", "cat": "self-care", "link": "https://rhianameri.substack.com/p/self-care-for-when-you-have-nothing", "date": "2026-03-27", "read": "unread"}, {"id": 139, "title": "you don’t have to wake up at 5am to be successful. But you probably should.", "author": "Simply Put", "cat": "productivity", "link": "https://erinondemand.substack.com/p/you-dont-have-to-wake-up-at-5am-to", "date": "2025-03-18", "read": "unread"}, {"id": 140, "title": "how to think on paper (become a genius-level thinker)", "author": "Profound Ideas", "cat": "productivity", "link": "https://ideas.profoundideas.com/p/how-to-think-on-paper-become-a-genius", "date": "2026-04-28", "read": "unread"}, {"id": 141, "title": "your Claude MBA: how to set up Claude so well it's almost unfair", "author": "Dangerously Educated", "cat": "tech", "link": "https://taylaburrell.substack.com/p/your-claude-mba-how-to-set-up-claude", "date": "2026-04-28", "read": "unread"}, {"id": 142, "title": "(saved from inbox)", "author": "", "cat": "wellness", "link": "https://substack.com/inbox/post/190276151", "date": "2026-04-28", "read": "unread"}];
 var JPROMPTS=[{"title": "Journal prompts based on Tracee Ellis Ross’ manifesting advice", "author": "Margot Lee · If Walls Could Talk", "link": "https://substack.com/@margotlee/note/c-192529464"}, {"title": "20 journal prompts to notice how far you have come", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/20-journal-prompts-to-notice-how"}, {"title": "33 journal prompts to embody the woman you want to become", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/33-journal-prompts-to-embody-the"}, {"title": "33 journal prompts to trust yourself more deeply", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/33-journal-prompts-to-trust-yourself"}, {"title": "33 journal prompts for when you’re feeling stuck", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/33-journal-prompts-for-when-youre"}, {"title": "27 journal prompts for when you’re overthinking everything", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/27-journal-prompts-for-when-youre"}, {"title": "30 days of self-love prompts — an April challenge", "author": "rhiana meri · the fairy & the moon", "link": "https://rhianameri.substack.com/p/30-days-of-self-love-prompts-an-april"}];
-var DEF_POTS=[
- {name:'Versa Cash Bonds',bank:'Versa',amount:5062,goal:30000,budget:0,color:'rgba(201,148,156,0.75)'},
- {name:'Versa Gold',bank:'Versa',amount:4931,goal:35000,budget:100,color:'rgba(176,160,200,0.75)'},
- {name:'MooMoo Investments',bank:'MooMoo',amount:24700,goal:100000,budget:1200,color:'rgba(156,90,106,0.75)'},
- {name:'Emergency Fund (RYT)',bank:'RYT Savings',amount:4301,goal:30000,budget:100,color:'rgba(156,90,106,0.75)'},
- {name:'Versa Global-I',bank:'Versa',amount:4544.06,goal:25000,budget:500,color:'rgba(127,166,160,0.75)'},
- {name:'Expenses (RYT)',bank:'RYT Savings',amount:1845,goal:10000,budget:100,color:'rgba(201,148,156,0.75)'},
- {name:'Home Deposit (RYT)',bank:'RYT Savings',amount:1450,goal:300000,budget:200,color:'rgba(155,112,104,0.75)'}
-];
+var DEF_POTS=[];
 var POTS=load('pots-v4',DEF_POTS);
-var MONTHLY={"Jan 2026": {"income": 4167.42, "bills": 1329, "expenses": 1182.8, "savings": 38328.06, "items": {"income": [{"s": "Pupil Allowance", "a": 2177.42}, {"s": "Reimbursements", "a": 90}, {"s": "Expenses from dad", "a": 1500}, {"s": "Sony Headphones", "a": 400}], "bills": [{"n": "Facial", "a": 476}, {"n": "Gas", "a": 200}, {"n": "Moms allowance", "a": 100}, {"n": "Car Loan (Myvi)", "a": 553}], "expenses": [{"d": "Toll T&G", "a": 50, "c": "travel"}, {"d": "Moms Hair Tattoo", "a": 1000, "c": "gifts"}, {"d": "EFS filing", "a": 56, "c": "work"}, {"d": "Food", "a": 76.8, "c": "restaurants"}]}}, "Feb 2026": {"income": 3190, "bills": 1329, "expenses": 193.4, "savings": 2105, "items": {"income": [{"s": "Pupil Allowance", "a": 2500}, {"s": "Angpao", "a": 690}], "bills": [{"n": "Facial", "a": 476}, {"n": "Gas", "a": 200}, {"n": "Moms allowance", "a": 100}, {"n": "Car Loan (Myvi)", "a": 553}], "expenses": [{"d": "Car Wash", "a": 12, "c": "car maintenance"}, {"d": "T&G reload", "a": 50, "c": "travel"}, {"d": "Food", "a": 52.4, "c": "hangouts"}, {"d": "EFS filing", "a": 79, "c": "work"}]}}, "Mar 2026": {"income": 2915.71, "bills": 1329, "expenses": 374.34000000000003, "savings": 2000, "items": {"income": [{"s": "Pupil Allowance", "a": 2500}, {"s": "Middle Temple Scholarship", "a": 415.71}], "bills": [{"n": "Facial", "a": 476}, {"n": "Gas", "a": 200}, {"n": "Moms allowance", "a": 100}, {"n": "Car Loan (Myvi)", "a": 553}], "expenses": [{"d": "Haidilao", "a": 230, "c": "restaurants"}, {"d": "T&G reload", "a": 50, "c": "travel"}, {"d": "Food", "a": 94.34, "c": "restaurants"}]}}, "Apr 2026": {"income": 4450, "bills": 1329, "expenses": 407.5, "savings": 2200, "items": {"income": [{"s": "Pupil Allowance", "a": 2500}, {"s": "CIMB", "a": 200}, {"s": "Bryans mac", "a": 300}, {"s": "Macbook M1", "a": 1450}], "bills": [], "expenses": [{"d": "TNG toll", "a": 50, "c": "travel"}, {"d": "Nails", "a": 58, "c": "personal care"}, {"d": "CPD class", "a": 20, "c": "misc"}, {"d": "Kenny Hill Baker", "a": 100, "c": "restaurants"}, {"d": "Toll", "a": 5.5, "c": "travel"}, {"d": "Parking", "a": 4, "c": "travel"}, {"d": "Foodies", "a": 170, "c": "restaurants"}]}}, "May 2026": {"income": 0, "bills": 0, "expenses": 0, "savings": 0, "items": {"income": [], "bills": [], "expenses": []}}};
-var CUR_MONTH='May 2026';
-var SUBS=[{"s": "Spotify Individual", "cost": 17.5, "day": 24, "cat": "Music"}, {"s": "Netflix Premium", "cost": 62.9, "day": 22, "cat": "Streaming"}, {"s": "Claude Pro", "cost": 100, "day": 12, "cat": "Productivity"}, {"s": "Apple iCloud+ 2TB", "cost": 44.9, "day": 22, "cat": "Storage"}, {"s": "Google One", "cost": 8.49, "day": 25, "cat": "Storage"}];
-var ASSETS=load('assets-v2',[{name:'Perodua Myvi 1.5 H (2025)',value:57074}]);
-var BUCKETS=[{"icon": "📸", "name": "China Portrait Shoot", "target": 2500, "saved": 0, "monthly": 625, "date": "2026-08", "note": "写真馆 shoot in China · ~RM 2,500 total · save RM 625/mo from May"}, {"icon": "🏠", "name": "Bf Visit — Malaysia", "target": 2800, "saved": 0, "monthly": 800, "date": "2026-07", "note": "Airbnb RM 1,500 + food RM 1,000+ · save RM 800/mo from May"}, {"icon": "✈️", "name": "Japan December", "target": 5000, "saved": 0, "monthly": 600, "date": "2026-12", "note": "30-day trip with bf · your share ~RM 5K · save RM 600/mo · top up with post-call salary"}, {"icon": "🛡️", "name": "Emergency Fund", "target": 30000, "saved": 4101, "monthly": 100, "date": "2028-12", "note": "Target: 6 months expenses · building via RYT Savings"}, {"icon": "📈", "name": "Investment Top-Up", "target": 50000, "saved": 8500, "monthly": 1200, "date": "2027-12", "note": "MooMoo portfolio · ETF + dividend stocks"}, {"icon": "🏠", "name": "Home Deposit", "target": 300000, "saved": 1050, "monthly": 200, "date": "2032-12", "note": "Long game · building steadily in RYT Savings"}];
+var MONTHLY={};
+var CUR_MONTH='';
+var SUBS=[];
+var ASSETS=load('assets-v2',[]);
+var BUCKETS=[];
 
 // ─── 2026 ALL GOALS — imported from the original hub (cel-goals-2026-data-v2) ───
 var G26=[
@@ -6583,25 +6641,12 @@ function openModalLike(title,bodyHtml,onSave){
 // ════════════ PORTFOLIO — comprehensive investment tracker ════════════
 // Real portfolio imported from MooMoo (aggregated from transactions, converted to MYR · USD×4.7 · SGD×3.5)
 // Latest portfolio — aggregated from DivTracker CSV (qty net, weighted avg cost → MYR · USD×4.7 · SGD×3.5)
-var DEF_HOLDINGS=[
-  {ticker:'1023.MY',shares:170,cost:7.85,price:7.85,assetClass:'Stock',geo:'MY',sector:'Financials'},     // CIMB
-  {ticker:'1066.MY',shares:212,cost:7.19,price:8.25,assetClass:'Stock',geo:'MY',sector:'Financials'},     // RHB
-  {ticker:'1155.MY',shares:201,cost:10.67,price:11.00,assetClass:'Stock',geo:'MY',sector:'Financials'},   // Maybank
-  {ticker:'5176.MY',shares:251,cost:2.47,price:2.38,assetClass:'REIT',geo:'MY',sector:'REITs'},           // Sunway REIT
-  {ticker:'5357.MY',shares:300,cost:2.89,price:2.89,assetClass:'Stock',geo:'MY',sector:'Industrials'},
-  {ticker:'D05.SG',shares:3,cost:207.20,price:217.35,assetClass:'Stock',geo:'SG',sector:'Financials'},    // DBS
-  {ticker:'IAU',shares:2.1783,cost:376.32,price:399.27,assetClass:'ETF (gold)',geo:'US',sector:'Gold'},   // iShares Gold
-  {ticker:'META',shares:0.2993,cost:3234.77,price:2867.28,assetClass:'Stock',geo:'US',sector:'Technology'},
-  {ticker:'NASA',shares:31,cost:183.23,price:183.23,assetClass:'ETF',geo:'US',sector:'Other'},
-  {ticker:'O39.SG',shares:12,cost:74.96,price:82.36,assetClass:'Stock',geo:'SG',sector:'Financials'},     // OCBC
-  {ticker:'QQQ',shares:1.3041,cost:3282.20,price:3377.23,assetClass:'ETF (index)',geo:'US',sector:'Technology'},
-  {ticker:'VOO',shares:0.5926,cost:2860.44,price:3226.64,assetClass:'ETF (index)',geo:'US',sector:'Broad Market'}
-];
-var DEF_DIVS=[{date:'2025-12-25',ticker:'VOO',amount:1.49},{date:'2025-12-31',ticker:'QQQ',amount:0.58},{date:'2026-03-26',ticker:'META',amount:0.26},{date:'2026-03-27',ticker:'QQQ',amount:0.53},{date:'2026-03-31',ticker:'VOO',amount:3.65},{date:'2026-04-30',ticker:'O39.SG',amount:17.22},{date:'2026-05-15',ticker:'1155.MY',amount:53.58},{date:'2026-05-20',ticker:'1066.MY',amount:31.80},{date:'2026-05-22',ticker:'D05.SG',amount:6.30}];
+var DEF_HOLDINGS=[];
+var DEF_DIVS=[];
 var DEF_TX=[];
-var DEF_NOTES=[{id:'n1',date:'2026-06-12',ticker:'META',note:'Threads hits 500M users',sentiment:'bullish'},{id:'n2',date:'2026-06-08',ticker:'IAU',note:'Gold dips on strong jobs data',sentiment:'bearish'},{id:'n3',date:'2026-06-01',ticker:'VOO',note:'Fed holds rates steady',sentiment:'neutral'}];
-var DEF_PASSIVE={monthlyTarget:250,annualTarget:3000};
-var DEF_FIRE={monthlyExpenses:2000,safeWithdrawalRate:4,expectedReturn:7,monthlyContribution:2200};
+var DEF_NOTES=[];
+var DEF_PASSIVE={monthlyTarget:0,annualTarget:0};
+var DEF_FIRE={monthlyExpenses:0,safeWithdrawalRate:4,expectedReturn:7,monthlyContribution:0};
 var FIRE_FORM=[['monthlyExpenses','Monthly expenses (RM)'],['safeWithdrawalRate','Safe withdrawal %'],['expectedReturn','Expected return % p.a.'],['monthlyContribution','Monthly contribution (RM)']];
 var MSx=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 function getHoldings(){return load('holdings-v3',DEF_HOLDINGS);}
@@ -7610,7 +7655,7 @@ function propStampDuty(price){ // Malaysian MOT schedule (1/2/3/4% bands)
 function pmt(rateAnnualPct,nperMonths,pv){var r=rateAnnualPct/100/12;if(r===0)return pv/nperMonths;return pv*r*Math.pow(1+r,nperMonths)/(Math.pow(1+r,nperMonths)-1);}
 var PROP_DEFAULT={propertyName:'Condo near LRT',location:'Petaling Jaya',type:'Condo',size:900,bedrooms:3,bathrooms:2,parkingLots:1,completionYear:2024,developer:'',freehold:false,nearTransit:true,areaAvgPsf:650,
   purchasePrice:600000,downPaymentPct:10,lawyerLegalFee:0,valuationFee:400,moT:0,agentFee:0,renovationBudget:20000,
-  interestRate:4.5,loanTenure:35,rentalIncome:2500,maintenanceFee:300,sinkingFund:0,insurance:50,assessmentTax:50,quitRent:10,otherExpenses:0,appreciationRate:3,mode:'investment',monthlyIncome:8000};
+  interestRate:4.5,loanTenure:35,rentalIncome:2500,maintenanceFee:300,sinkingFund:0,insurance:50,assessmentTax:50,quitRent:10,otherExpenses:0,appreciationRate:3,mode:'investment',monthlyIncome:0};
 var PROP_FORM=[['propertyName','Property name','text'],['location','Location','text'],['type','Type','seg',['Condo','Apartment','Landed','Townhouse']],['size','Size (sq ft)','number'],['bedrooms','Bedrooms','number'],['bathrooms','Bathrooms','number'],['parkingLots','Parking lots','number'],['completionYear','Completion year','number'],['developer','Developer','text'],['areaAvgPsf','Area avg RM/sqft','number'],['freehold','Freehold','check'],['nearTransit','Near LRT/MRT','check']];
 var PROP_COST=[['purchasePrice','Purchase price (RM)','number'],['downPaymentPct','Down payment %','number'],['lawyerLegalFee','Legal fee (0 = auto 1%)','number'],['valuationFee','Valuation fee','number'],['moT','MOT fee','number'],['agentFee','Agent fee','number'],['renovationBudget','Renovation budget','number']];
 var PROP_MON=[['interestRate','Interest % p.a.','number'],['loanTenure','Loan tenure (yrs)','number'],['rentalIncome','Rental income /mo','number'],['maintenanceFee','Maintenance /mo','number'],['sinkingFund','Sinking fund /mo','number'],['insurance','Insurance /mo','number'],['assessmentTax','Assessment tax /mo','number'],['quitRent','Quit rent /mo','number'],['otherExpenses','Other /mo','number'],['appreciationRate','Appreciation % p.a.','number']];
@@ -8007,40 +8052,40 @@ function renderPots(){
 }
 function renderMonthly(){
   var el=document.getElementById('fin-monthly');if(!el)return;
-  var ms=Object.keys(MONTHLY);
+  var source=getMonthlyStore().months||{},ms=Object.keys(source).sort(function(a,b){return monthOrder(a)-monthOrder(b);});
   // focal timeline — income vs spend per month, as paired bars
   var tl=document.getElementById('monthly-timeline');
   if(tl){
-    var active=ms.filter(function(m){var d=MONTHLY[m];return (d.income||0)+(d.bills||0)+(d.expenses||0)>0;});
-    var peak=Math.max.apply(null,active.map(function(m){var d=MONTHLY[m];return Math.max(d.income||0,(d.bills||0)+(d.expenses||0));}).concat([1]));
+    var active=ms.filter(function(m){var d=source[m];return mtSumAmt(d.income)+mtSumAmt(d.bills)+mtSumAmt(d.expenses)>0;});
+    var peak=Math.max.apply(null,active.map(function(m){var d=source[m];return Math.max(mtSumAmt(d.income),mtSumAmt(d.bills)+mtSumAmt(d.expenses));}).concat([1]));
     tl.innerHTML=active.map(function(m){
-      var d=MONTHLY[m],spend=(d.bills||0)+(d.expenses||0);
-      var ih=Math.max(2,Math.round((d.income||0)/peak*100)),sh=Math.max(2,Math.round(spend/peak*100));
+      var d=source[m],income=mtSumAmt(d.income),spend=mtSumAmt(d.bills)+mtSumAmt(d.expenses);
+      var ih=Math.max(2,Math.round(income/peak*100)),sh=Math.max(2,Math.round(spend/peak*100));
       var mlabel=m.split(' ')[0].toLowerCase();
-      return '<div class="lt-col" title="'+esc(m)+' · in RM '+Math.round(d.income).toLocaleString()+' · out RM '+Math.round(spend).toLocaleString()+'">'+
+      return '<div class="lt-col" title="'+esc(m)+' · in RM '+Math.round(income).toLocaleString()+' · out RM '+Math.round(spend).toLocaleString()+'">'+
         '<div class="lt-bars"><span class="lt-bar lt-in" style="height:'+ih+'%"></span><span class="lt-bar lt-out" style="height:'+sh+'%"></span></div>'+
         '<div class="lt-m">'+esc(mlabel)+'</div></div>';
     }).join('')+'<div class="lt-key"><span><i class="lt-in"></i>in</span><span><i class="lt-out"></i>out</span></div>';
   }
   el.innerHTML=ms.map(function(m){
-    var d=MONTHLY[m];
+    var d=source[m],income=mtSumAmt(d.income),out=mtSumAmt(d.bills)+mtSumAmt(d.expenses),saved=mtSumAmt(d.savings);
     return '<div class="fm-row"><span class="fm-m">'+esc(m)+'</span>'+
-      '<span class="fm-v fm-in">+'+Math.round(d.income).toLocaleString()+'</span>'+
-      '<span class="fm-v fm-out">-'+Math.round(d.bills+d.expenses).toLocaleString()+'</span>'+
-      '<span class="fm-v fm-sv">↑'+Math.round(d.savings).toLocaleString()+'</span></div>';
+      '<span class="fm-v fm-in">+'+Math.round(income).toLocaleString()+'</span>'+
+      '<span class="fm-v fm-out">-'+Math.round(out).toLocaleString()+'</span>'+
+      '<span class="fm-v fm-sv">↑'+Math.round(saved).toLocaleString()+'</span></div>';
   }).join('');
 }
 function renderSubs(){
   var el=document.getElementById('fin-subs');if(!el)return;
-  var total=SUBS.reduce(function(a,s){return a+s.cost;},0);
+  var subs=getSubsV2(),total=subs.reduce(function(a,s){return a+(+s.cost||0);},0);
   var _fsub=document.getElementById('fin-subtotal');if(_fsub)_fsub.textContent='RM '+total.toFixed(2)+' / month';
-  el.innerHTML=SUBS.map(function(s){
-    return '<div class="sub-row"><span class="sub-n">'+esc(s.s)+'</span><span class="sub-c">RM '+s.cost.toFixed(2)+'</span><span class="sub-d">day '+s.day+'</span></div>';
+  el.innerHTML=subs.map(function(s){
+    return '<div class="sub-row"><span class="sub-n">'+esc(s.service||'')+'</span><span class="sub-c">RM '+(+s.cost||0).toFixed(2)+'</span><span class="sub-d">day '+esc(String(s.renewalDay||'—'))+'</span></div>';
   }).join('');
 }
 function renderBuckets(){
   var el=document.getElementById('fin-buckets');if(!el)return;
-  el.innerHTML=BUCKETS.map(function(b){
+  el.innerHTML=getGoalBuckets().map(function(b){
     var pct=b.target>0?Math.min(100,Math.round(b.saved/b.target*100)):0;
     return '<div class="bk-row"><span class="bk-ic">'+b.icon+'</span><div class="bk-info"><div class="bk-n">'+esc(b.name)+'</div>'+
       '<div class="pot-bar"><div class="pot-fill" style="width:'+pct+'%;background:var(--blush);"></div></div>'+
@@ -8056,7 +8101,7 @@ function renderAssets(){
   }).join('');
 }
 // ── Finance page: 3 quiet sections ──
-var DEF_DEBTS=[{id:1,name:'Myvi 1.5H car loan',total:33180,remaining:30957.54,monthly:553,rate:3.26,paidBy:'Self',startDate:'2025-11',endDate:'2030-11',notes:'Maybank Islamic · Ref RHP25110538530 · 60mo · purchase RM57,074 · down RM28,574 · loan RM28,500 · total interest RM4,680'}];
+var DEF_DEBTS=[];
 function getDebts(){return load('debts-v3',DEF_DEBTS);}
 function saveDebts(d){store('debts-v3',d);}
 function selfDebt(){return getDebts().filter(function(d){return d.paidBy==='Self';}).reduce(function(a,d){return a+(+d.remaining||0);},0);}
@@ -9464,98 +9509,22 @@ function computeMaybank(){
 }
 function nextMonthStr(m){var p=(m||'Dec 2025').split(' ');var mi=MO_NAMES.indexOf(p[0]),y=+p[1];mi++;if(mi>11){mi=0;y++;}return MO_NAMES[mi]+' '+y;}
 
-var BILL_TEMPLATE=[
-  {bill:'Netflix',amount:62.90,paidBy:'Parents'},{bill:'Spotify',amount:17.50,paidBy:'Parents'},
-  {bill:'iCloud Storage',amount:44.90,paidBy:'Parents'},{bill:'Google Storage',amount:8.49,paidBy:'Parents'},
-  {bill:'Claude Pro',amount:100,paidBy:'Parents'},{bill:'Maxis',amount:0,paidBy:'Self'},
-  {bill:'Facial',amount:0,paidBy:'Self'},{bill:'Life Insurance',amount:0,paidBy:'Self'},
-  {bill:'Medical Insurance',amount:0,paidBy:'Self'},{bill:'Gas',amount:0,paidBy:'Self'},
-  {bill:"Mom's allowance",amount:0,paidBy:'Self'},{bill:"Ako's allowance",amount:0,paidBy:'Self'},
-  {bill:'Myvi 1.5H car loan',amount:553,paidBy:'Dad'},{bill:'Zurich Car Insurance',amount:0,paidBy:'Self'}
-];
-var DEF_INSURANCE=[
-  {id:1,name:'Zurich Car Insurance (Takaful)',type:'Car',monthly:0,annual:2141.95,policyNo:'TN25-00089141',coverage:'Comprehensive',
-   coverageDetails:'Z-Driver Perodua Total Protect Plus, Special Perils (RM 110), Windscreen & Glass (RM 1600), Flood Relief (RM 1000), Personal Accident (RM 10000)',
-   renewal:'27/11/2026',startDate:'28/11/2025',
-   notes:'Perodua Myvi 1500H (CVT) BD5HZ · Plate: VQB9386 · Year 2025 · Sum Covered RM 55,000 · NCD: 0% · HP: Maybank Islamic Berhad · Cert No: 012550061766-00 · Basic RM 1,624.02 + Extra RM 350 + SST RM 157.92 + Stamp Duty RM 10 + ACT RM 324.80',
-   roadTaxPaid:'Yes',roadTaxExpiry:'27/11/2026'}
-];
-var DEF_SUBS_V2=[
-  {id:1,service:'ClassPass',category:'Health',cost:199.90,paidBy:'Parents',renewalDay:1},
-  {id:2,service:'Spotify Individual',category:'Music',cost:17.50,paidBy:'Parents',renewalDay:7},
-  {id:3,service:'Netflix Premium',category:'Streaming',cost:62.90,paidBy:'Parents',renewalDay:15},
-  {id:4,service:'Claude Pro',category:'Productivity',cost:100,paidBy:'Parents',renewalDay:20},
-  {id:5,service:'Apple iCloud+ 2TB',category:'Storage',cost:44.90,paidBy:'Parents',renewalDay:22},
-  {id:6,service:'Google One',category:'Storage',cost:8.49,paidBy:'Parents',renewalDay:22}
-];
-var DEF_GOAL_BUCKETS=[
-  {id:1,name:'China Portrait Shoot',icon:'📸',target:2500,saved:0,monthly:625,targetDate:'2026-08',color:'rgba(176,160,200,0.75)',notes:'写真馆 shoot in China · ~RM 2,500 total · save RM 625/mo from May'},
-  {id:2,name:'Bf Visit — Malaysia',icon:'🏠',target:2800,saved:0,monthly:800,targetDate:'2026-07',color:'rgba(201,148,156,0.75)',notes:'Airbnb RM 1,500 + food RM 1,000+ · save RM 800/mo from May'},
-  {id:3,name:'Japan December',icon:'✈️',target:5000,saved:0,monthly:600,targetDate:'2026-12',color:'rgba(232,160,176,0.75)',notes:'30-day trip with bf · your share ~RM 5K · save RM 600/mo · top up with post-call salary'}
-];
+var BILL_TEMPLATE=[];
+var DEF_INSURANCE=[];
+var DEF_SUBS_V2=[];
+var DEF_GOAL_BUCKETS=[];
 var BANK_GRADIENTS={'Maybank':'linear-gradient(135deg,#FFD700,#B8860B)','CIMB Bank':'linear-gradient(135deg,#9E1B32,#6B1523)','Public Bank':'linear-gradient(135deg,#E60023,#A00018)','RHB':'linear-gradient(135deg,#3F51B5,#1A237E)','Hong Leong':'linear-gradient(135deg,#00843D,#003D1C)','HSBC':'linear-gradient(135deg,#DB0011,#7A0009)','UOB':'linear-gradient(135deg,#003DA5,#001F52)','Standard Chartered':'linear-gradient(135deg,#0473EA,#023C7D)','OCBC':'linear-gradient(135deg,#E60028,#9A001B)','AmBank':'linear-gradient(135deg,#E31937,#8B0F21)','Bank Islam':'linear-gradient(135deg,#006633,#003319)','Alliance Bank':'linear-gradient(135deg,#ED1C24,#8B0B10)','Default':'linear-gradient(135deg,#4A5568,#1A202C)'};
 var BANK_OPTIONS=['Maybank','CIMB Bank','Public Bank','RHB','Hong Leong','HSBC','UOB','Standard Chartered','OCBC','AmBank','Bank Islam','Alliance Bank'];
 
 function seedMonthly(){
-  // Full Jan–Apr 2026 records imported from the original hub: income (dated), bills (paidBy),
-  // expenses (dated · category · need/want), and monthly savings transfers into each pot.
-  var months={
-    'Jan 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'29/01/2026',amount:2177.42},{id:2,source:'Reimbursements',date:'10/01/2026',amount:90},{id:3,source:'Expenses from dad',date:'07/01/2026',amount:1500},{id:4,source:'Sony Headphones',date:'15/01/2026',amount:400}],
-      bills:[{id:5,bill:'Facial',amount:476,paidBy:'Self'},{id:6,bill:'Gas',amount:200,paidBy:'Self'},{id:7,bill:"Mom's allowance",amount:100,paidBy:'Self'},{id:8,bill:'Car Loan (Myvi)',amount:553,paidBy:'Dad'},{id:13,bill:'Zurich Car Insurance',amount:0,paidBy:'Self'}],
-      expenses:[{id:1,date:'09/01/2026',cat:'travel',desc:'Toll T&G',nw:'N',amount:50},{id:2,date:'11/01/2026',cat:'gifts',desc:"Mom's Hair Tattoo",nw:'W',amount:1000},{id:3,date:'29/01/2026',cat:'work',desc:'EFS filing',nw:'N',amount:56},{id:4,date:'31/01/2026',cat:'restaurants',desc:'Food',nw:'N',amount:76.8}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:1445},{id:2,pot:'Emergency Fund (RYT)',amount:3321},{id:3,pot:'MooMoo Investments',amount:6500},{id:4,pot:'Versa Global-I',amount:2894.06},{id:5,pot:'Versa Gold',amount:8231},{id:6,pot:'Versa Cash Bonds',amount:15312},{id:7,pot:'Home Deposit (RYT)',amount:625}]
-    },
-    'Feb 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'26/02/2026',amount:2500},{id:2,source:'Angpao',date:'19/02/2026',amount:690}],
-      bills:[{id:5,bill:'Facial',amount:476,paidBy:'Self'},{id:6,bill:'Gas',amount:200,paidBy:'Self'},{id:7,bill:"Mom's allowance",amount:100,paidBy:'Self'},{id:8,bill:'Car Loan (Myvi)',amount:553,paidBy:'Dad'},{id:13,bill:'Zurich Car Insurance',amount:0,paidBy:'Self'}],
-      expenses:[{id:1,date:'01/02/2026',cat:'car maintenance',desc:'Car Wash',nw:'N',amount:12},{id:2,date:'02/02/2026',cat:'travel',desc:'T&G reload',nw:'N',amount:50},{id:3,date:'28/02/2026',cat:'hangouts',desc:'Food',nw:'N',amount:52.4},{id:4,date:'28/02/2026',cat:'work',desc:'EFS filing',nw:'N',amount:79},{id:5,date:'28/02/2026',cat:'taxi/uber',desc:'Parking',nw:'W',amount:10}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:180},{id:3,pot:'MooMoo Investments',amount:1000},{id:4,pot:'Versa Global-I',amount:150},{id:5,pot:'Versa Gold',amount:200},{id:6,pot:'Versa Cash Bonds',amount:250},{id:7,pot:'Home Deposit (RYT)',amount:225}]
-    },
-    'Mar 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'27/03/2026',amount:2500},{id:2,source:'Middle Temple Scholarship',date:'08/02/2026',amount:415.71}],
-      bills:[{id:5,bill:'Facial',amount:476,paidBy:'Self'},{id:6,bill:'Gas',amount:200,paidBy:'Self'},{id:7,bill:"Mom's allowance",amount:100,paidBy:'Self'},{id:8,bill:'Car Loan (Myvi)',amount:553,paidBy:'Dad'},{id:13,bill:'Zurich Car Insurance',amount:0,paidBy:'Self'}],
-      expenses:[{id:1,date:'06/03/2026',cat:'restaurants',desc:'Haidilao',nw:'W',amount:230},{id:2,date:'11/03/2026',cat:'travel',desc:'T&G reload',nw:'N',amount:50},{id:3,date:'21/03/2026',cat:'restaurants',desc:'Food',nw:'N',amount:94.34}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:600},{id:3,pot:'MooMoo Investments',amount:1000},{id:4,pot:'Versa Global-I',amount:500},{id:5,pot:'Versa Gold',amount:100},{id:6,pot:'Versa Cash Bonds',amount:-500},{id:7,pot:'Home Deposit (RYT)',amount:200}]
-    },
-    'Apr 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'—',amount:2500},{id:2,source:'CIMB',date:'02/04/2026',amount:200},{id:3,source:"Bryan's mac",date:'15/04/2026',amount:300},{id:4,source:'Macbook M1',date:'24/04/2026',amount:1450}],
-      bills:[{id:5,bill:'Facial',amount:476,paidBy:'Self'},{id:6,bill:'Gas',amount:200,paidBy:'Self'},{id:7,bill:"Mom's allowance",amount:100,paidBy:'Self'},{id:8,bill:'Car Loan (Myvi)',amount:553,paidBy:'Dad'},{id:13,bill:'Zurich Car Insurance',amount:0,paidBy:'Self'}],
-      expenses:[{id:1,date:'01/04/2026',cat:'travel',desc:'TNG toll',nw:'N',amount:50},{id:2,date:'28/03/2026',cat:'personal care',desc:'Nails',nw:'W',amount:58},{id:3,date:'03/04/2026',cat:'miscellaneous',desc:'CPD class',nw:'N',amount:20},{id:4,date:'01/04/2026',cat:'restaurants',desc:'Kenny Hill Baker',nw:'W',amount:100},{id:5,date:'01/04/2026',cat:'travel',desc:'Toll',nw:'N',amount:5.5},{id:6,date:'15/04/2026',cat:'travel',desc:'Parking',nw:'W',amount:4},{id:7,date:'30/04/2026',cat:'restaurants',desc:'Foodies',nw:'N',amount:170}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:100},{id:3,pot:'MooMoo Investments',amount:1200},{id:4,pot:'Versa Global-I',amount:500},{id:5,pot:'Versa Gold',amount:100},{id:6,pot:'Versa Cash Bonds',amount:0},{id:7,pot:'Home Deposit (RYT)',amount:200}]
-    },
-    'May 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'—',amount:2500},{id:2,source:'Dad Allowance',date:'—',amount:2000},{id:3,source:'Criminal Lit notes',date:'—',amount:130}],
-      bills:[{id:5,bill:'Facial',amount:476,paidBy:'Self'},{id:6,bill:'Gas',amount:200,paidBy:'Self'},{id:7,bill:"Mom's allowance",amount:100,paidBy:'Self'},{id:8,bill:'Car Loan (Myvi)',amount:553,paidBy:'Dad'}],
-      expenses:[{id:1,date:'09/05/2026',cat:'healthcare',desc:'正骨 (Chiro)',nw:'N',amount:108},{id:2,date:'09/05/2026',cat:'gifts',desc:'阿姨 母亲节',nw:'W',amount:133.57},{id:3,date:'09/05/2026',cat:'restaurants',desc:'Subway',nw:'N',amount:13.05},{id:4,date:'09/05/2026',cat:'car maintenance',desc:'Parking',nw:'N',amount:10},{id:5,date:'09/05/2026',cat:'work',desc:'CDP talk',nw:'N',amount:20},{id:6,date:'13/05/2026',cat:'car maintenance',desc:'Gas',nw:'N',amount:34.81},{id:7,date:'13/05/2026',cat:'car maintenance',desc:'Ethics KL parking',nw:'N',amount:8},{id:8,date:'13/05/2026',cat:'work',desc:'CPD',nw:'N',amount:15},{id:9,date:'13/05/2026',cat:'work',desc:'Claude Pro',nw:'N',amount:99.90},{id:10,date:'13/05/2026',cat:'clothing',desc:'XHS clothes',nw:'W',amount:98.17},{id:11,date:'15/05/2026',cat:'restaurants',desc:'Pizza',nw:'N',amount:13.78},{id:12,date:'20/05/2026',cat:'work',desc:'MC',nw:'N',amount:30},{id:13,date:'22/05/2026',cat:'restaurants',desc:'Nasi lemak',nw:'N',amount:14},{id:14,date:'29/05/2026',cat:'work',desc:'Microsoft Office',nw:'N',amount:17.61},{id:15,date:'30/05/2026',cat:'restaurants',desc:'Nasi lemak',nw:'N',amount:5.50},{id:16,date:'30/05/2026',cat:'car maintenance',desc:'Gas',nw:'N',amount:39.06}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:100},{id:3,pot:'MooMoo Investments',amount:15000},{id:4,pot:'Versa Global-I',amount:500},{id:5,pot:'Versa Gold',amount:-3700},{id:6,pot:'Versa Cash Bonds',amount:-10000},{id:7,pot:'Home Deposit (RYT)',amount:200}]
-    },
-    'Jun 2026':{
-      income:[{id:1,source:'Pupil Allowance',date:'—',amount:2500},{id:2,source:'Interpreter Allowance',date:'—',amount:1193},{id:3,source:'Dad Allowance',date:'—',amount:2000}],
-      bills:[{id:5,bill:'Facial',amount:568,paidBy:'Self'},{id:6,bill:'Gas',amount:150,paidBy:'Parents'},{id:7,bill:'Chiropractor',amount:108,paidBy:'Parents'},{id:8,bill:'Myvi 1.5H car loan',amount:553,paidBy:'Dad'},{id:9,bill:'TNG Toll',amount:50,paidBy:'Self'}],
-      expenses:[{id:1,date:'03/06/2026',cat:'restaurants',desc:'KFC',nw:'W',amount:6},{id:2,date:'04/06/2026',cat:'car maintenance',desc:'Gas',nw:'N',amount:33.69},{id:3,date:'09/06/2026',cat:'personal care',desc:'Nails',nw:'W',amount:63},{id:4,date:'11/06/2026',cat:'car maintenance',desc:'Car wash',nw:'W',amount:12},{id:5,date:'11/06/2026',cat:'clothing',desc:'集运 (shipping)',nw:'W',amount:19.93},{id:6,date:'12/06/2026',cat:'car maintenance',desc:'Car park',nw:'N',amount:10},{id:7,date:'13/06/2026',cat:'restaurants',desc:'Cake',nw:'W',amount:5.85},{id:8,date:'19/06/2026',cat:'car maintenance',desc:'Saman (fine)',nw:'N',amount:10},{id:9,date:'20/06/2026',cat:'personal care',desc:'Haircut',nw:'W',amount:168},{id:11,date:'27/06/2026',cat:'restaurants',desc:'Lac',nw:'W',amount:13.75}],
-      savings:[{id:1,pot:'Expenses (RYT)',amount:100},{id:2,pot:'Emergency Fund (RYT)',amount:100},{id:3,pot:'MooMoo Investments',amount:1200},{id:4,pot:'Versa Global-I',amount:500},{id:5,pot:'Versa Gold',amount:100},{id:6,pot:'Versa Cash Bonds',amount:0},{id:7,pot:'Home Deposit (RYT)',amount:200}]
-    }
-  };
-  var cur=curMonthStr(),mk=Object.keys(months);
-  return {months:months,current:months[cur]?cur:mk[mk.length-1]};
+  var cur=curMonthStr();
+  var months={};
+  months[cur]={income:[],bills:[],expenses:[],savings:[]};
+  return {months:months,current:cur};
 }
 function getMonthlyStore(){
   var s=load('monthly-v9',null);
   if(!s||!s.months){s=seedMonthly();store('monthly-v9',s);}
-  // one-time correction (Jun 2026): refresh Jan–May from corrected seed (May rebalance,
-  // May income +Criminal Lit notes, Feb +Parking, etc.). Preserves Jun & any edits elsewhere.
-  if(!load('monthly-fix-janmay-1',0)){
-    var seed=seedMonthly();
-    ['Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026'].forEach(function(m){if(seed.months[m])s.months[m]=seed.months[m];});
-    store('monthly-v9',s);store('monthly-fix-janmay-1',1);
-  }
-  // one-time (Jun 2026 import): re-apply corrected Jan–May + populate June income/expenses from seed
-  if(!load('monthly-jun-import-1',0)){
-    var seedJ=seedMonthly();
-    ['Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026'].forEach(function(m){if(seedJ.months[m])s.months[m]=seedJ.months[m];});
-    store('monthly-v9',s);store('monthly-jun-import-1',1);
-  }
   var cur=curMonthStr();
   if(!s.months[cur]){
     var keys=Object.keys(s.months).sort(function(a,b){return monthOrder(a)-monthOrder(b);});
@@ -9896,6 +9865,31 @@ function renderMonthlyCommand(){
 }
 function renderMonthlyFull(){
   var rb=document.getElementById('mt-rebalance');if(rb&&!rb.dataset.b){rb.dataset.b='1';rb.onclick=openRebalance;}
+  var fx=document.getElementById('mt-finance-export');if(fx&&!fx.dataset.b){fx.dataset.b='1';fx.onclick=function(){
+    var day=new Date().toISOString().slice(0,10);
+    downloadJson('headspace-finance-for-finn-'+day+'.json',financeSnapshot());
+    notifySaved('private finance export downloaded');
+  };}
+  var fi=document.getElementById('mt-finance-import'),ff=document.getElementById('mt-finance-file');
+  if(fi&&ff&&!fi.dataset.b){
+    fi.dataset.b='1';fi.onclick=function(){ff.value='';ff.click();};
+    ff.onchange=function(){
+      var file=this.files&&this.files[0];if(!file)return;
+      var reader=new FileReader();
+      reader.onload=function(){
+        try{
+          var payload=JSON.parse(String(reader.result||''));
+          validateFinanceImport(payload);
+          var summary=financeImportSummary(payload);
+          if(!confirm('Apply this Finn finance update to this device?\\n\\n'+summary+'\\n\\nA recovery copy stays in memory until this tab closes.'))return;
+          applyFinanceImport(payload);
+          notifySaved('Finn finance update applied');
+        }catch(error){alert(error.message||'Could not import this finance file.');}
+      };
+      reader.onerror=function(){alert('Could not read this finance file.');};
+      reader.readAsText(file);
+    };
+  }
   var rm=document.getElementById('mt-receipt-month');if(rm&&!rm.dataset.b){rm.dataset.b='1';rm.onclick=buildMonthReceipt;}
   var ry=document.getElementById('mt-receipt-year');if(ry&&!ry.dataset.b){ry.dataset.b='1';ry.onclick=buildYearReceipt;}
   fillMonthSelects();renderMonthSelector();renderMonthlyCommand();renderMonthGlance();renderMonthIncome();renderMonthBills();

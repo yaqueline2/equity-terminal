@@ -81,6 +81,14 @@ and is backed up separately by ACC. Finn reads it alongside the dated
 `finance_data.md` snapshot and updates it in place only when Celine confirms a
 material fact, decision, goal, or completed action.
 
+Finance values are private browser state, not deployable source data. Wealth ->
+Monthly provides `export for Finn`, which downloads an allow-listed
+`cel-headspace-finance` JSON snapshot, and `import Finn update`, which validates,
+previews, confirms, then applies a returned snapshot on that device. The working
+contract is `../skills/finn_finance_handoff.md`. Never commit a finance snapshot.
+The public source contains empty finance defaults; current figures must live in
+localStorage or in the ignored local finance files.
+
 ## 10. Working / verifying (for the next AI)
 - Preview tools (`mcp__Claude_Preview__*`): `preview_start` (launch.json name `headspace`, port 7725), load **`http://localhost:7725/`** or **`http://localhost:7725/index.html`**. Skip the gate in evals via `document.getElementById('th-skip').click()` or `?go=...`.
 - Simple Python preview: `python3 serve.py`, then open **`http://127.0.0.1:7724/`**.
@@ -90,6 +98,8 @@ material fact, decision, goal, or completed action.
 - Other Cloudflare Pages functions still run only in production/Cloudflare tooling; test `claude`, `financials`, `search`, `rss`, `telegram`, and Yahoo proxies against the deployed site or a real Pages dev environment.
 
 ## 11. Status / changelog (newest first)
+- Private Finn handoff and source-data repair (19 Jul 2026): Wealth/Monthly now exports a private allow-listed finance snapshot for Finn and imports his validated return file with a preview and confirmation. Removed private finance exports and live balances, holdings, cash flow, insurance, debt and goal records from deployable defaults; existing localStorage data remains intact. Finance renderers now read current stores instead of stale legacy constants.
+- Lux clipping intake 2026-07-19: captured four verified Douyin clippings with local media. Added video-detail cover extraction, corrected JPEG/MP3 signature detection, and strengthened archive verification to reject media whose bytes do not match its role. The three video cards currently contain their Douyin caption/title and cover, not an invented transcription of the list shown inside the video.
 - Headspace Times Issue No.2 (19 Jul 2026): filled `FRONTPAGE` with the week of 13–19 July — hero `assets/week02-hero.png` (pink meditation illustration), inset `assets/week02-inset.png` (credited to artist "seur", used in the piano article). Lead ties together the week's throughline: job dissatisfaction reframed as a need for a protected personal routine, not the job itself, evidenced by Day 7 of the 14-day movement challenge, journaling, and a first piano session in 2+ years. Articles: piano, movement, and the 创业 (business) recurring thought. Cel gave explicit "print it" go-ahead and delegated the hero photo choice to Sol.
 - Private living finance plan: recovered Finn's full plan from the obsolete Plan-mode temporary file into Git-ignored `FINANCE_PLAN.md`; ACC now injects it into Finn's finance context and includes it explicitly in the private local backup without publishing it through Headspace.
 - Cloudflare quote archive cache repair: production diagnosis showed the current HTML and MP3 were deployed while the browser retained an older `quotes.js` under the blanket seven-day immutable asset policy. The archive remains on Cloudflare's proven `quotes.js` asset path but now uses a SHA-256 query key mirrored in the service-worker cache; Lux's intake updates both automatically. Stable images/audio remain immutable while mutable metadata revalidates.
