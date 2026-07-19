@@ -5246,7 +5246,7 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
 
 <script>if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message',function(e){
-    if(!e.data||e.data.type!=='APP_UPDATED'||e.data.cache!=='cel-headspace-v4')return;
+    if(!e.data||e.data.type!=='APP_UPDATED'||!/^cel-headspace-v\d+$/.test(e.data.cache||''))return;
     var key='cel-sw-reloaded-'+e.data.cache;
     if(sessionStorage.getItem(key))return;
     sessionStorage.setItem(key,'1');location.reload();
@@ -8892,7 +8892,7 @@ function getQuotes(){
   DEF_QUOTES.forEach(function(q){
     var qid=quoteIdentity(q),qtext=quoteTextKey(q);
     if(deleted.indexOf(qid)>=0||(qtext&&deleted.indexOf('txt:'+qtext)>=0))return;
-    var existing=d.concat(additions).find(function(x){return quoteIdentity(x)===qid||(qtext&&quoteTextKey(x)===qtext);});
+    var existing=d.concat(additions).find(function(x){return quoteIdentity(x)===qid||(qtext&&quoteTextKey(x)===qtext)||quoteMediaSeed(x)===q;});
     if(!existing){additions.push(Object.assign({},q));changed=true;return;}
     ['author','source','music','audio','audioDuration','mediaNote','link','img','images','imageSize','platform','date'].forEach(function(k){
       if((existing[k]==null||existing[k]===''||(Array.isArray(existing[k])&&!existing[k].length))&&q[k]!=null&&q[k]!=='' ){
@@ -8917,10 +8917,24 @@ function quoteExcerpt(t,n){t=String(t||'').trim();if(t.length<=n)return t;return
 function quoteReadMin(t){return Math.max(1,Math.round(String(t||'').length/520));}
 function quoteTitle(q){var len=String(q.text||'').length,isEssay=(q.type==='essay'||len>520);return q.source||q.author||(isEssay?'untitled 随笔':quoteExcerpt(q.text||quoteTypeLabel(q.type),42));}
 function quoteImages(q){var imgs=[];if(q.img)imgs.push(q.img);if(Array.isArray(q.images))q.images.forEach(function(u){if(u)imgs.push(u);});return imgs;}
+function quoteMatchKey(value){return String(value||'').replace(/\s+/g,' ').trim().toLowerCase();}
+function quoteMediaSeed(q){
+  q=q||{};
+  var identity=quoteIdentity(q),textKey=quoteTextKey(q);
+  var direct=DEF_QUOTES.find(function(item){return quoteIdentity(item)===identity||(textKey&&quoteTextKey(item)===textKey);});
+  if(direct)return direct;
+  var fields=['link','source','music','author'];
+  for(var i=0;i<fields.length;i++){
+    var field=fields[i],value=quoteMatchKey(q[field]);
+    if(!value)continue;
+    var matches=DEF_QUOTES.filter(function(item){return quoteMatchKey(item[field])===value;});
+    if(matches.length===1)return matches[0];
+  }
+  return null;
+}
 function hydrateQuoteMedia(q){
   var hydrated=Object.assign({},q||{});
-  var identity=quoteIdentity(hydrated),textKey=quoteTextKey(hydrated);
-  var seed=DEF_QUOTES.find(function(item){return quoteIdentity(item)===identity||(textKey&&quoteTextKey(item)===textKey);});
+  var seed=quoteMediaSeed(hydrated);
   if(seed){
     ['music','audio','audioDuration','mediaNote','img','images','imageSize','platform'].forEach(function(key){
       if((hydrated[key]==null||hydrated[key]===''||(Array.isArray(hydrated[key])&&!hydrated[key].length))&&seed[key]!=null&&seed[key]!=='')hydrated[key]=seed[key];
@@ -9053,9 +9067,8 @@ function openQuoteModal(q){
   var title=q.source||q.author||quoteTypeLabel(q.type);
   var src=q.source?'<span class="qm-src">'+esc(q.source)+'</span>':'';
   var by=(q.author||src)?'<div class="qm-by">'+(q.author?'saved from '+esc(q.author)+' ':'')+src+'</div>':'';
-  var hasMusic=!!(q.audio||q.music);
-  var audio=hasMusic?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="'+(q.audio?'pause music':'audio unavailable')+'" '+(q.audio?'':'disabled')+'><span class="qm-audio-icon">'+(q.audio?'▶':'–')+'</span></button><div class="qm-audio-copy"><span>article music</span><b>'+esc(q.music||'Douyin audio')+'</b><em class="qm-audio-status">'+(q.audio?'starting':'audio unavailable')+'</em></div><div class="qm-audio-bar"><i></i></div></div>':'';
-  var music='';
+  var audio=q.audio?'<div class="qm-audio"><button class="qm-audio-toggle" type="button" aria-label="pause music"><span class="qm-audio-icon">▶</span></button><div class="qm-audio-copy"><span>article music</span><b>'+esc(q.music||'Douyin audio')+'</b><em class="qm-audio-status">starting</em></div><div class="qm-audio-bar"><i></i></div></div>':'';
+  var music=(!q.audio&&q.music)?'<div class="qm-music"><span>music credit</span>'+esc(q.music)+'</div>':'';
   var mediaNote=q.mediaNote?'<div class="qm-media-note">'+esc(q.mediaNote)+'</div>':'';
   var link=q.link?'<a class="qm-link" href="'+esc(q.link)+'" target="_blank" rel="noopener">source link &rarr;</a>':'';
   var ov=document.createElement('div');ov.className='cel-ov';
