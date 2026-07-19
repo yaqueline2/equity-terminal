@@ -21,7 +21,7 @@
 /assets/*.m4a
   Cache-Control: public, max-age=604800, immutable
 
-/assets/douyin/quotes-archive.js
+/assets/douyin/quotes.js
   Cache-Control: no-cache, must-revalidate
 
 /index.html

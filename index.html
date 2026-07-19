@@ -5246,7 +5246,7 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
 
 <script>if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message',function(e){
-    if(!e.data||e.data.type!=='APP_UPDATED'||!/^cel-headspace-v\d+$/.test(e.data.cache||''))return;
+    if(!e.data||e.data.type!=='APP_UPDATED'||!/^cel-headspace-(?:v\d+|q-[a-f0-9]{12})$/.test(e.data.cache||''))return;
     var key='cel-sw-reloaded-'+e.data.cache;
     if(sessionStorage.getItem(key))return;
     sessionStorage.setItem(key,'1');location.reload();
@@ -5283,7 +5283,7 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
   <div class="fc-actions" id="fc-actions"></div>
 </div>
 
-<script src="assets/douyin/quotes-archive.js"></script>
+<script src="assets/douyin/quotes.js?v=d272d9b386df"></script>
 <script>
 // ═══ THRESHOLD ═══
 (function(){
