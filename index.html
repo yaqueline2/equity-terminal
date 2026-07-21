@@ -4378,6 +4378,9 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
 .fp-brief-tag{font:italic 400 10px var(--font-display);color:#A46473;margin-top:5px;}
 .fp-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding-top:8px;border-top:1px solid #1c1a17;font:400 10px var(--font);color:#6b6760;}
 .fp-barcode{height:34px;}
+.fp-issues{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 0 14px;font:600 9.5px var(--font);letter-spacing:.06em;text-transform:uppercase;}
+.fp-issue-btn{border:1px solid rgba(28,26,23,.3);background:transparent;color:#3b3835;border-radius:999px;padding:5px 13px;cursor:pointer;}
+.fp-issue-btn.on{background:#1c1a17;color:#f7f4ec;border-color:#1c1a17;}
 @media(max-width:720px){.fp-paper{padding:22px 18px;}.fp-lead-body{columns:1;}.fp-cols{columns:1;}.fp-briefs{columns:2;}.fp-hero{max-height:240px;}}
 
 </style>
@@ -5939,6 +5942,55 @@ function renderFlowCards(){
   el.innerHTML=cards.join('');
 }
 
+/* ═══ THE HEADSPACE TIMES — back issues archive (older printed issues; do not edit past ones, just append) ═══ */
+var FRONTPAGE_ARCHIVE=[
+  {
+    masthead:"The Headspace Times",
+    url:"vivisheadspace.pages.dev",
+    place:"Subang Jaya, Selangor",
+    issue:1,
+    date:"Sunday, July 13, 2026",
+    weather:"Warm and partly cloudy 33/24 · A week of court trips, sore glutes, and one Sunday nap",
+    moodWeather:"Fight-or-flight most of the week — then chill. The body lands where it needs to.",
+    price:"$2",
+    tagline:"Information is food for the brain",
+    lead:{
+      kicker:"From the Editor’s Desk",
+      headline:"Past Self Saved Her. This Week She Showed Up Anyway.",
+      hero:"assets/week01-hero.png",
+      heroCap:"The correspondent, somewhere between arrival and departure.",
+      body:[
+        "The week ends the way it needed to — quietly. A Sunday nap beside a sleeping boyfriend, Nuria’s voice from the morning still settling. The rest of the week was not like this. The rest of the week moved at a pace the body could not immediately forget.",
+        "On paper, the brief reads as follows: three workouts (Day 1: surprisingly easy; Day 2: two hours, sore glutes, very happy; Day 3: still sore, still went); three Substacks read on a Monday when scrolling would have been easier; one RHB savings account finally opened — the first real infrastructure for the retire-at-30 dream. And on Friday, a court crisis that made her heart sink, solved entirely by a past version of herself who had the foresight to document everything in WhatsApp. “My past self saved me,” she said. It is a sentence this paper intends to keep.",
+        "The cost does not fit neatly in the same column. A boss who does not track her own filing cart. Passive-aggressive texts after hours. A Friday where the adrenaline ran so high there was no hunger, no rest, only problem after problem — each solved, each unacknowledged. The paper notes it for the record: this is not a sustainable pace. But it also notes this: she kept going, and she kept building, and these two things are not unrelated."
+      ]
+    },
+    articles:[
+      {head:"Three Years With Nuria, and Sunday Still Holds",byline:"By Cel · Culture Desk",body:[
+        "The Sunday ritual is three years old this year and has never failed to arrive on time. This week’s episode — “single & living alone” — played while the week was still finding its footing, and it did what Nuria always does: it made the correspondent feel that being anxious and unsure is simply one of the weather patterns of being alive.",
+        "The appeal has always been the same: she tells everything, stays raw with her feelings, speaks in a Chinese the correspondent understands and a Spanish she admires from a distance. “She feels like my sister,” the correspondent writes. Not because their lives match — they don’t, particularly — but because the honesty does. Each vlog deposits the same residue: cozy, and motivated. The outfits inspire; the mindset inspires more.",
+        "There is a standing fantasy on file, originated during the Newcastle years when Nuria lived in London: that some ordinary afternoon, she might simply be there, around a corner. The correspondent is aware the probability is low. She has not filed it under fantasy. She has filed it under eventually."
+      ]},
+      {head:"The Body Came Back. It Was Sore. It Came Back Anyway.",byline:"By Cel · Body & Wellbeing",img:"assets/week01-cat.png",body:[
+        "The return to movement was not dramatic. It was a 14-day challenge from Bilibili — viral in China — and Day 1 was, in her own words, “surprisingly easy.” This is the best kind of start: not a statement of intent, not a dramatic announcement, just thirty minutes and a quiet satisfaction afterward.",
+        "Day 2 was two hours and a very sore posterior. “My butt hurts, extra tired, but so so happy I did it.” Day 3 was still sore and still done. Friday was a genuine rest — not avoidance, not guilt, just a body and a nervous system that had run adrenaline all day and deserved to stop. Three days on, one rest taken with intention, sore in exactly the right places.",
+        "The original reason for the workouts was something about not liking her shoulders. That is no longer the editorial line. The editorial line, updated this week, is that movement is not punishment, and the body that shows up after a rest is not behind — it simply knows where it left off."
+      ]},
+      {head:"The Work Is Unsustainable. She Is Building the Exit.",byline:"By Cel · Finance & Future",img:"assets/week01-reading.png",body:[
+        "On Tuesday evening, after her second workout of the week, her boss texted about work and the evening dropped hard. On Wednesday, a passive-aggressive comment about the filing cart — she had filed everything; she had told the boss in person; she had made the payment when instructed — and suddenly she was seething inside a professionally worded reply, having done everything correctly, having done it anyway.",
+        "She does not hide what it costs. “I fucking hate this job,” she said, and the paper prints it without asterisks. Not because she hates her colleagues — she doesn’t — but because she hates what the work is: solving other people’s problems at low pay, with high responsibility, through ambiguous instructions that become her fault when they misfire. Call to Bar: 7 October. That is the finish line for this chapter.",
+        "On the same day she opened a savings account at RHB Bank. This is not a coincidence. The dream — retire at 30 on passive income, build vibe sites, code things that are hers — now has an account number. RM1.5k a month has a destination. The exit is being built one deposit at a time, on the same weeks that feel most like staying is impossible. The paper considers this the real story of the week."
+      ]}
+    ],
+    briefs:[
+      {kicker:"Weather of the Mind",title:"Fight-or-flight on a Friday, chill by Sunday",body:"The nervous system runs its own timeline. This week it ran hot through Friday and landed soft on a Sunday nap beside a sleeping boyfriend.",tag:"noted without alarm"},
+      {kicker:"The Screening Room",title:"Nuria Ma · single & living alone",body:"Three years of Sundays, still unmatched. Cozy and motivated, as reliably as ever.",tag:"year three"},
+      {kicker:"The Body",title:"Days 1, 2, 3 — and a rest earned",body:"Sore glutes, two hours, one court day, one genuine rest. The body knows what it’s doing.",tag:"be gentle"},
+      {kicker:"Finance Desk",title:"RHB account opened",body:"RM1.5k/month now has a home. The retire-at-30 infrastructure has its first address.",tag:"13 Jul 2026"},
+      {kicker:"From the Journal Desk",title:"Filed on a Sunday morning",body:"She journalled this morning, before the nap, before 5pm. Two entries in the books this week.",tag:"goal met"}
+    ]
+  }
+];
 /* ═══ THE HEADSPACE TIMES — weekly newspaper (content authored by Cel + Claude in chat, edit here each week) ═══ */
 var FRONTPAGE={
   masthead:"The Headspace Times",
@@ -6001,9 +6053,15 @@ function renderFrontpageCard(){
   el.onclick=openFrontpage;
   el.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openFrontpage();}};
 }
-function openFrontpage(){
-  var fp=FRONTPAGE,ov=document.getElementById('fp-ov');if(ov)ov.remove();
+function fpAllIssues(){return [FRONTPAGE].concat(FRONTPAGE_ARCHIVE||[]).sort(function(a,b){return b.issue-a.issue;});}
+function openFrontpage(fp){
+  fp=fp||FRONTPAGE;
+  var ov=document.getElementById('fp-ov');if(ov)ov.remove();
   ov=document.createElement('div');ov.id='fp-ov';ov.className='fp-ov';
+  var issues=fpAllIssues();
+  var issuesStrip=issues.length>1?'<div class="fp-issues">'+issues.map(function(i){
+    return '<button class="fp-issue-btn'+(i.issue===fp.issue?' on':'')+'" data-fpissue="'+i.issue+'">issue no.'+i.issue+'</button>';
+  }).join('')+'</div>':'';
   var arts=fp.articles.map(function(a){
     return '<div class="fp-article"><div class="fp-art-head">'+esc(a.head)+'</div>'+
       (a.byline?'<div class="fp-art-byline">'+esc(a.byline)+'</div>':'')+
@@ -6021,6 +6079,7 @@ function openFrontpage(){
       '<div class="fp-hdr-top"><span>'+esc(fp.url)+'</span><span>'+esc(fp.place)+'</span></div>'+
       '<div class="fp-mast">'+esc(fp.masthead)+'</div>'+
       '<div class="fp-dateline"><span>'+esc(fp.weather)+'</span><span>issue no.'+fp.issue+'</span><span>'+esc(fp.date)+'</span></div>'+
+      issuesStrip+
       (fp.moodWeather?'<div class="fp-mood">Weather of the mind — <em>'+esc(fp.moodWeather)+'</em></div>':'')+
       '<div class="fp-lead-kicker">'+esc(fp.lead.kicker)+'</div>'+
       '<div class="fp-lead-head">'+esc(fp.lead.headline)+'</div>'+
@@ -6037,6 +6096,9 @@ function openFrontpage(){
   document.addEventListener('keydown',esckey);
   ov.querySelector('.fp-close').onclick=close;
   ov.onclick=function(e){if(e.target===ov)close();};
+  ov.querySelectorAll('[data-fpissue]').forEach(function(b){
+    b.onclick=function(){var num=+this.dataset.fpissue;var pick=issues.filter(function(i){return i.issue===num;})[0];if(pick)openFrontpage(pick);};
+  });
   document.body.scrollTop=0;ov.scrollTop=0;
 }
 window.renderFrontpageCard=renderFrontpageCard;window.openFrontpage=openFrontpage;
@@ -7974,7 +8036,22 @@ function artCover(s,cls){var pal=ART_CAT_PAL[s.cat]||['#A89CC0','var(--lavender)
 var _artFeat=Math.floor(Math.random()*1000),_jpFeat=0;
 function renderSubstacks(){renderArticles();}
 function artReadMin(s){var n=(s.title||'').length+(s.author||'').length;return Math.max(3,Math.min(14,Math.round(n/9)));}
-function getArticles(){var d=load('articles-v1',null);if(!d){d=SUBSTACKS.slice();store('articles-v1',d);}return d;}
+function getArticles(){var d=load('articles-v1',null);if(!d){d=SUBSTACKS.slice();store('articles-v1',d);}
+  if(!load('articles-w2w3-add-v1',0)){
+    var add=[
+      {"id":149,"title":"trying to get my spark back","author":"a twenties pov","cat":"wellness","link":"https://anastasiakrogh.substack.com/p/trying-to-get-my-spark-back","date":"2026-07-20","read":"read"},
+      {"id":148,"title":"how to be someone who actually does","author":"evermuse","cat":"productivity","link":"https://evermuse.substack.com/p/how-to-be-someone-who-actually-does","date":"2026-07-17","read":"read"},
+      {"id":147,"title":"the life-changing skill to stop rumination","author":"milk and cookies","cat":"wellness","link":"https://ayushithakkar.substack.com/p/the-life-changing-skill-to-stop-rumination","date":"2026-07-17","read":"read"},
+      {"id":146,"title":"the art of not thinking","author":"one cup of tea","cat":"wellness","link":"https://janelledodo.substack.com/p/the-art-of-not-thinking","date":"2026-07-17","read":"read"},
+      {"id":145,"title":"13 *actually* useful things you can do with Claude Cowork this weekend","author":"Dangerously Educated","cat":"productivity","link":"https://taylaburrell.substack.com/p/13-actually-useful-things-you-can","date":"2026-07-06","read":"read"},
+      {"id":144,"title":"the modern career playbook","author":"Late Filing","cat":"productivity","link":"https://latefiling.substack.com/p/the-modern-career-playbook","date":"2026-07-06","read":"read"},
+      {"id":143,"title":"how to stop being hard on yourself","author":"milk and cookies","cat":"wellness","link":"https://ayushithakkar.substack.com/p/how-to-stop-being-hard-on-yourself","date":"2026-07-06","read":"read"}
+    ];
+    var links=d.map(function(x){return x.link;});
+    add.forEach(function(n){if(links.indexOf(n.link)<0)d.unshift(n);});
+    store('articles-v1',d);store('articles-w2w3-add-v1',1);
+  }
+  return d;}
 function saveArticles(d){store('articles-v1',d);}
 function renderArticles(){
   var grid=document.getElementById('art-grid');if(!grid)return;
