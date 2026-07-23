@@ -3846,6 +3846,9 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .month-row .mt-receipt-bar{margin:0;flex:0 0 auto;}
 .mt-receipt-bar{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px;flex-shrink:0;}
 .mt-receipt-bar .mini-btn{font-family:var(--font);}
+.finance-sync-state{align-self:center;font:400 10px var(--font);color:var(--t4);white-space:nowrap;}
+.finance-sync-state.ready{color:var(--sage);}
+.finance-sync-state.error{color:#9b5c64;}
 
 /* ══ FLASHCARDS (korean blush · japanese sage) ══ */
 .fc-decks{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
@@ -4960,13 +4963,12 @@ body .chip-x{width:16px!important;height:16px!important;top:-6px!important;right
   <!-- ░░ MONTHLY subview ░░ -->
   <div class="subview" data-sub="monthly" hidden>
 
-    <!-- SECTION 0 — month selector + export -->
+    <!-- SECTION 0 — month selector + private sync -->
     <div class="month-row">
       <div class="month-selector" id="month-sel"></div>
       <div class="mt-receipt-bar">
-        <button class="mini-btn" id="mt-finance-export">export for Finn</button>
-        <button class="mini-btn" id="mt-finance-import">import Finn update</button>
-        <input type="file" id="mt-finance-file" accept=".json,application/json" hidden/>
+        <button class="mini-btn" id="mt-finance-connect">connect finance</button>
+        <span class="finance-sync-state" id="mt-finance-sync-state">not connected</span>
         <button class="mini-btn" id="mt-receipt-month">🧾 month PDF</button>
         <button class="mini-btn" id="mt-receipt-year">🧾 year PDF</button>
       </div>
@@ -5423,7 +5425,12 @@ function playPianoNote(){
 }
 
 var DOOD={'water':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDMuNWMwIDAtNiA2LjQtNiAxMC40YTYgNiAwIDAwMTIgMGMwLTQtNi0xMC40LTYtMTAuNFoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOSAxNC41Yy4yIDEuNCAxLjIgMi41IDIuNiAyLjgiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','korean':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3QgeD0iMy41IiB5PSIzLjUiIHdpZHRoPSIxNyIgaGVpZ2h0PSIxNyIgcng9IjQuNSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNSIvPjx0ZXh0IHg9IjEyIiB5PSIxNiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzJDMjQzMiIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiPu2VnDwvdGV4dD48L3N2Zz4=','steps':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTMiIGN5PSI0LjUiIHI9IjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMTMgNi41Yy0xLjIuMy0yIDEuNC0yIDIuOCAwIC44LjMgMS41LjggMi4ybC0yIDRNMTEuOCAxMS41bDMgMS41IDEuMiAzLjVNMTEgMTYuM2wtMiAzLjdNMTQuOCAxNi41bDEgMy41IiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS40IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=','read':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEyIDYuNUMxMCA1IDcgNC41IDQuNSA1Yy0uNS4xLS44LjUtLjggMXYxMWMwIC42LjUgMSAxIC45IDIuMy0uMyA1IC4yIDcgMS40IDItMS4yIDQuNy0xLjcgNy0xLjQuNS4xIDEtLjMgMS0uOVY2YzAtLjUtLjMtLjktLjgtMUMxNi45IDQuNSAxNCA1IDEyIDYuNVoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTIgNi41djEzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIi8+PC9zdmc+','piano':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTkgNC41djEwYTIuOCAyLjggMCAxMS0yLjgtMi44SDkiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik05IDguNWg1LjUiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjE3LjUiIGN5PSI2LjUiIHI9IjIuNiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIvPjxwYXRoIGQ9Ik0xNC41IDYuNVYzLjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','cup':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUuNSA5aDEzbC0uOCA5LjVjLS4xIDEuNC0xLjMgMi41LTIuNyAyLjVIOWMtMS40IDAtMi42LTEuMS0yLjctMi41TDUuNSA5WiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xOC4zIDExLjVjMi0uMyAzLjUuNiAzLjQgMi40LS4xIDEuNy0xLjcgMi42LTMuNyAyLjQiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik05IDNjLS42IDEtLjYgMiAwIDNNMTMgMi41Yy0uNiAxLS42IDIgMCAzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=','book':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjggMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE0IDYuNUMxMiA1IDguNSA0LjMgNSA0LjhjLS42LjEtMSAuNi0xIDEuMnYxMmMwIC43LjYgMS4yIDEuMyAxLjEgMy0uNCA2LjQuMiA4LjcgMS42IDIuMy0xLjQgNS43LTIgOC43LTEuNi43LjEgMS4zLS40IDEuMy0xLjFWNmMwLS42LS40LTEuMS0xLTEuMkMxOS41IDQuMyAxNiA1IDE0IDYuNVoiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMTQgNi41djEzIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIi8+PC9zdmc+','coin':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjggMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTE0IDMuNGM1LjctLjIgMTAuNyA0LjMgMTAuNiAxMC4zLjEgNi00LjYgMTAuOC0xMC40IDEwLjlDOC4yIDI0LjcgMy40IDIwIDMuNCAxNCAzLjMgOC4yIDguMSAzLjYgMTQgMy40WiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTkuNSAxOC41VjkuMmMxLjYtLjEgMy40LS4yIDQuNC42IDEuMyAxIDEgMy4yLS42IDMuOC0uNy4zLTEuOS4zLTMuMS4ybTIgMGMuOCAxLjUgMS44IDMgMyA0LjQiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNi41IDkuM3Y5LjIiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','coins':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGVsbGlwc2UgY3g9IjExIiBjeT0iOSIgcng9IjcuMyIgcnk9IjMiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMy43IDl2My40QzMuNyAxNCA3IDE1LjMgMTEgMTUuM3M3LjMtMS4zIDcuMy0yLjlWOSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGVsbGlwc2UgY3g9IjE4LjUiIGN5PSIxNiIgcng9IjcuMyIgcnk9IjMiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMTEuMiAxNnYzLjRjMCAxLjYgMy4zIDIuOSA3LjMgMi45czcuMy0xLjMgNy4zLTIuOVYxNiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+','growth':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMgMTljMy0xIDUuNS00IDgtN3M1LjUtNiA5LTciIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNiA1YzEuNC0uNCAzLS42IDQuMy0uNE0yMC4zIDQuNmMuMyAxLjMuNCAyLjguMiA0LjEiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==','nest':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYgMTRjMC00IDQtNyA5LTdzOSAzIDkgNi41YzAgMi0xIDMuNy0yLjYgNC45LS4yIDEuNC0uNSAyLjYtLjUgMi42aC0ybC0uNi0xLjZjLTEgLjMtMi4xLjQtMy4zLjRzLTIuMy0uMS0zLjMtLjRMMTEgMjFIOXMtLjQtMS4zLS42LTIuOEM2LjkgMTcgNiAxNS42IDYgMTRaIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS40IiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMTEiIGN5PSIxMyIgcj0iMSIgZmlsbD0iIzJDMjQzMiIvPjxwYXRoIGQ9Ik00LjUgMTMuNUMzLjUgMTMgMy4zIDExLjggMy42IDExTTE0IDdjLjItMS4yIDEtMi4zIDItMi44IiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=','pilates':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzAgMjIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTMgMTVoMjBNMyAxNWMtLjYgMC0xIC40LTEgMXYxLjVNMjMgMTVjLjYgMCAxIC40IDEgMXYxLjUiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxyZWN0IHg9IjciIHk9IjExIiB3aWR0aD0iMTAiIGhlaWdodD0iNCIgcng9IjEiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjQiLz48cGF0aCBkPSJNMjMgMTNjMS4zLS4yIDIuNS0uMSAzLjUuNE0yIDEzYy42LS4xIDEuMi0uMSAxLjggMCIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTI0IDEyLjVxMSAuNSAyIDAgMS0uNSAyIDAiIHN0cm9rZT0iIzJDMjQzMiIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iNiIgcj0iMiIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIvPjxwYXRoIGQ9Ik0xMiA4djIuNSIgc3Ryb2tlPSIjMkMyNDMyIiBzdHJva2Utd2lkdGg9IjEuNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+','sparkle':'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEwIDNjLjQgMi44IDEuMiA0LjYgNCA1LTIuOC41LTMuNiAyLjItNCA1LS40LTIuOC0xLjItNC41LTQtNSAyLjgtLjQgMy42LTIuMiA0LTVaIiBzdHJva2U9IiMyQzI0MzIiIHN0cm9rZS13aWR0aD0iMS4zIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+'};
-function store(key,val){try{localStorage.setItem('cel-'+key,JSON.stringify(val));}catch(e){}}
+function store(key,val){
+  try{
+    localStorage.setItem('cel-'+key,JSON.stringify(val));
+    if(!_financeRemoteApply&&_financeSyncReady&&typeof FINANCE_SYNC_KEYS!=='undefined'&&FINANCE_SYNC_KEYS.indexOf(key)>=0)scheduleFinanceSync();
+  }catch(e){}
+}
 function load(key,def){try{var v=localStorage.getItem('cel-'+key);return v?JSON.parse(v):def;}catch(e){return def;}}
 var FINANCE_SYNC_KEYS=[
   'pots-v4','pot-groups','pot-rebalances-v1','assets-v2','debts-v3',
@@ -5477,7 +5484,9 @@ function validateFinanceImport(payload){
 function applyFinanceImport(payload){
   var keys=validateFinanceImport(payload);
   var backup=financeSnapshot();
+  _financeRemoteApply=true;
   keys.forEach(function(key){localStorage.setItem('cel-'+key,JSON.stringify(payload.data[key]));});
+  _financeRemoteApply=false;
   localStorage.setItem('cel-finance-last-import',JSON.stringify({
     importedAt:new Date().toISOString(),
     sourceExportedAt:payload.exportedAt||null,
@@ -5487,6 +5496,57 @@ function applyFinanceImport(payload){
   ASSETS=load('assets-v2',[]);
   window.__lastFinanceImportBackup=backup;
   renderFinance();renderMonthlyFull();renderInvestments();renderPropertyFull();
+}
+var FINANCE_SYNC_ENDPOINT='/api/finance';
+var _financeRemoteApply=false,_financeSyncReady=false,_financeSyncTimer=null,_financeSyncBusy=false;
+function financeSyncToken(){return load('finance-sync-token','')||'';}
+function financeSyncStatus(text,state){
+  var el=document.getElementById('mt-finance-sync-state');
+  if(!el)return;
+  el.textContent=text;el.className='finance-sync-state'+(state?' '+state:'');
+  var btn=document.getElementById('mt-finance-connect');
+  if(btn)btn.textContent=financeSyncToken()?'finance connected':'connect finance';
+}
+function financeSyncHeaders(){
+  return {'Content-Type':'application/json','Authorization':'Bearer '+financeSyncToken()};
+}
+function financeSyncPush(){
+  if(!financeSyncToken()||_financeSyncBusy)return Promise.resolve(false);
+  _financeSyncBusy=true;financeSyncStatus('saving…','');
+  return fetch(FINANCE_SYNC_ENDPOINT,{method:'PUT',headers:financeSyncHeaders(),body:JSON.stringify(financeSnapshot())})
+    .then(function(r){if(!r.ok)throw new Error('sync '+r.status);return r.json();})
+    .then(function(){localStorage.setItem('cel-finance-sync-at',JSON.stringify(new Date().toISOString()));financeSyncStatus('saved','ready');return true;})
+    .catch(function(){financeSyncStatus('sync unavailable','error');return false;})
+    .finally(function(){_financeSyncBusy=false;});
+}
+function scheduleFinanceSync(){
+  clearTimeout(_financeSyncTimer);
+  _financeSyncTimer=setTimeout(financeSyncPush,700);
+}
+function financeSyncPull(){
+  if(!financeSyncToken()){_financeSyncReady=false;financeSyncStatus('not connected','');return Promise.resolve(false);}
+  _financeSyncBusy=true;financeSyncStatus('syncing…','');
+  return fetch(FINANCE_SYNC_ENDPOINT,{method:'GET',headers:financeSyncHeaders(),cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('sync '+r.status);return r.json();})
+    .then(function(result){
+      if(result&&result.data){validateFinanceImport(result.data);applyFinanceImport(result.data);}
+      _financeSyncReady=true;
+      financeSyncStatus(result&&result.data?'up to date':'connected','ready');
+      _financeSyncBusy=false;
+      if(!result||!result.data)return financeSyncPush();
+      return true;
+    })
+    .catch(function(){_financeSyncReady=false;_financeSyncBusy=false;financeSyncStatus('reconnect','error');return false;});
+}
+function connectFinanceSync(){
+  var current=financeSyncToken();
+  var token=prompt(current?'Replace the private finance connection key:':'Paste the private finance connection key:','');
+  if(token===null)return;
+  token=String(token).trim();
+  if(token.length<32){alert('That connection key is incomplete.');return;}
+  store('finance-sync-token',token);
+  _financeSyncReady=false;
+  financeSyncPull();
 }
 var _saveToastTimer=null;
 function notifySaved(msg){
@@ -9942,31 +10002,8 @@ function renderMonthlyCommand(){
 }
 function renderMonthlyFull(){
   var rb=document.getElementById('mt-rebalance');if(rb&&!rb.dataset.b){rb.dataset.b='1';rb.onclick=openRebalance;}
-  var fx=document.getElementById('mt-finance-export');if(fx&&!fx.dataset.b){fx.dataset.b='1';fx.onclick=function(){
-    var day=new Date().toISOString().slice(0,10);
-    downloadJson('headspace-finance-for-finn-'+day+'.json',financeSnapshot());
-    notifySaved('private finance export downloaded');
-  };}
-  var fi=document.getElementById('mt-finance-import'),ff=document.getElementById('mt-finance-file');
-  if(fi&&ff&&!fi.dataset.b){
-    fi.dataset.b='1';fi.onclick=function(){ff.value='';ff.click();};
-    ff.onchange=function(){
-      var file=this.files&&this.files[0];if(!file)return;
-      var reader=new FileReader();
-      reader.onload=function(){
-        try{
-          var payload=JSON.parse(String(reader.result||''));
-          validateFinanceImport(payload);
-          var summary=financeImportSummary(payload);
-          if(!confirm('Apply this Finn finance update to this device?\\n\\n'+summary+'\\n\\nA recovery copy stays in memory until this tab closes.'))return;
-          applyFinanceImport(payload);
-          notifySaved('Finn finance update applied');
-        }catch(error){alert(error.message||'Could not import this finance file.');}
-      };
-      reader.onerror=function(){alert('Could not read this finance file.');};
-      reader.readAsText(file);
-    };
-  }
+  var fc=document.getElementById('mt-finance-connect');if(fc&&!fc.dataset.b){fc.dataset.b='1';fc.onclick=connectFinanceSync;}
+  financeSyncStatus(financeSyncToken()?(_financeSyncReady?'up to date':'connecting…'):'not connected',_financeSyncReady?'ready':'');
   var rm=document.getElementById('mt-receipt-month');if(rm&&!rm.dataset.b){rm.dataset.b='1';rm.onclick=buildMonthReceipt;}
   var ry=document.getElementById('mt-receipt-year');if(ry&&!ry.dataset.b){ry.dataset.b='1';ry.onclick=buildYearReceipt;}
   fillMonthSelects();renderMonthSelector();renderMonthlyCommand();renderMonthGlance();renderMonthIncome();renderMonthBills();
@@ -11136,6 +11173,7 @@ window.addEventListener('focus',checkCalendarRollover);
  renderBills,renderQuarters,renderCal,renderTimeline,renderG26,renderPilatesFull,renderMovement,renderInvestments,renderPropertyFull,renderSubstacks,renderPrompts,renderFinance,renderMaintenanceFull,renderQuotes,renderBeauty,renderWishlist,renderCafes,renderBucketList,renderTrips,renderMonthlyFull,renderHomeFull,renderMoodboard,migrateToScribbles,renderScribbles,renderYearEarth,renderWeekStrip,renderHomeSummary,
  function(){renderSidebar('home');}
 ].forEach(function(fn){try{fn();}catch(e){try{console.warn('[init] '+((fn&&fn.name)||'render')+' failed:',e&&e.message);}catch(_){}}});
+setTimeout(financeSyncPull,900);
 
 // scroll-reveal — sections settle as they enter the viewport
 (function(){

@@ -81,13 +81,15 @@ and is backed up separately by ACC. Finn reads it alongside the dated
 `finance_data.md` snapshot and updates it in place only when Celine confirms a
 material fact, decision, goal, or completed action.
 
-Finance values are private browser state, not deployable source data. Wealth ->
-Monthly provides `export for Finn`, which downloads an allow-listed
-`cel-headspace-finance` JSON snapshot, and `import Finn update`, which validates,
-previews, confirms, then applies a returned snapshot on that device. The working
-contract is `../skills/finn_finance_handoff.md`. Never commit a finance snapshot.
-The public source contains empty finance defaults; current figures must live in
-localStorage or in the ignored local finance files.
+Finance values are private state, never deployable source data. Connected
+devices sync the allow-listed `cel-headspace-finance` stores through the
+authenticated `/api/finance` Pages Function and the existing private
+`FLASHCARDS` KV binding. The secret is a Cloudflare Pages secret and a macOS
+Keychain item; it must never enter HTML, Git, logs, memory, or chat. Finn writes
+and validates the ignored local pending snapshot, then uses the bounded
+`acc-finance-sync-finn` command. UI, schema, and feature changes still use the
+reviewed Headspace publication workflow. The working contract is
+`../skills/finn_finance_handoff.md`.
 
 ## 10. Working / verifying (for the next AI)
 - Preview tools (`mcp__Claude_Preview__*`): `preview_start` (launch.json name `headspace`, port 7725), load **`http://localhost:7725/`** or **`http://localhost:7725/index.html`**. Skip the gate in evals via `document.getElementById('th-skip').click()` or `?go=...`.
@@ -98,6 +100,7 @@ localStorage or in the ignored local finance files.
 - Other Cloudflare Pages functions still run only in production/Cloudflare tooling; test `claude`, `financials`, `search`, `rss`, `telegram`, and Yahoo proxies against the deployed site or a real Pages dev environment.
 
 ## 11. Status / changelog (newest first)
+- Direct Finn finance sync (23 Jul 2026): retired the recurring export/import loop. Wealth now pulls and saves private finance stores through an authenticated, no-cache Cloudflare KV endpoint after a one-time device connection. Finn validates locally and syncs through a bounded Keychain-backed command; private values remain absent from public HTML and Git. New finance fields, stores, and UI are still implemented as versioned Headspace code changes.
 - Reading desk + back issues (21 Jul 2026): added 7 real Substack reads Cel has actually read this month into Mind → Articles (gated one-time merge behind `articles-w2w3-add-v1` so existing installs pick them up without duplicating on repeat loads) — titles/authors/links verified via live search/fetch, not guessed. Added a `FRONTPAGE_ARCHIVE` array holding Issue No.1's full original content (recovered from commit `fe58380` since Issue No.2 overwrote the single `FRONTPAGE` slot) and reworked `openFrontpage()`/`fpAllIssues()` so the newspaper overlay now shows an "issue no." switcher strip — Cel can browse back issues without losing older ones each time a new issue prints. Future issues: keep appending fully-formed issue objects to `FRONTPAGE_ARCHIVE` before overwriting `FRONTPAGE` with the new one, so nothing gets lost.
 - Private Finn handoff and source-data repair (19 Jul 2026): Wealth/Monthly now exports a private allow-listed finance snapshot for Finn and imports his validated return file with a preview and confirmation. Removed private finance exports and live balances, holdings, cash flow, insurance, debt and goal records from deployable defaults; existing localStorage data remains intact. Finance renderers now read current stores instead of stale legacy constants.
 - Lux clipping intake 2026-07-19: captured four verified Douyin clippings with local media. Added video-detail cover extraction, corrected JPEG/MP3 signature detection, and strengthened archive verification to reject media whose bytes do not match its role. The three video cards currently contain their Douyin caption/title and cover, not an invented transcription of the list shown inside the video.
